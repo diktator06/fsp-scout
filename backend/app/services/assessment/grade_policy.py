@@ -11,7 +11,7 @@ class PolicyConfig:
 
     grade_change_cooldown_days: int = 90
     upgrade_retry_days: int = 30
-    onboarding_daily_sessions: int = 3
+    onboarding_retry_hours: int = 24
     confident_upgrade_window_hours: int = 24
 
 
@@ -60,12 +60,14 @@ def evaluate_eligibility(
 
     Правила:
     * пока идёт сессия, новую начать нельзя;
-    * до первой категории (онбординг) доступен любой грейд, но не больше N сессий
-      за сутки: можно сразу сдать уровень ниже после неудачи;
+    * до первой категории (онбординг) доступен любой грейд. После неудачи уровень
+      ниже открыт сразу и попыткой не считается («провал и уход ниже — без
+      сжигания попытки»), а повтор того же или более высокого — через сутки;
     * после присвоения грейд меняется не чаще раза в 90 дней, тест на свой грейд
       не нужен, повышение идёт на одну ступень;
     * после уверенного прохождения уровень выше открывается сразу, без кулдауна;
-    * неудачная попытка повышения грейд не снижает, но повтор — через 30 дней.
+    * неудачная или прерванная попытка повышения грейд не снижает, но повтор —
+      через 30 дней.
     """
     ordered = sorted(grades, key=lambda grade: grade.rank)
     if any(session.status is SessionStatus.IN_PROGRESS for session in sessions):
@@ -78,6 +80,7 @@ def evaluate_eligibility(
         (s for s in sessions if s.finished_at is not None and s.status is SessionStatus.COMPLETED),
         key=lambda s: s.finished_at or now,
     )
+    unsuccessful = [s for s in sessions if _is_unsuccessful(s)]
     latest = finished[-1] if finished else None
     confident_window = (
         latest is not None
@@ -93,11 +96,8 @@ def evaluate_eligibility(
     )
     failed_upgrades = [
         s.finished_at
-        for s in finished
-        if s.outcome is SessionOutcome.FAILED
-        and s.finished_at is not None
-        and s.rank_before is not None
-        and s.target_rank > s.rank_before
+        for s in unsuccessful
+        if s.finished_at is not None and s.rank_before is not None and s.target_rank > s.rank_before
     ]
     retry_until = (
         max(failed_upgrades) + timedelta(days=config.upgrade_retry_days)
@@ -139,19 +139,48 @@ def evaluate_eligibility(
     return options
 
 
+def _is_unsuccessful(session: SessionSummary) -> bool:
+    """Попытка не удалась: тест провален, прерван или истёк по времени.
+
+    Прерванный тест считается неудачей, иначе можно было бы бросать тест на трудных
+    заданиях и начинать заново в надежде на более лёгкие.
+    """
+    if session.status is SessionStatus.COMPLETED:
+        return session.outcome is SessionOutcome.FAILED
+    return session.status in {SessionStatus.ABANDONED, SessionStatus.EXPIRED}
+
+
 def _onboarding_options(
     grades: Sequence[GradeInfo],
     sessions: Sequence[SessionSummary],
     now: datetime,
     config: PolicyConfig,
 ) -> list[GradeOption]:
-    """Онбординг: любой грейд, но ограниченное число сессий за скользящие сутки."""
-    window_start = now - timedelta(hours=24)
-    recent = sorted(s.started_at for s in sessions if s.started_at >= window_start)
-    if len(recent) >= config.onboarding_daily_sessions:
-        available_at = recent[0] + timedelta(hours=24)
-        return [
-            GradeOption(grade, False, "Лимит попыток на сегодня исчерпан", available_at)
-            for grade in grades
-        ]
-    return [GradeOption(grade, True, "Выберите грейд, на который претендуете") for grade in grades]
+    """Онбординг: любой грейд; после неудачи на g тест на g и выше — только через паузу.
+
+    Тест ниже проваленного уровня открыт сразу и попыткой не считается. Пауза перед
+    повтором того же уровня нужна, чтобы нельзя было перебором «вытянуть» удобный
+    набор заданий.
+    """
+    retry = timedelta(hours=config.onboarding_retry_hours)
+    blocked_until: dict[int, datetime] = {}
+    for session in sessions:
+        moment = session.finished_at or session.started_at
+        if not _is_unsuccessful(session) or now >= moment + retry:
+            continue
+        for grade in grades:
+            if grade.rank >= session.target_rank:
+                previous = blocked_until.get(grade.rank)
+                release = moment + retry
+                blocked_until[grade.rank] = max(previous, release) if previous else release
+
+    options = []
+    for grade in grades:
+        release_at = blocked_until.get(grade.rank)
+        if release_at is not None:
+            options.append(
+                GradeOption(grade, False, "Повтор этого уровня — после паузы в сутки", release_at)
+            )
+        else:
+            options.append(GradeOption(grade, True, "Выберите грейд, на который претендуете"))
+    return options
