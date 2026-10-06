@@ -1,0 +1,35 @@
+# Материалы организаторов (симлинк на папку DOCS): ТЗ под паролем и тяжёлый шаблон
+# презентации в репозиторий не кладём. Имя не DOCS: на macOS оно совпало бы с docs/.
+materials
+
+# Секреты и локальные переменные окружения
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node и сборка фронтенда
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+
+# Данные, загрузки и собранная документация
+data/
+uploads/
+docs/build/
+
+# Системные файлы и IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
