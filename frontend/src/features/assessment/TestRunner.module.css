@@ -48,6 +48,11 @@
   padding: rem(24px) rem(28px) 0;
 }
 
+.stageTitle {
+  flex: 1;
+  min-width: 0;
+}
+
 .stageBody {
   display: flex;
   flex-direction: column;

@@ -130,11 +130,11 @@ function ItemStage({ session, item, receivedAt }: ItemStageProps) {
     <Card className={classes.stage} padding={0}>
       <form ref={formRef} onSubmit={handleSubmit} aria-labelledby={`item-${item.id}-prompt`}>
         <div className={classes.stageHeader}>
-          <Stack gap={6}>
+          <Stack gap={6} className={classes.stageTitle}>
             <Text size="sm" c="dimmed" fw={600} className="tabular">
               Задание {item.position}
             </Text>
-            <Kicker>{item.competency_name}</Kicker>
+            <Kicker wrap>{item.competency_name}</Kicker>
           </Stack>
           <CountdownRing secondsLeft={secondsLeft} limit={item.time_limit_sec} />
         </div>
