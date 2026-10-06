@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Подтверждение email — Скаут</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f4f1f8;font-family:Montserrat,Arial,Helvetica,sans-serif;color:#1c1d22;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f1f8;padding:32px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:20px;overflow:hidden;">
+            <tr>
+              <td style="background:#310f53;background-image:linear-gradient(135deg,#310f53 0%,#520978 100%);padding:28px 32px;">
+                <span style="display:inline-block;background:#ff0053;color:#ffffff;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:6px 12px;border-radius:999px;">Подтверждение email</span>
+                <div style="color:#ffffff;font-size:26px;font-weight:800;margin-top:16px;">Скаут</div>
+                <div style="color:#d9cfee;font-size:13px;margin-top:4px;">Платформа подбора ИТ-специалистов · ФСП</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <p style="font-size:16px;line-height:1.55;margin:0 0 16px;">Здравствуйте!</p>
+                <p style="font-size:15px;line-height:1.6;margin:0 0 24px;">
+                  Остался один шаг: подтвердите адрес <strong>{{ email }}</strong>, и аккаунт будет активирован.
+                </p>
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="border-radius:12px;background:#520978;">
+                      <a href="{{ verification_link }}" style="display:inline-block;padding:14px 28px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Подтвердить email</a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="font-size:13px;line-height:1.6;color:#5b5e6b;margin:24px 0 0;">
+                  Ссылка действует {{ ttl_hours }} ч. Если кнопка не работает, скопируйте адрес в браузер:<br>
+                  <a href="{{ verification_link }}" style="color:#520978;word-break:break-all;">{{ verification_link }}</a>
+                </p>
+                <p style="font-size:13px;line-height:1.6;color:#5b5e6b;margin:16px 0 0;">
+                  Если вы не регистрировались в «Скауте», просто проигнорируйте это письмо.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
