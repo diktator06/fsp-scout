@@ -1,0 +1,19 @@
+.page {
+  background: #f6f4fa;
+}
+
+.swatch {
+  overflow: hidden;
+  border-radius: rem(16px);
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px var(--scout-line);
+}
+
+.swatchColor {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: rem(96px);
+  padding: rem(12px);
+  box-shadow: inset 0 -1px 0 var(--scout-line);
+}

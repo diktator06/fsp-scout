@@ -1,0 +1,64 @@
+.shell {
+  background: #f6f4fa;
+}
+
+.header {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(1.4) blur(8px);
+  border-bottom: 1px solid var(--scout-line);
+}
+
+.navbar {
+  background: #ffffff;
+  border-right: 1px solid var(--scout-line);
+}
+
+.navLink {
+  border-radius: var(--mantine-radius-md);
+  font-weight: 600;
+}
+
+.navLink[data-active] {
+  background: #f7f0fb;
+  color: #520978;
+}
+
+.navLink[data-active]::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 25%;
+  bottom: 25%;
+  width: 3px;
+  border-radius: 3px;
+  background: #ff0053;
+}
+
+.navLink {
+  position: relative;
+}
+
+.userButton {
+  padding: rem(4px) rem(8px) rem(4px) rem(4px);
+  border-radius: rem(999px);
+}
+
+.userButton:hover {
+  background: #f1eff6;
+}
+
+.userEmail {
+  max-width: rem(220px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.main {
+  min-height: 100dvh;
+}
+
+.content {
+  max-width: rem(1180px);
+  margin: 0 auto;
+}

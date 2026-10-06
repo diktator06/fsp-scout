@@ -1,0 +1,58 @@
+.shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #1c1d22;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header[data-overlay] {
+  position: absolute;
+  inset: 0 0 auto 0;
+  background: transparent;
+  border-bottom-color: transparent;
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: rem(24px);
+  height: rem(72px);
+}
+
+.navLink {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: rem(14px);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.ghostButton {
+  color: #ffffff;
+}
+
+.ghostButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.main {
+  flex: 1;
+}
+
+.footer {
+  padding: rem(56px) 0 rem(32px);
+  background: #ffffff;
+  border-top: 1px solid var(--scout-line);
+}

@@ -1,0 +1,183 @@
+import {
+  Anchor,
+  AppShell,
+  Avatar,
+  Badge,
+  Burger,
+  Group,
+  Menu,
+  NavLink,
+  ScrollArea,
+  Stack,
+  Text,
+  UnstyledButton,
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import {
+  IconBook2,
+  IconBriefcase,
+  IconBuildingSkyscraper,
+  IconChecklist,
+  IconChevronDown,
+  IconHome,
+  IconLogout,
+  IconMailOpened,
+  IconRadar,
+  IconSettings,
+  IconShieldCheck,
+  IconTargetArrow,
+  IconUserCircle,
+  IconUsersGroup,
+  type Icon,
+} from '@tabler/icons-react';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router';
+import type { UserRole } from '@/api/types';
+import { ROLE_HOME, ROLE_TITLES } from '@/features/auth/roles';
+import { useAuth } from '@/features/auth/useAuth';
+import { ScoutLogo } from '@/shared/ui';
+import classes from './CabinetLayout.module.css';
+
+interface NavItem {
+  to: string;
+  label: string;
+  icon: Icon;
+  soon?: boolean;
+}
+
+const NAVIGATION: Record<UserRole, NavItem[]> = {
+  candidate: [
+    { to: '/c', label: 'Главная', icon: IconHome },
+    { to: '/c/profile', label: 'Профиль', icon: IconUserCircle, soon: true },
+    { to: '/c/assessment', label: 'Категория и тест', icon: IconTargetArrow, soon: true },
+    { to: '/c/invitations', label: 'Приглашения', icon: IconMailOpened, soon: true },
+    { to: '/c/vacancies', label: 'Вакансии', icon: IconBriefcase, soon: true },
+    { to: '/c/settings', label: 'Приватность', icon: IconShieldCheck, soon: true },
+  ],
+  employer: [
+    { to: '/e', label: 'Главная', icon: IconHome },
+    { to: '/e/needs', label: 'Подборки', icon: IconRadar, soon: true },
+    { to: '/e/bank', label: 'Банк кандидатов', icon: IconUsersGroup, soon: true },
+    { to: '/e/invitations', label: 'Приглашения', icon: IconMailOpened, soon: true },
+    { to: '/e/vacancies', label: 'Вакансии', icon: IconBriefcase, soon: true },
+    { to: '/e/company', label: 'Компания', icon: IconBuildingSkyscraper, soon: true },
+  ],
+  methodist: [
+    { to: '/m', label: 'Справочники', icon: IconBook2 },
+    { to: '/m/item-bank', label: 'Банк заданий', icon: IconChecklist, soon: true },
+    { to: '/m/settings', label: 'Настройки оценки', icon: IconSettings, soon: true },
+  ],
+};
+
+function UserMenu() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  if (!user) return null;
+
+  const handleLogout = async () => {
+    // Сначала уходим из кабинета, потом закрываем сессию. В обратном порядке
+    // защита маршрута успела бы отправить человека на вход с ?next= на кабинет,
+    // хотя он сам нажал «Выйти».
+    navigate('/', { replace: true });
+    await logout();
+  };
+
+  return (
+    <Menu position="bottom-end" width={240} shadow="md">
+      <Menu.Target>
+        <UnstyledButton className={classes.userButton} aria-label="Меню пользователя">
+          <Group gap={10} wrap="nowrap">
+            <Avatar color="fsp" radius="xl" size={34}>
+              {user.email.slice(0, 2).toUpperCase()}
+            </Avatar>
+            <Text size="sm" fw={600} visibleFrom="sm" className={classes.userEmail}>
+              {user.email}
+            </Text>
+            <IconChevronDown size={16} />
+          </Group>
+        </UnstyledButton>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Label>{ROLE_TITLES[user.role]}</Menu.Label>
+        <Menu.Item leftSection={<IconLogout size={16} />} color="signal" onClick={handleLogout}>
+          Выйти
+        </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+  );
+}
+
+export function CabinetLayout({ role }: { role: UserRole }) {
+  // Навигация кабинета показывает и разделы следующих этапов с пометкой «скоро»:
+  // структура продукта видна сразу, а неготовые пункты недоступны для клика.
+  const [opened, { toggle, close }] = useDisclosure(false);
+  const location = useLocation();
+
+  return (
+    <AppShell
+      header={{ height: 68 }}
+      navbar={{ width: 284, breakpoint: 'md', collapsed: { mobile: !opened } }}
+      padding={{ base: 'md', md: 'xl' }}
+      className={classes.shell}
+    >
+      <AppShell.Header className={classes.header}>
+        <Group h="100%" px="lg" justify="space-between" wrap="nowrap">
+          <Group gap="md" wrap="nowrap">
+            <Burger opened={opened} onClick={toggle} hiddenFrom="md" size="sm" aria-label="Меню" />
+            <Anchor component={Link} to={ROLE_HOME[role]} underline="never">
+              <ScoutLogo size="sm" />
+            </Anchor>
+            <Badge variant="light" color="fsp" visibleFrom="xs" size="lg" radius="sm">
+              {ROLE_TITLES[role]}
+            </Badge>
+          </Group>
+          <UserMenu />
+        </Group>
+      </AppShell.Header>
+
+      <AppShell.Navbar p="md" className={classes.navbar}>
+        <AppShell.Section grow component={ScrollArea}>
+          <Stack gap={4}>
+            {NAVIGATION[role].map((item) => {
+              const active =
+                item.to === ROLE_HOME[role]
+                  ? location.pathname === item.to
+                  : location.pathname.startsWith(item.to);
+              return (
+                <NavLink
+                  key={item.to}
+                  component={Link}
+                  to={item.to}
+                  label={item.label}
+                  leftSection={<item.icon size={20} stroke={1.7} />}
+                  rightSection={
+                    item.soon ? (
+                      <Badge size="xs" variant="outline" color="gray">
+                        скоро
+                      </Badge>
+                    ) : null
+                  }
+                  active={active}
+                  noWrap
+                  disabled={item.soon}
+                  onClick={close}
+                  className={classes.navLink}
+                />
+              );
+            })}
+          </Stack>
+        </AppShell.Section>
+        <AppShell.Section>
+          <Text size="xs" c="dimmed" px="sm" lh={1.5}>
+            Подбор ИТ-специалистов с верифицированным профилем ФСП
+          </Text>
+        </AppShell.Section>
+      </AppShell.Navbar>
+
+      <AppShell.Main className={classes.main}>
+        <div className={classes.content}>
+          <Outlet />
+        </div>
+      </AppShell.Main>
+    </AppShell>
+  );
+}
