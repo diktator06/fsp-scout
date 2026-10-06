@@ -1,0 +1,74 @@
+[project]
+name = "fsp-scout-backend"
+version = "0.1.0"
+description = "Скаут — API платформы подбора ИТ-специалистов с верифицированным профилем ФСП"
+requires-python = ">=3.13,<3.14"
+license = "MIT"
+dependencies = [
+    "fastapi>=0.142,<0.143",
+    "uvicorn[standard]>=0.54",
+    "sqlalchemy[asyncio]>=2.1,<2.2",
+    "asyncpg>=0.31",
+    "alembic>=1.20",
+    "pydantic[email]>=2.13",
+    "pydantic-settings>=2.15",
+    "argon2-cffi>=25.1",
+    "pyjwt>=2.15",
+    "pgvector>=0.5",
+    "jinja2>=3.1",
+    "pyyaml>=6.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1",
+    "pytest-asyncio>=1.4",
+    "httpx>=0.28",
+    "ruff>=0.14",
+    "mypy>=2.4",
+    "types-pyyaml>=6.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "C4", "RUF", "ASYNC", "PTH", "RET"]
+ignore = [
+    "RUF001",
+    "RUF002",
+    "RUF003",
+    "B008",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/conftest.py" = ["E402"]
+"app/db/base.py" = ["RUF012"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "scripts", "tests"]
+known-third-party = ["alembic"]
+
+[tool.mypy]
+python_version = "3.13"
+files = ["app", "scripts"]
+strict = true
+plugins = ["pydantic.mypy"]
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = ["pgvector.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_default_test_loop_scope = "function"
+filterwarnings = ["error::DeprecationWarning:app.*"]
