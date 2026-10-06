@@ -98,7 +98,7 @@ class ItemFamilyCRUD(CRUDBase[ItemFamily]):
             .where(ItemFamily.status.in_(list(statuses)))
             .group_by(ItemFamily.competency_id)
         )
-        return dict(result.tuples().all())
+        return dict(result.all())
 
     async def register_exposure(self, session: AsyncSession, family_id: int) -> None:
         """Атомарно увеличивает счётчик показов семейства.

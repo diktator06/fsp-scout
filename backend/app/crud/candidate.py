@@ -232,7 +232,7 @@ class CandidateSkillLookupCRUD:
         if not values:
             return {}
         result = await session.execute(select(Skill.slug, Skill.id).where(Skill.slug.in_(values)))
-        return dict(result.tuples().all())
+        return dict(result.all())
 
     async def existing_ids(self, session: AsyncSession, skill_ids: Iterable[int]) -> set[int]:
         """Какие из переданных идентификаторов навыков существуют."""
