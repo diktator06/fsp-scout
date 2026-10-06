@@ -1,0 +1,12 @@
+.preview {
+  align-self: start;
+  padding: rem(24px);
+  border: 1.5px dashed #cfcbee;
+  border-radius: var(--mantine-radius-lg);
+  background: linear-gradient(180deg, #ffffff 0%, #f7f0fb 100%);
+}
+
+.previewKicker {
+  margin-bottom: rem(12px);
+  letter-spacing: 0.08em;
+}

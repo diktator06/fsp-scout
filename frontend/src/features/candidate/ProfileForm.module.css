@@ -1,0 +1,50 @@
+.skillRow {
+  padding: rem(6px) rem(10px);
+  border-radius: var(--mantine-radius-sm);
+  background: var(--scout-surface-muted);
+}
+
+.entry {
+  position: relative;
+  padding: rem(16px);
+  padding-right: rem(52px);
+  border: 1px solid var(--scout-line);
+  border-radius: var(--mantine-radius-md);
+}
+
+.remove {
+  position: absolute;
+  top: rem(12px);
+  right: rem(12px);
+}
+
+.addButton {
+  align-self: flex-start;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: rem(16px);
+}
+
+.actions[data-sticky] {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  justify-content: space-between;
+  padding: rem(12px) rem(16px);
+  border: 1px solid var(--scout-line);
+  border-radius: var(--mantine-radius-lg);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+@media (max-width: 36em) {
+  .actions[data-sticky] {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
