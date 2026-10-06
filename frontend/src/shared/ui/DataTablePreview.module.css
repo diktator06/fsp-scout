@@ -1,0 +1,56 @@
+.root {
+  margin: 0;
+  border: 1px solid var(--scout-line);
+  border-radius: var(--mantine-radius-md);
+  background: var(--scout-surface);
+  overflow: hidden;
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: rem(12px);
+  padding: rem(8px) rem(14px);
+  border-bottom: 1px solid var(--scout-line);
+  background: var(--scout-surface-muted);
+}
+
+.name {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: rem(13px);
+  font-weight: 700;
+  color: #310f53;
+}
+
+.count {
+  font-size: rem(12px);
+  color: var(--mantine-color-dimmed);
+  font-variant-numeric: tabular-nums;
+}
+
+.table {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: rem(13px);
+}
+
+.table th {
+  font-weight: 700;
+  color: #3d3b4a;
+  white-space: nowrap;
+}
+
+.table td {
+  white-space: nowrap;
+}
+
+.table th[data-numeric],
+.table td[data-numeric] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.null {
+  color: #6b6780;
+  font-style: italic;
+}

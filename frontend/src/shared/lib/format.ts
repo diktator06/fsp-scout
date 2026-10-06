@@ -71,3 +71,27 @@ export function formatDateTime(value: string | Date): string {
     minute: '2-digit',
   }).format(date);
 }
+
+export function formatDate(value: string | Date, now: Date = new Date()): string {
+  // Дата без времени: «4 янв.», а если год не текущий — «4 янв. 2027 г.».
+  // Для сроков вроде «откроется через 90 дней» время суток только мешает.
+  const date = typeof value === 'string' ? new Date(value) : value;
+  const sameYear = date.getFullYear() === now.getFullYear();
+  return new Intl.DateTimeFormat('ru-RU', {
+    day: 'numeric',
+    month: 'short',
+    ...(sameYear ? {} : { year: 'numeric' }),
+  }).format(date);
+}
+
+export function joinSentences(...parts: Array<string | null | undefined | false>): string {
+  // Склеивает фразы с сервера и интерфейса: у каждой фразы будет точка в конце,
+  // даже если сервер прислал текст без неё.
+  return parts
+    .filter((part): part is string => Boolean(part && part.trim()))
+    .map((part) => {
+      const text = part.trim();
+      return /[.!?…]$/.test(text) ? text : `${text}.`;
+    })
+    .join(' ');
+}

@@ -1,0 +1,52 @@
+.root {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+}
+
+.root svg {
+  position: absolute;
+  inset: 0;
+}
+
+.track {
+  fill: none;
+  stroke: #ece8f3;
+}
+
+.progress {
+  fill: none;
+  stroke: #520978;
+  stroke-linecap: round;
+  transition:
+    stroke-dashoffset 250ms linear,
+    stroke 200ms ease;
+}
+
+.root[data-tone='warning'] .progress {
+  stroke: #b25e00;
+}
+
+.root[data-tone='critical'] .progress {
+  stroke: #d90047;
+}
+
+.value {
+  position: relative;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: rem(17px);
+  font-weight: 700;
+  color: #1c1d22;
+  font-variant-numeric: tabular-nums;
+}
+
+.root[data-tone='critical'] .value {
+  color: #b3003b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress {
+    transition: none;
+  }
+}

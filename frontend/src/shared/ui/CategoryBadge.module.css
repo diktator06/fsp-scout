@@ -30,6 +30,37 @@
   color: #ffffff;
 }
 
+.badge[data-unconfirmed] {
+  background: #ffffff;
+  box-shadow: none;
+  outline: 1.5px dashed #a09adb;
+  outline-offset: -1.5px;
+}
+
+.badge[data-unconfirmed][data-tone='dark'] {
+  background: transparent;
+  outline-color: rgba(255, 255, 255, 0.45);
+}
+
+.badge[data-unconfirmed] .bar[data-filled] {
+  background: #8a83d1;
+}
+
+.pending {
+  margin-left: rem(2px);
+  padding: rem(1px) rem(7px);
+  border-radius: rem(999px);
+  background: #e7e5f6;
+  color: #463f87;
+  font-size: 0.78em;
+  font-weight: 700;
+}
+
+.badge[data-tone='dark'] .pending {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
 .specialization {
   overflow: hidden;
   text-overflow: ellipsis;

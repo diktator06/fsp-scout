@@ -7,6 +7,7 @@ interface CategoryBadgeProps {
   gradeLabel?: string;
   size?: 'sm' | 'md';
   tone?: 'light' | 'dark';
+  unconfirmed?: boolean;
 }
 
 export function GradeMeter({ grade, tone = 'light' }: { grade: string; tone?: 'light' | 'dark' }) {
@@ -28,14 +29,18 @@ export function CategoryBadge({
   gradeLabel,
   size = 'md',
   tone = 'light',
+  unconfirmed = false,
 }: CategoryBadgeProps) {
+  // Неподтверждённый грейд (заявлен в опросе, тест не пройден) рисуется пунктиром
+  // и с пометкой: работодатель видит его, но не путает с подтверждённым.
   const label = gradeLabel ?? (isGradeCode(grade) ? GRADE_LABELS[grade] : grade);
   return (
     <span
       className={classes.badge}
       data-size={size}
       data-tone={tone}
-      aria-label={`Категория: ${specialization}, грейд ${label}`}
+      data-unconfirmed={unconfirmed || undefined}
+      aria-label={`Категория: ${specialization}, грейд ${label}${unconfirmed ? ', не подтверждён тестом' : ''}`}
     >
       <GradeMeter grade={grade} tone={tone} />
       <span className={classes.specialization}>{specialization}</span>
@@ -43,6 +48,11 @@ export function CategoryBadge({
         ·
       </span>
       <span className={classes.grade}>{label}</span>
+      {unconfirmed && (
+        <span className={classes.pending} aria-hidden="true">
+          не подтверждён
+        </span>
+      )}
     </span>
   );
 }

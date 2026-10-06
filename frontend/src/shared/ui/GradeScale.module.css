@@ -1,0 +1,134 @@
+.root {
+  width: 100%;
+  padding-top: rem(28px);
+}
+
+.track {
+  position: relative;
+  height: rem(44px);
+  border-radius: rem(12px);
+  background: repeating-linear-gradient(
+    -45deg,
+    #f1eff6,
+    #f1eff6 rem(6px),
+    #ebe8f2 rem(6px),
+    #ebe8f2 rem(12px)
+  );
+}
+
+.zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 2px solid #ffffff;
+  overflow: hidden;
+}
+
+.zone[data-rank='1'] {
+  background: #e7e5f6;
+}
+
+.zone[data-rank='2'] {
+  background: #cfcbee;
+}
+
+.zone[data-rank='3'] {
+  background: #b7b2e5;
+}
+
+.zone[data-rank='4'] {
+  background: #a09adb;
+  border-top-right-radius: rem(12px);
+  border-bottom-right-radius: rem(12px);
+}
+
+.zoneLabel {
+  font-size: rem(12px);
+  font-weight: 700;
+  color: #310f53;
+  white-space: nowrap;
+}
+
+.shortLabel {
+  display: none;
+}
+
+@media (max-width: 36em) {
+  .fullLabel {
+    display: none;
+  }
+
+  .shortLabel {
+    display: inline;
+  }
+}
+
+.band {
+  position: absolute;
+  top: rem(-6px);
+  bottom: rem(-6px);
+  border-radius: rem(8px);
+  background: rgba(255, 0, 83, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(217, 0, 71, 0.45);
+  pointer-events: none;
+}
+
+.target {
+  position: absolute;
+  top: rem(-10px);
+  bottom: rem(-10px);
+  width: 0;
+  border-left: 2px dashed #310f53;
+}
+
+.targetLabel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: rem(4px);
+  transform: translateX(-50%);
+  font-size: rem(11px);
+  font-weight: 600;
+  color: #3d3b4a;
+  white-space: nowrap;
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  width: rem(18px);
+  height: rem(18px);
+  margin-left: rem(-9px);
+  margin-top: rem(-9px);
+  border-radius: 50%;
+  background: #ff0053;
+  box-shadow:
+    0 0 0 3px #ffffff,
+    0 4px 12px rgba(217, 0, 71, 0.45);
+}
+
+.markerLabel {
+  position: absolute;
+  bottom: calc(100% + rem(10px));
+  left: 50%;
+  transform: translateX(-50%);
+  padding: rem(2px) rem(8px);
+  border-radius: rem(999px);
+  background: #1c1d22;
+  color: #ffffff;
+  font-size: rem(11px);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: rem(26px);
+  font-size: rem(12px);
+  color: var(--mantine-color-dimmed);
+  font-variant-numeric: tabular-nums;
+}

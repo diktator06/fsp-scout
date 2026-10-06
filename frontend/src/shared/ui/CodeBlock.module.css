@@ -1,0 +1,57 @@
+.root {
+  position: relative;
+  margin: 0;
+  border-radius: var(--mantine-radius-md);
+  background: #1f1b2b;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.caption {
+  position: absolute;
+  top: rem(8px);
+  right: rem(12px);
+  font-size: rem(11px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a39fb5;
+  pointer-events: none;
+}
+
+.pre {
+  margin: 0;
+  padding: rem(16px) rem(18px);
+  overflow-x: auto;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: rem(14px);
+  line-height: 1.65;
+  tab-size: 4;
+}
+
+.pre:focus-visible {
+  outline: 2px solid #ff85ac;
+  outline-offset: -2px;
+}
+
+.line {
+  display: flex;
+  min-height: 1.65em;
+  white-space: pre;
+}
+
+.number {
+  flex: none;
+  width: rem(28px);
+  margin-right: rem(14px);
+  color: #8a85a0;
+  text-align: right;
+  user-select: none;
+}
+
+@media (max-width: 36em) {
+  .pre {
+    padding: rem(14px);
+    font-size: rem(13px);
+  }
+}
