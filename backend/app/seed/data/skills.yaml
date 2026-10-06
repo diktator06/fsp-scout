@@ -1,0 +1,175 @@
+# Справочник навыков. specializations — насколько навык типичен для специализации (0..1):
+# из этих весов собираются варианты стека в опросе и веса компетенций в blueprint теста.
+# Алиасы нужны для нормализации навыков из резюме и описаний вакансий.
+
+# --- Языки программирования ---------------------------------------------------
+- {slug: python, name: Python, kind: language, aliases: [питон, python3, py], specializations: {backend: 0.9, data_analytics: 0.7, ml: 0.95, qa: 0.5, devops: 0.5}}
+- {slug: java, name: Java, kind: language, aliases: [джава, java 17, java 21], specializations: {backend: 0.85, mobile: 0.4, qa: 0.4}}
+- {slug: kotlin, name: Kotlin, kind: language, aliases: [котлин], specializations: {mobile: 0.9, backend: 0.5}}
+- {slug: go, name: Go, kind: language, aliases: [golang, гоу], specializations: {backend: 0.7, devops: 0.4}}
+- {slug: csharp, name: "C#", kind: language, aliases: [си шарп, c sharp, csharp], specializations: {backend: 0.6}}
+- {slug: cpp, name: "C++", kind: language, aliases: [плюсы, си плюс плюс, cpp], specializations: {backend: 0.35, ml: 0.3}}
+- {slug: c, name: C, kind: language, aliases: [си], specializations: {backend: 0.2}}
+- {slug: javascript, name: JavaScript, kind: language, aliases: [js, ecmascript, es6, джаваскрипт], specializations: {frontend: 0.95, backend: 0.4, qa: 0.4, mobile: 0.3}}
+- {slug: typescript, name: TypeScript, kind: language, aliases: [ts, тайпскрипт], specializations: {frontend: 0.9, backend: 0.4, qa: 0.3, mobile: 0.3}}
+- {slug: php, name: PHP, kind: language, aliases: [пхп], specializations: {backend: 0.5}}
+- {slug: ruby, name: Ruby, kind: language, aliases: [руби], specializations: {backend: 0.25}}
+- {slug: rust, name: Rust, kind: language, aliases: [раст], specializations: {backend: 0.3}}
+- {slug: swift, name: Swift, kind: language, aliases: [свифт], specializations: {mobile: 0.9}}
+- {slug: dart, name: Dart, kind: language, aliases: [дарт], specializations: {mobile: 0.5}}
+- {slug: scala, name: Scala, kind: language, aliases: [скала], specializations: {backend: 0.2, data_analytics: 0.2, ml: 0.2}}
+- {slug: sql, name: SQL, kind: language, aliases: [эскюэль, t-sql, pl/sql, plpgsql], specializations: {backend: 0.8, data_analytics: 0.95, ml: 0.7, qa: 0.5}}
+- {slug: bash, name: Bash, kind: language, aliases: [shell, sh, баш, shell-скрипты], specializations: {devops: 0.85, backend: 0.4, qa: 0.3}}
+- {slug: r, name: R, kind: language, aliases: [r language], specializations: {data_analytics: 0.4, ml: 0.3}}
+
+# --- Backend-фреймворки и подходы --------------------------------------------
+- {slug: django, name: Django, kind: framework, aliases: [джанго, drf, django rest framework], specializations: {backend: 0.7}}
+- {slug: fastapi, name: FastAPI, kind: framework, aliases: [фастапи, fast api], specializations: {backend: 0.65, ml: 0.3}}
+- {slug: flask, name: Flask, kind: framework, aliases: [фласк], specializations: {backend: 0.4, ml: 0.2}}
+- {slug: spring, name: Spring Boot, kind: framework, aliases: [spring, спринг, spring framework], specializations: {backend: 0.75}}
+- {slug: dotnet, name: ".NET", kind: framework, aliases: [asp.net, asp.net core, дотнет, net core], specializations: {backend: 0.55}}
+- {slug: nodejs, name: Node.js, kind: framework, aliases: [node, нода, nodejs], specializations: {backend: 0.55, frontend: 0.4}}
+- {slug: express, name: Express, kind: framework, aliases: [express.js, expressjs], specializations: {backend: 0.35}}
+- {slug: nestjs, name: NestJS, kind: framework, aliases: [nest, nest.js], specializations: {backend: 0.4}}
+- {slug: laravel, name: Laravel, kind: framework, aliases: [ларавель], specializations: {backend: 0.35}}
+- {slug: symfony, name: Symfony, kind: framework, aliases: [симфони], specializations: {backend: 0.25}}
+- {slug: rails, name: Ruby on Rails, kind: framework, aliases: [rails, ror], specializations: {backend: 0.2}}
+- {slug: gin, name: Gin, kind: framework, aliases: [gin-gonic], specializations: {backend: 0.25}}
+- {slug: sqlalchemy, name: SQLAlchemy, kind: framework, aliases: [sqla], specializations: {backend: 0.45}}
+- {slug: hibernate, name: Hibernate, kind: framework, aliases: [jpa, hibernate orm], specializations: {backend: 0.4}}
+- {slug: celery, name: Celery, kind: framework, aliases: [селери], specializations: {backend: 0.35}}
+- {slug: grpc, name: gRPC, kind: framework, aliases: [protobuf, protocol buffers], specializations: {backend: 0.4}}
+- {slug: graphql, name: GraphQL, kind: concept, aliases: [графкуэль, apollo], specializations: {backend: 0.35, frontend: 0.35}}
+- {slug: rest-api, name: REST API, kind: concept, aliases: [rest, restful, http api, openapi, swagger], specializations: {backend: 0.9, frontend: 0.5, qa: 0.6, mobile: 0.5}}
+- {slug: microservices, name: Микросервисная архитектура, kind: concept, aliases: [microservices, микросервисы], specializations: {backend: 0.6, devops: 0.5}}
+- {slug: asyncio, name: Асинхронное программирование, kind: concept, aliases: [asyncio, async/await, асинхронность], specializations: {backend: 0.6, frontend: 0.4}}
+- {slug: concurrency, name: Многопоточность, kind: concept, aliases: [multithreading, concurrency, потоки, конкурентность], specializations: {backend: 0.55, mobile: 0.4}}
+
+# --- Frontend -------------------------------------------------------------------
+- {slug: react, name: React, kind: framework, aliases: [реакт, react.js, reactjs, react hooks], specializations: {frontend: 0.9, mobile: 0.2}}
+- {slug: vue, name: Vue.js, kind: framework, aliases: [vue, вью, vue 3, vuejs], specializations: {frontend: 0.6}}
+- {slug: angular, name: Angular, kind: framework, aliases: [ангуляр], specializations: {frontend: 0.45}}
+- {slug: svelte, name: Svelte, kind: framework, aliases: [sveltekit], specializations: {frontend: 0.2}}
+- {slug: nextjs, name: Next.js, kind: framework, aliases: [next, nextjs, некст], specializations: {frontend: 0.55}}
+- {slug: nuxt, name: Nuxt, kind: framework, aliases: [nuxt.js, nuxtjs], specializations: {frontend: 0.3}}
+- {slug: redux, name: Redux, kind: framework, aliases: [redux toolkit, rtk], specializations: {frontend: 0.5}}
+- {slug: html, name: HTML, kind: language, aliases: [html5, вёрстка, верстка], specializations: {frontend: 0.9}}
+- {slug: css, name: CSS, kind: language, aliases: [css3, flexbox, grid], specializations: {frontend: 0.9}}
+- {slug: sass, name: Sass, kind: tool, aliases: [scss, less], specializations: {frontend: 0.5}}
+- {slug: tailwind, name: Tailwind CSS, kind: framework, aliases: [tailwind, tailwindcss], specializations: {frontend: 0.4}}
+- {slug: webpack, name: Webpack, kind: tool, aliases: [вебпак], specializations: {frontend: 0.5}}
+- {slug: vite, name: Vite, kind: tool, aliases: [вит], specializations: {frontend: 0.45}}
+- {slug: jest, name: Jest, kind: tool, aliases: [vitest, react testing library], specializations: {frontend: 0.5, qa: 0.4}}
+- {slug: storybook, name: Storybook, kind: tool, aliases: [сторибук], specializations: {frontend: 0.3}}
+- {slug: web-performance, name: Производительность веб-приложений, kind: concept, aliases: [web vitals, lighthouse, оптимизация фронтенда], specializations: {frontend: 0.5}}
+- {slug: accessibility, name: Доступность интерфейсов, kind: concept, aliases: [a11y, wcag, accessibility], specializations: {frontend: 0.35}}
+- {slug: figma, name: Figma, kind: tool, aliases: [фигма], specializations: {frontend: 0.4, mobile: 0.3}}
+
+# --- Mobile ---------------------------------------------------------------------
+- {slug: android-sdk, name: Android SDK, kind: framework, aliases: [android, андроид], specializations: {mobile: 0.85}}
+- {slug: jetpack-compose, name: Jetpack Compose, kind: framework, aliases: [compose], specializations: {mobile: 0.6}}
+- {slug: ios-sdk, name: iOS SDK, kind: framework, aliases: [uikit, ios, айос], specializations: {mobile: 0.85}}
+- {slug: swiftui, name: SwiftUI, kind: framework, aliases: [swift ui], specializations: {mobile: 0.6}}
+- {slug: flutter, name: Flutter, kind: framework, aliases: [флаттер], specializations: {mobile: 0.55}}
+- {slug: react-native, name: React Native, kind: framework, aliases: [rn, реакт натив], specializations: {mobile: 0.5, frontend: 0.2}}
+- {slug: kmp, name: Kotlin Multiplatform, kind: framework, aliases: [kmm, kotlin multiplatform mobile], specializations: {mobile: 0.35}}
+- {slug: coroutines, name: Kotlin Coroutines, kind: framework, aliases: [корутины, flow], specializations: {mobile: 0.55, backend: 0.2}}
+
+# --- Базы данных и брокеры ---------------------------------------------------------
+- {slug: postgresql, name: PostgreSQL, kind: database, aliases: [postgres, постгрес, psql, pg], specializations: {backend: 0.85, data_analytics: 0.6, devops: 0.4, ml: 0.4}}
+- {slug: mysql, name: MySQL, kind: database, aliases: [мускул, mariadb], specializations: {backend: 0.5, data_analytics: 0.3}}
+- {slug: mongodb, name: MongoDB, kind: database, aliases: [mongo, монга], specializations: {backend: 0.4}}
+- {slug: redis, name: Redis, kind: database, aliases: [редис], specializations: {backend: 0.65, devops: 0.4}}
+- {slug: clickhouse, name: ClickHouse, kind: database, aliases: [кликхаус, ch], specializations: {data_analytics: 0.6, backend: 0.3, ml: 0.3}}
+- {slug: elasticsearch, name: Elasticsearch, kind: database, aliases: [elastic, эластик, opensearch], specializations: {backend: 0.35, devops: 0.3}}
+- {slug: oracle, name: Oracle Database, kind: database, aliases: [oracle, оракл], specializations: {backend: 0.25, data_analytics: 0.2}}
+- {slug: mssql, name: Microsoft SQL Server, kind: database, aliases: [ms sql, mssql, sql server], specializations: {backend: 0.3, data_analytics: 0.3}}
+- {slug: sqlite, name: SQLite, kind: database, aliases: [sqlite3], specializations: {mobile: 0.4, backend: 0.2}}
+- {slug: cassandra, name: Cassandra, kind: database, aliases: [кассандра, scylladb], specializations: {backend: 0.15}}
+- {slug: kafka, name: Apache Kafka, kind: tool, aliases: [kafka, кафка], specializations: {backend: 0.55, devops: 0.35, data_analytics: 0.2}}
+- {slug: rabbitmq, name: RabbitMQ, kind: tool, aliases: [rabbit, кролик, amqp], specializations: {backend: 0.45, devops: 0.3}}
+
+# --- DevOps и инфраструктура -------------------------------------------------------
+- {slug: docker, name: Docker, kind: tool, aliases: [докер, docker compose, контейнеризация], specializations: {devops: 0.95, backend: 0.7, qa: 0.4, ml: 0.4, frontend: 0.3}}
+- {slug: kubernetes, name: Kubernetes, kind: tool, aliases: [k8s, кубернетес, кубер], specializations: {devops: 0.9, backend: 0.4}}
+- {slug: helm, name: Helm, kind: tool, aliases: [хелм], specializations: {devops: 0.6}}
+- {slug: terraform, name: Terraform, kind: tool, aliases: [терраформ, opentofu], specializations: {devops: 0.65}}
+- {slug: ansible, name: Ansible, kind: tool, aliases: [ансибл], specializations: {devops: 0.6}}
+- {slug: linux, name: Linux, kind: tool, aliases: [линукс, ubuntu, debian, centos, unix], specializations: {devops: 0.95, backend: 0.6, qa: 0.3, ml: 0.3}}
+- {slug: nginx, name: Nginx, kind: tool, aliases: [энджинкс], specializations: {devops: 0.7, backend: 0.4}}
+- {slug: ci-cd, name: CI/CD, kind: concept, aliases: [cicd, ci, cd, непрерывная интеграция], specializations: {devops: 0.9, backend: 0.5, qa: 0.5, frontend: 0.3}}
+- {slug: gitlab-ci, name: GitLab CI, kind: tool, aliases: [gitlab ci/cd, gitlab], specializations: {devops: 0.7, backend: 0.3, qa: 0.3}}
+- {slug: github-actions, name: GitHub Actions, kind: tool, aliases: [gh actions], specializations: {devops: 0.4, backend: 0.2, frontend: 0.2}}
+- {slug: jenkins, name: Jenkins, kind: tool, aliases: [дженкинс], specializations: {devops: 0.5, qa: 0.3}}
+- {slug: argocd, name: Argo CD, kind: tool, aliases: [argocd, gitops], specializations: {devops: 0.4}}
+- {slug: prometheus, name: Prometheus, kind: tool, aliases: [прометеус, alertmanager], specializations: {devops: 0.7, backend: 0.2}}
+- {slug: grafana, name: Grafana, kind: tool, aliases: [графана], specializations: {devops: 0.65, backend: 0.2, data_analytics: 0.2}}
+- {slug: elk, name: ELK Stack, kind: tool, aliases: [elk, kibana, logstash, efk], specializations: {devops: 0.5}}
+- {slug: aws, name: AWS, kind: tool, aliases: [amazon web services, ec2, s3], specializations: {devops: 0.4, backend: 0.2}}
+- {slug: yandex-cloud, name: Yandex Cloud, kind: tool, aliases: [яндекс облако, yc], specializations: {devops: 0.45, backend: 0.2}}
+- {slug: networking, name: Сети и протоколы, kind: concept, aliases: [tcp/ip, dns, сети, networking], specializations: {devops: 0.75, backend: 0.4}}
+- {slug: http, name: HTTP, kind: concept, aliases: [https, http/2, протокол http], specializations: {backend: 0.8, frontend: 0.6, qa: 0.5, devops: 0.5}}
+- {slug: app-security, name: Безопасность приложений, kind: concept, aliases: [owasp, appsec, безопасность], specializations: {backend: 0.45, devops: 0.4, frontend: 0.3}}
+
+# --- QA ---------------------------------------------------------------------------
+- {slug: test-design, name: Тест-дизайн, kind: concept, aliases: [test design, классы эквивалентности, граничные значения], specializations: {qa: 0.95}}
+- {slug: manual-testing, name: Ручное тестирование, kind: concept, aliases: [manual testing, функциональное тестирование], specializations: {qa: 0.8}}
+- {slug: api-testing, name: Тестирование API, kind: concept, aliases: [api testing, тестирование rest], specializations: {qa: 0.75, backend: 0.3}}
+- {slug: load-testing, name: Нагрузочное тестирование, kind: concept, aliases: [load testing, performance testing], specializations: {qa: 0.4, devops: 0.3}}
+- {slug: selenium, name: Selenium, kind: tool, aliases: [селениум, webdriver], specializations: {qa: 0.6}}
+- {slug: playwright, name: Playwright, kind: tool, aliases: [плейрайт], specializations: {qa: 0.55, frontend: 0.3}}
+- {slug: cypress, name: Cypress, kind: tool, aliases: [сайпресс], specializations: {qa: 0.4, frontend: 0.3}}
+- {slug: pytest, name: pytest, kind: tool, aliases: [пайтест, py.test], specializations: {qa: 0.6, backend: 0.5}}
+- {slug: junit, name: JUnit, kind: tool, aliases: [junit5, testng], specializations: {qa: 0.45, backend: 0.4}}
+- {slug: postman, name: Postman, kind: tool, aliases: [постман, insomnia], specializations: {qa: 0.65, backend: 0.3}}
+- {slug: jmeter, name: JMeter, kind: tool, aliases: [джиметр, gatling, k6], specializations: {qa: 0.35}}
+- {slug: allure, name: Allure, kind: tool, aliases: [allure report], specializations: {qa: 0.4}}
+- {slug: appium, name: Appium, kind: tool, aliases: [аппиум], specializations: {qa: 0.3, mobile: 0.2}}
+- {slug: test-documentation, name: Тестовая документация, kind: concept, aliases: [чек-листы, тест-кейсы, баг-репорты], specializations: {qa: 0.8}}
+
+# --- Данные и машинное обучение -----------------------------------------------------
+- {slug: pandas, name: pandas, kind: framework, aliases: [пандас], specializations: {data_analytics: 0.85, ml: 0.85}}
+- {slug: numpy, name: NumPy, kind: framework, aliases: [нампай], specializations: {ml: 0.8, data_analytics: 0.5}}
+- {slug: scikit-learn, name: scikit-learn, kind: framework, aliases: [sklearn, склерн], specializations: {ml: 0.85, data_analytics: 0.3}}
+- {slug: pytorch, name: PyTorch, kind: framework, aliases: [торч, torch], specializations: {ml: 0.75}}
+- {slug: tensorflow, name: TensorFlow, kind: framework, aliases: [tf, keras], specializations: {ml: 0.4}}
+- {slug: catboost, name: CatBoost, kind: framework, aliases: [xgboost, lightgbm, градиентный бустинг], specializations: {ml: 0.6}}
+- {slug: spark, name: Apache Spark, kind: framework, aliases: [spark, pyspark, спарк], specializations: {data_analytics: 0.35, ml: 0.4}}
+- {slug: airflow, name: Apache Airflow, kind: tool, aliases: [airflow, эйрфлоу], specializations: {data_analytics: 0.4, ml: 0.4}}
+- {slug: dbt, name: dbt, kind: tool, aliases: [data build tool], specializations: {data_analytics: 0.35}}
+- {slug: jupyter, name: Jupyter, kind: tool, aliases: [jupyter notebook, юпитер, ноутбуки], specializations: {data_analytics: 0.6, ml: 0.7}}
+- {slug: excel, name: Excel, kind: tool, aliases: [эксель, google sheets, гугл таблицы], specializations: {data_analytics: 0.6}}
+- {slug: tableau, name: Tableau, kind: tool, aliases: [табло], specializations: {data_analytics: 0.4}}
+- {slug: power-bi, name: Power BI, kind: tool, aliases: [powerbi, пауэр би], specializations: {data_analytics: 0.45}}
+- {slug: datalens, name: Yandex DataLens, kind: tool, aliases: [datalens, даталенс], specializations: {data_analytics: 0.45}}
+- {slug: superset, name: Apache Superset, kind: tool, aliases: [superset, суперсет], specializations: {data_analytics: 0.35}}
+- {slug: statistics, name: Статистика, kind: concept, aliases: [statistics, матстат, теория вероятностей], specializations: {data_analytics: 0.9, ml: 0.85}}
+- {slug: ab-testing, name: A/B-тестирование, kind: concept, aliases: [ab testing, a/b тесты, сплит-тесты], specializations: {data_analytics: 0.75, ml: 0.4}}
+- {slug: product-metrics, name: Продуктовые метрики, kind: concept, aliases: [retention, ltv, dau, когортный анализ, юнит-экономика], specializations: {data_analytics: 0.7}}
+- {slug: data-visualization, name: Визуализация данных, kind: concept, aliases: [data visualization, дашборды, matplotlib, seaborn, plotly], specializations: {data_analytics: 0.75, ml: 0.4}}
+- {slug: machine-learning, name: Машинное обучение, kind: concept, aliases: [ml, machine learning, мо], specializations: {ml: 0.95, data_analytics: 0.3}}
+- {slug: deep-learning, name: Глубокое обучение, kind: concept, aliases: [deep learning, нейросети, dl], specializations: {ml: 0.65}}
+- {slug: nlp, name: NLP, kind: concept, aliases: [обработка естественного языка, natural language processing], specializations: {ml: 0.5}}
+- {slug: computer-vision, name: Компьютерное зрение, kind: concept, aliases: [computer vision, cv, opencv], specializations: {ml: 0.45}}
+- {slug: llm, name: LLM и генеративные модели, kind: concept, aliases: [llm, gpt, rag, большие языковые модели], specializations: {ml: 0.5, backend: 0.2}}
+- {slug: mlops, name: MLOps, kind: concept, aliases: [mlflow, вывод моделей в прод, model serving], specializations: {ml: 0.5, devops: 0.3}}
+
+# --- Общая инженерия ---------------------------------------------------------------
+- {slug: git, name: Git, kind: tool, aliases: [гит, github, version control], specializations: {backend: 0.85, frontend: 0.85, mobile: 0.8, qa: 0.6, devops: 0.85, data_analytics: 0.4, ml: 0.6}}
+- {slug: algorithms, name: Алгоритмы и структуры данных, kind: concept, aliases: [алгоритмы, структуры данных, algorithms, data structures, алгоритмическое программирование], specializations: {backend: 0.75, ml: 0.6, frontend: 0.4, mobile: 0.4}}
+- {slug: oop, name: ООП, kind: concept, aliases: [oop, объектно-ориентированное программирование], specializations: {backend: 0.7, mobile: 0.6, frontend: 0.4, qa: 0.3}}
+- {slug: design-patterns, name: Паттерны проектирования, kind: concept, aliases: [design patterns, gof, solid], specializations: {backend: 0.6, mobile: 0.5, frontend: 0.4}}
+- {slug: system-design, name: Проектирование систем, kind: concept, aliases: [system design, архитектура систем, highload], specializations: {backend: 0.6, devops: 0.4}}
+- {slug: ddd, name: Domain-Driven Design, kind: concept, aliases: [ddd, предметно-ориентированное проектирование], specializations: {backend: 0.3}}
+- {slug: tdd, name: Разработка через тестирование, kind: concept, aliases: [tdd, test-driven development, unit-тесты], specializations: {backend: 0.4, frontend: 0.3, qa: 0.3}}
+- {slug: agile, name: Agile и Scrum, kind: concept, aliases: [scrum, kanban, agile, скрам], specializations: {backend: 0.3, frontend: 0.3, qa: 0.4, mobile: 0.3, data_analytics: 0.3}}
+
+# --- Софт-скиллы ------------------------------------------------------------------
+- {slug: teamwork, name: Командная работа, kind: soft, aliases: [работа в команде, teamwork], specializations: {}}
+- {slug: communication, name: Коммуникация, kind: soft, aliases: [коммуникабельность, communication skills], specializations: {}}
+- {slug: mentoring, name: Менторство, kind: soft, aliases: [наставничество, mentoring], specializations: {}}
+- {slug: leadership, name: Лидерство, kind: soft, aliases: [тимлидство, leadership, управление командой], specializations: {}}
+- {slug: problem-solving, name: Решение нестандартных задач, kind: soft, aliases: [problem solving, аналитическое мышление], specializations: {}}
+- {slug: time-management, name: Самоорганизация, kind: soft, aliases: [тайм-менеджмент, time management], specializations: {}}
+- {slug: english, name: Английский язык, kind: soft, aliases: [english, английский, upper-intermediate], specializations: {}}
+- {slug: presentation, name: Публичные выступления, kind: soft, aliases: [презентации, public speaking], specializations: {}}

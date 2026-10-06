@@ -1,0 +1,12 @@
+- {code: fintech, name: Финтех и банки, sort_order: 10}
+- {code: ecommerce, name: E-commerce и ритейл, sort_order: 20}
+- {code: govtech, name: Госсектор и GovTech, sort_order: 30}
+- {code: telecom, name: Телеком, sort_order: 40}
+- {code: it_services, name: ИТ-услуги и заказная разработка, sort_order: 50}
+- {code: cybersecurity, name: Информационная безопасность, sort_order: 60}
+- {code: gamedev, name: Игры, sort_order: 70}
+- {code: edtech, name: Образование и EdTech, sort_order: 80}
+- {code: healthtech, name: Медицина и HealthTech, sort_order: 90}
+- {code: industry, name: Промышленность и энергетика, sort_order: 100}
+- {code: logistics, name: Логистика и транспорт, sort_order: 110}
+- {code: media, name: Медиа и развлечения, sort_order: 120}

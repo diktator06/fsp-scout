@@ -1,0 +1,25 @@
+# Грейды и начальные пороги по шкале способностей IRT (θ). Пороги уточняются калибровкой (см. ARCHITECTURE_AND_PLAN.md §2.2).
+- code: intern
+  name: Intern
+  rank: 1
+  experience_hint: Без коммерческого опыта
+  default_theta_cut: -1.5
+  description: Знает основы языка и инструментов, решает учебные задачи под руководством наставника.
+- code: junior
+  name: Junior
+  rank: 2
+  experience_hint: До 1–2 лет
+  default_theta_cut: -0.5
+  description: Самостоятельно решает типовые задачи, сложные решения согласует с командой.
+- code: middle
+  name: Middle
+  rank: 3
+  experience_hint: 2–4 года
+  default_theta_cut: 0.4
+  description: Самостоятельно ведёт задачи целиком, понимает компромиссы и последствия решений.
+- code: senior
+  name: Senior
+  rank: 4
+  experience_hint: Больше 4 лет
+  default_theta_cut: 1.2
+  description: Проектирует решения, отвечает за качество и надёжность, развивает команду.

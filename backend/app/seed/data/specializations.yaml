@@ -1,0 +1,44 @@
+# Специализации MVP. Код неизменяем: на него ссылаются категории, банк заданий и blueprint тестов.
+# direction_* — IT-направление, которое ТЗ называет «отраслью» (уточнение менторов от 07.10.2026).
+- code: backend
+  direction_code: development
+  direction_name: Разработка
+  name: Backend-разработка
+  sort_order: 10
+  description: Серверная логика, API, базы данных, интеграции и производительность сервисов.
+- code: frontend
+  direction_code: development
+  direction_name: Разработка
+  name: Frontend-разработка
+  sort_order: 20
+  description: Клиентская часть веб-приложений, интерфейсы, производительность и доступность в браузере.
+- code: mobile
+  direction_code: development
+  direction_name: Разработка
+  name: Mobile-разработка
+  sort_order: 30
+  description: Нативные и кроссплатформенные приложения для iOS и Android.
+- code: qa
+  direction_code: quality
+  direction_name: Качество
+  name: QA и тестирование
+  sort_order: 40
+  description: Ручное и автоматизированное тестирование, тест-дизайн, контроль качества релизов.
+- code: devops
+  direction_code: infrastructure
+  direction_name: Инфраструктура
+  name: DevOps и SRE
+  sort_order: 50
+  description: Инфраструктура, CI/CD, контейнеризация, наблюдаемость и надёжность сервисов.
+- code: data_analytics
+  direction_code: data
+  direction_name: Данные и ML
+  name: Аналитика данных
+  sort_order: 60
+  description: SQL, статистика, продуктовые метрики, A/B-тесты и визуализация данных.
+- code: ml
+  direction_code: data
+  direction_name: Данные и ML
+  name: Data Science и ML
+  sort_order: 70
+  description: Машинное обучение, подготовка данных, обучение и вывод моделей в продакшен.

@@ -24,8 +24,8 @@ dist/
 coverage/
 
 # Данные, загрузки и собранная документация
-data/
-uploads/
+/data/
+/uploads/
 docs/build/
 
 # Системные файлы и IDE

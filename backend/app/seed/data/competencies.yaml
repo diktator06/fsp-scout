@@ -1,0 +1,130 @@
+# Компетенции — оси содержания теста. Они общие для специализаций: SQL проверяется одними
+# и теми же семействами и у бэкендеров, и у аналитиков.
+#   gate_skills     — без хотя бы одного из этих навыков в опросе компетенция в тест не входит,
+#                     а её вес делится между остальными (Java-разработчик не получит заданий на Python);
+#   verifies_skills — навыки, которые отмечаются подтверждёнными при уверенном результате по компетенции.
+competencies:
+  - code: python_core
+    name: "Python: язык и стандартная библиотека"
+    description: Семантика языка, коллекции, замыкания, исключения, наследование.
+    gate_skills: [python]
+    verifies_skills: [python]
+  - code: sql
+    name: SQL и реляционные базы данных
+    description: Фильтрация, группировка, соединения, NULL, оконные функции.
+    verifies_skills: [sql, postgresql]
+  - code: algorithms
+    name: Алгоритмы и структуры данных
+    description: Асимптотика, стеки, поиск, графы, динамическое программирование.
+    verifies_skills: [algorithms]
+  - code: http_api
+    name: HTTP и проектирование API
+    description: Семантика методов и кодов ответа, кеширование, идемпотентность.
+    verifies_skills: [http, rest-api]
+  - code: concurrency
+    name: Конкурентность и асинхронность
+    description: Пулы потоков, asyncio, взаимные блокировки.
+    verifies_skills: [concurrency, asyncio]
+  - code: architecture
+    name: Архитектура и производительность
+    description: Кеширование, индексы, бюджет доступности.
+    verifies_skills: [system-design]
+  - code: tooling
+    name: Инструменты разработки
+    description: Docker, управление зависимостями.
+    verifies_skills: [docker]
+  - code: js_core
+    name: "JavaScript: язык и event loop"
+    description: Приведение типов, замыкания, микро- и макрозадачи, async/await.
+    gate_skills: [javascript, typescript]
+    verifies_skills: [javascript]
+  - code: browser_dom
+    name: Браузер и DOM
+    description: События, хранилища браузера.
+    verifies_skills: [html]
+  - code: css_layout
+    name: CSS и вёрстка
+    description: Box model, специфичность, flexbox, отступы.
+    verifies_skills: [css]
+  - code: react
+    name: React
+    description: Состояние, эффекты, мемоизация.
+    gate_skills: [react, nextjs, react-native]
+    verifies_skills: [react]
+  - code: statistics
+    name: Статистика и теория вероятностей
+    description: Описательная статистика, условная вероятность, проверка гипотез.
+    verifies_skills: [statistics, ab-testing]
+  - code: product_metrics
+    name: Продуктовые метрики и эксперименты
+    description: Воронки, retention, монетизация, размер выборки.
+    verifies_skills: [product-metrics]
+  - code: data_wrangling
+    name: Обработка данных в pandas
+    description: Группировки, пропуски, соединения таблиц.
+    gate_skills: [pandas, python]
+    verifies_skills: [pandas]
+  - code: ml_metrics
+    name: Метрики и диагностика моделей
+    description: Precision, recall, F1, дисбаланс классов, переобучение.
+    verifies_skills: [machine-learning]
+  - code: test_design
+    name: Тест-дизайн
+    description: Граничные значения, классы эквивалентности, попарное тестирование.
+    verifies_skills: [test-design]
+  - code: networking
+    name: Сети
+    description: IPv4-адресация, подсети, стандартные порты.
+    verifies_skills: [networking]
+  - code: linux
+    name: Linux и администрирование
+    description: Права доступа, cron, конвейеры командной строки.
+    verifies_skills: [linux, bash]
+
+# Blueprint — веса компетенций в тесте специализации. Стартовые веса — частота требований в
+# корпусе вакансий с экспертной поправкой; они нормируются после отсечения по gate_skills.
+blueprints:
+  backend:
+    python_core: 0.22
+    sql: 0.20
+    algorithms: 0.15
+    http_api: 0.15
+    concurrency: 0.10
+    architecture: 0.10
+    tooling: 0.08
+  frontend:
+    js_core: 0.28
+    react: 0.17
+    css_layout: 0.15
+    browser_dom: 0.10
+    http_api: 0.10
+    algorithms: 0.10
+    tooling: 0.10
+  data_analytics:
+    sql: 0.34
+    statistics: 0.28
+    product_metrics: 0.20
+    data_wrangling: 0.18
+  ml:
+    ml_metrics: 0.26
+    statistics: 0.22
+    python_core: 0.18
+    algorithms: 0.18
+    data_wrangling: 0.16
+  qa:
+    test_design: 0.40
+    http_api: 0.25
+    sql: 0.20
+    tooling: 0.15
+  devops:
+    linux: 0.30
+    networking: 0.25
+    tooling: 0.20
+    http_api: 0.15
+    concurrency: 0.10
+  mobile:
+    algorithms: 0.25
+    concurrency: 0.25
+    http_api: 0.20
+    architecture: 0.15
+    tooling: 0.15
