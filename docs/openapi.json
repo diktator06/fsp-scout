@@ -1,6 +1,668 @@
 {
   "components": {
     "schemas": {
+      "AnswerSubmit": {
+        "description": "Ответ на текущее задание: ключ варианта (a–d) или число строкой.",
+        "properties": {
+          "answer": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Answer",
+            "type": "string"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "answer"
+        ],
+        "title": "AnswerSubmit",
+        "type": "object"
+      },
+      "AssessmentHistoryRead": {
+        "description": "История тестов и смен категории.",
+        "properties": {
+          "grade_changes": {
+            "items": {
+              "$ref": "#/components/schemas/GradeHistoryRead"
+            },
+            "title": "Grade Changes",
+            "type": "array"
+          },
+          "sessions": {
+            "items": {
+              "$ref": "#/components/schemas/SessionSummaryRead"
+            },
+            "title": "Sessions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "sessions",
+          "grade_changes"
+        ],
+        "title": "AssessmentHistoryRead",
+        "type": "object"
+      },
+      "AssessmentMode": {
+        "description": "Режим теста: полный (12–20 заданий) или экспресс для демонстрации (6–8 заданий).",
+        "enum": [
+          "full",
+          "express"
+        ],
+        "title": "AssessmentMode",
+        "type": "string"
+      },
+      "BlueprintCompetency": {
+        "description": "Компетенция в тесте и её доля.",
+        "properties": {
+          "bank_size": {
+            "title": "Bank Size",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "included": {
+            "description": "false — компетенция отключена: в опросе нет нужного навыка",
+            "title": "Included",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "weight": {
+            "title": "Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "weight",
+          "bank_size",
+          "included"
+        ],
+        "title": "BlueprintCompetency",
+        "type": "object"
+      },
+      "BlueprintRead": {
+        "description": "Из чего будет состоять тест специализации для этого кандидата.",
+        "properties": {
+          "available": {
+            "title": "Available",
+            "type": "boolean"
+          },
+          "competencies": {
+            "items": {
+              "$ref": "#/components/schemas/BlueprintCompetency"
+            },
+            "title": "Competencies",
+            "type": "array"
+          },
+          "max_items": {
+            "title": "Max Items",
+            "type": "integer"
+          },
+          "min_items": {
+            "title": "Min Items",
+            "type": "integer"
+          },
+          "specialization": {
+            "$ref": "#/components/schemas/SpecializationBrief"
+          }
+        },
+        "required": [
+          "specialization",
+          "competencies",
+          "min_items",
+          "max_items",
+          "available"
+        ],
+        "title": "BlueprintRead",
+        "type": "object"
+      },
+      "Body_set_bank_publication_api_v1_candidates_me_consents_bank_publication_put": {
+        "properties": {
+          "granted": {
+            "description": "true — дать согласие, false — отозвать",
+            "title": "Granted",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "granted"
+        ],
+        "title": "Body_set_bank_publication_api_v1_candidates_me_consents_bank_publication_put",
+        "type": "object"
+      },
+      "CandidateProfileRead": {
+        "description": "Профиль кандидата глазами самого кандидата (с контактами).",
+        "properties": {
+          "about": {
+            "title": "About",
+            "type": "string"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CategoryRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "completeness": {
+            "description": "Заполненность профиля в процентах",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Completeness",
+            "type": "integer"
+          },
+          "educations": {
+            "items": {
+              "$ref": "#/components/schemas/EducationRead"
+            },
+            "title": "Educations",
+            "type": "array"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "experience_years": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Experience Years"
+          },
+          "experiences": {
+            "items": {
+              "$ref": "#/components/schemas/WorkExperienceRead"
+            },
+            "title": "Experiences",
+            "type": "array"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "grade_assigned_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grade Assigned At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "public_alias": {
+            "title": "Public Alias",
+            "type": "string"
+          },
+          "relocation_ready": {
+            "title": "Relocation Ready",
+            "type": "boolean"
+          },
+          "salary_expectation_from": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Salary Expectation From"
+          },
+          "salary_expectation_gross": {
+            "title": "Salary Expectation Gross",
+            "type": "boolean"
+          },
+          "search_status": {
+            "$ref": "#/components/schemas/SearchStatus"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/CandidateSkillRead"
+            },
+            "title": "Skills",
+            "type": "array"
+          },
+          "soft_skills": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Soft Skills",
+            "type": "array"
+          },
+          "team_roles": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Team Roles",
+            "type": "array"
+          },
+          "telegram": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telegram"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "work_formats": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Work Formats",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "public_alias",
+          "full_name",
+          "phone",
+          "telegram",
+          "city",
+          "about",
+          "experience_years",
+          "team_roles",
+          "soft_skills",
+          "work_formats",
+          "relocation_ready",
+          "salary_expectation_from",
+          "salary_expectation_gross",
+          "search_status",
+          "category",
+          "grade_assigned_at",
+          "skills",
+          "experiences",
+          "educations",
+          "completeness",
+          "updated_at"
+        ],
+        "title": "CandidateProfileRead",
+        "type": "object"
+      },
+      "CandidateProfileUpdate": {
+        "description": "Анкета кандидата целиком: PUT заменяет все поля, списки — полностью.",
+        "properties": {
+          "about": {
+            "default": "",
+            "maxLength": 3000,
+            "title": "About",
+            "type": "string"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "educations": {
+            "items": {
+              "$ref": "#/components/schemas/EducationInput"
+            },
+            "maxItems": 10,
+            "title": "Educations",
+            "type": "array"
+          },
+          "experience_years": {
+            "anyOf": [
+              {
+                "maximum": 60.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Experience Years"
+          },
+          "experiences": {
+            "items": {
+              "$ref": "#/components/schemas/WorkExperienceInput"
+            },
+            "maxItems": 20,
+            "title": "Experiences",
+            "type": "array"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "relocation_ready": {
+            "default": false,
+            "title": "Relocation Ready",
+            "type": "boolean"
+          },
+          "salary_expectation_from": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 10000000.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Salary Expectation From"
+          },
+          "salary_expectation_gross": {
+            "default": true,
+            "description": "true — сумма до вычета НДФЛ, false — «на руки»",
+            "title": "Salary Expectation Gross",
+            "type": "boolean"
+          },
+          "search_status": {
+            "$ref": "#/components/schemas/SearchStatus",
+            "default": "open"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/CandidateSkillInput"
+            },
+            "maxItems": 40,
+            "title": "Skills",
+            "type": "array"
+          },
+          "soft_skills": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "title": "Soft Skills",
+            "type": "array"
+          },
+          "team_roles": {
+            "items": {
+              "enum": [
+                "developer",
+                "team_lead",
+                "tech_lead",
+                "mentor",
+                "architect",
+                "researcher"
+              ],
+              "type": "string"
+            },
+            "maxItems": 6,
+            "title": "Team Roles",
+            "type": "array"
+          },
+          "telegram": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telegram"
+          },
+          "work_formats": {
+            "items": {
+              "$ref": "#/components/schemas/WorkFormat"
+            },
+            "maxItems": 3,
+            "title": "Work Formats",
+            "type": "array"
+          }
+        },
+        "title": "CandidateProfileUpdate",
+        "type": "object"
+      },
+      "CandidateSkillInput": {
+        "description": "Навык в анкете с самооценкой уровня.",
+        "properties": {
+          "self_level": {
+            "anyOf": [
+              {
+                "maximum": 5.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Self Level"
+          },
+          "skill_id": {
+            "title": "Skill Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "skill_id"
+        ],
+        "title": "CandidateSkillInput",
+        "type": "object"
+      },
+      "CandidateSkillRead": {
+        "description": "Навык в профиле.",
+        "properties": {
+          "is_verified": {
+            "title": "Is Verified",
+            "type": "boolean"
+          },
+          "self_level": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Self Level"
+          },
+          "skill": {
+            "$ref": "#/components/schemas/SkillRead"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SkillSource"
+          },
+          "verified_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified At"
+          }
+        },
+        "required": [
+          "skill",
+          "self_level",
+          "source",
+          "is_verified",
+          "verified_at"
+        ],
+        "title": "CandidateSkillRead",
+        "type": "object"
+      },
+      "CandidateStatusRead": {
+        "description": "Где кандидат находится на пути к категории.",
+        "properties": {
+          "active_session_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Session Id"
+          },
+          "bank_published": {
+            "title": "Bank Published",
+            "type": "boolean"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CategoryRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "claimed_category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CategoryRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "completeness": {
+            "title": "Completeness",
+            "type": "integer"
+          },
+          "grade_status": {
+            "description": "confirmed — категория подтверждена тестом; unconfirmed — заявлена в опросе, но не подтверждена; not_declared — опрос не пройден",
+            "enum": [
+              "confirmed",
+              "unconfirmed",
+              "not_declared"
+            ],
+            "title": "Grade Status",
+            "type": "string"
+          },
+          "onboarding_step": {
+            "enum": [
+              "profile",
+              "survey",
+              "grade",
+              "test",
+              "done"
+            ],
+            "title": "Onboarding Step",
+            "type": "string"
+          },
+          "profile_completed": {
+            "title": "Profile Completed",
+            "type": "boolean"
+          },
+          "survey_completed": {
+            "title": "Survey Completed",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "onboarding_step",
+          "profile_completed",
+          "survey_completed",
+          "grade_status",
+          "category",
+          "claimed_category",
+          "active_session_id",
+          "bank_published",
+          "completeness"
+        ],
+        "title": "CandidateStatusRead",
+        "type": "object"
+      },
       "CategoryRead": {
         "description": "Категория кандидатов: специализация × грейд.",
         "properties": {
@@ -36,6 +698,206 @@
           "grade"
         ],
         "title": "CategoryRead",
+        "type": "object"
+      },
+      "CompetencyResult": {
+        "description": "Результат по компетенции.",
+        "properties": {
+          "answered": {
+            "title": "Answered",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "correct": {
+            "title": "Correct",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "answered",
+          "correct"
+        ],
+        "title": "CompetencyResult",
+        "type": "object"
+      },
+      "ConsentsRead": {
+        "description": "Состояние согласий кандидата.",
+        "properties": {
+          "bank_publication": {
+            "title": "Bank Publication",
+            "type": "boolean"
+          },
+          "bank_publication_granted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bank Publication Granted At"
+          },
+          "personal_data_processing": {
+            "title": "Personal Data Processing",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "personal_data_processing",
+          "bank_publication",
+          "bank_publication_granted_at"
+        ],
+        "title": "ConsentsRead",
+        "type": "object"
+      },
+      "ContactChannel": {
+        "description": "Каналы связи, которые раскрываются работодателю после согласия кандидата.",
+        "enum": [
+          "email",
+          "phone",
+          "telegram"
+        ],
+        "title": "ContactChannel",
+        "type": "string"
+      },
+      "EducationInput": {
+        "description": "Образование.",
+        "properties": {
+          "degree": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Degree",
+            "type": "string"
+          },
+          "graduated_year": {
+            "anyOf": [
+              {
+                "maximum": 2035.0,
+                "minimum": 1950.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graduated Year"
+          },
+          "institution": {
+            "maxLength": 300,
+            "minLength": 2,
+            "title": "Institution",
+            "type": "string"
+          }
+        },
+        "required": [
+          "institution"
+        ],
+        "title": "EducationInput",
+        "type": "object"
+      },
+      "EducationRead": {
+        "description": "Образование.",
+        "properties": {
+          "degree": {
+            "title": "Degree",
+            "type": "string"
+          },
+          "graduated_year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graduated Year"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "institution": {
+            "title": "Institution",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "institution",
+          "degree",
+          "graduated_year"
+        ],
+        "title": "EducationRead",
+        "type": "object"
+      },
+      "EligibilityRead": {
+        "description": "Доступные тесты, текущая категория и незавершённая сессия.",
+        "properties": {
+          "active_session_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Active Session Id"
+          },
+          "current_category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CategoryRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "express_available": {
+            "title": "Express Available",
+            "type": "boolean"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/GradeOptionRead"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "survey": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SurveyRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "express_available",
+          "current_category",
+          "active_session_id",
+          "survey",
+          "options"
+        ],
+        "title": "EligibilityRead",
         "type": "object"
       },
       "ErrorBody": {
@@ -118,6 +980,89 @@
         "title": "GradeBrief",
         "type": "object"
       },
+      "GradeChangeReason": {
+        "description": "Почему у кандидата сменилась категория.",
+        "enum": [
+          "initial",
+          "upgrade",
+          "downgrade_voluntary",
+          "accepted_lower"
+        ],
+        "title": "GradeChangeReason",
+        "type": "string"
+      },
+      "GradeHistoryRead": {
+        "description": "Смена категории.",
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/CategoryRead"
+          },
+          "changed_at": {
+            "format": "date-time",
+            "title": "Changed At",
+            "type": "string"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/GradeChangeReason"
+          },
+          "session_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Id"
+          }
+        },
+        "required": [
+          "category",
+          "reason",
+          "changed_at",
+          "session_id"
+        ],
+        "title": "GradeHistoryRead",
+        "type": "object"
+      },
+      "GradeOptionRead": {
+        "description": "Можно ли сейчас пройти тест на грейд.",
+        "properties": {
+          "allowed": {
+            "title": "Allowed",
+            "type": "boolean"
+          },
+          "available_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Available At"
+          },
+          "grade": {
+            "$ref": "#/components/schemas/GradeBrief"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "grade",
+          "allowed",
+          "reason",
+          "available_at"
+        ],
+        "title": "GradeOptionRead",
+        "type": "object"
+      },
       "GradeRead": {
         "description": "Грейд с пояснением и порогом по шкале способностей.",
         "properties": {
@@ -160,6 +1105,24 @@
           "default_theta_cut"
         ],
         "title": "GradeRead",
+        "type": "object"
+      },
+      "GradeScalePoint": {
+        "description": "Порог грейда на шкале способностей.",
+        "properties": {
+          "grade": {
+            "$ref": "#/components/schemas/GradeBrief"
+          },
+          "theta_cut": {
+            "title": "Theta Cut",
+            "type": "number"
+          }
+        },
+        "required": [
+          "grade",
+          "theta_cut"
+        ],
+        "title": "GradeScalePoint",
         "type": "object"
       },
       "HealthResponse": {
@@ -216,6 +1179,188 @@
           "name"
         ],
         "title": "IndustryRead",
+        "type": "object"
+      },
+      "IntegrityEventCreate": {
+        "description": "Событие, которое может указывать на помощь со стороны (без блокировки теста).",
+        "properties": {
+          "event": {
+            "enum": [
+              "focus_lost",
+              "paste",
+              "fullscreen_exit"
+            ],
+            "title": "Event",
+            "type": "string"
+          }
+        },
+        "required": [
+          "event"
+        ],
+        "title": "IntegrityEventCreate",
+        "type": "object"
+      },
+      "ItemOption": {
+        "description": "Вариант ответа.",
+        "properties": {
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "text"
+        ],
+        "title": "ItemOption",
+        "type": "object"
+      },
+      "ItemTable": {
+        "description": "Таблица в условии задания.",
+        "properties": {
+          "columns": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Columns",
+            "type": "array"
+          },
+          "rows": {
+            "items": {
+              "items": {},
+              "type": "array"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "columns",
+          "rows"
+        ],
+        "title": "ItemTable",
+        "type": "object"
+      },
+      "ItemView": {
+        "description": "Задание, как его видит кандидат. Ключа ответа здесь нет и быть не может.",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "code_language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code Language"
+          },
+          "competency": {
+            "title": "Competency",
+            "type": "string"
+          },
+          "competency_name": {
+            "title": "Competency Name",
+            "type": "string"
+          },
+          "deadline_at": {
+            "format": "date-time",
+            "title": "Deadline At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "input_hint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Hint"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/ItemOption"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string"
+          },
+          "response_format": {
+            "$ref": "#/components/schemas/ResponseFormat"
+          },
+          "seconds_left": {
+            "title": "Seconds Left",
+            "type": "integer"
+          },
+          "tables": {
+            "items": {
+              "$ref": "#/components/schemas/ItemTable"
+            },
+            "title": "Tables",
+            "type": "array"
+          },
+          "time_limit_sec": {
+            "title": "Time Limit Sec",
+            "type": "integer"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "required": [
+          "id",
+          "position",
+          "competency",
+          "competency_name",
+          "prompt",
+          "response_format",
+          "time_limit_sec",
+          "deadline_at",
+          "seconds_left"
+        ],
+        "title": "ItemView",
         "type": "object"
       },
       "LoginRequest": {
@@ -292,6 +1437,82 @@
           "offset"
         ],
         "title": "Page[SkillRead]",
+        "type": "object"
+      },
+      "PrivacySettingsRead": {
+        "description": "Что видит работодатель до раскрытия контактов.",
+        "properties": {
+          "revealed_channels": {
+            "items": {
+              "$ref": "#/components/schemas/ContactChannel"
+            },
+            "title": "Revealed Channels",
+            "type": "array"
+          },
+          "show_city": {
+            "title": "Show City",
+            "type": "boolean"
+          },
+          "show_company_names": {
+            "title": "Show Company Names",
+            "type": "boolean"
+          },
+          "show_fsp_achievements": {
+            "title": "Show Fsp Achievements",
+            "type": "boolean"
+          },
+          "show_salary_expectation": {
+            "title": "Show Salary Expectation",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "show_salary_expectation",
+          "show_city",
+          "show_company_names",
+          "show_fsp_achievements",
+          "revealed_channels"
+        ],
+        "title": "PrivacySettingsRead",
+        "type": "object"
+      },
+      "PrivacySettingsUpdate": {
+        "description": "Изменение настроек приватности.",
+        "properties": {
+          "revealed_channels": {
+            "items": {
+              "$ref": "#/components/schemas/ContactChannel"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Revealed Channels",
+            "type": "array"
+          },
+          "show_city": {
+            "title": "Show City",
+            "type": "boolean"
+          },
+          "show_company_names": {
+            "title": "Show Company Names",
+            "type": "boolean"
+          },
+          "show_fsp_achievements": {
+            "title": "Show Fsp Achievements",
+            "type": "boolean"
+          },
+          "show_salary_expectation": {
+            "title": "Show Salary Expectation",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "show_salary_expectation",
+          "show_city",
+          "show_company_names",
+          "show_fsp_achievements",
+          "revealed_channels"
+        ],
+        "title": "PrivacySettingsUpdate",
         "type": "object"
       },
       "RegisterRequest": {
@@ -380,6 +1601,330 @@
           "email"
         ],
         "title": "ResendVerificationRequest",
+        "type": "object"
+      },
+      "ResponseFormat": {
+        "description": "Формат ответа на задание.",
+        "enum": [
+          "single_choice",
+          "numeric"
+        ],
+        "title": "ResponseFormat",
+        "type": "string"
+      },
+      "SearchStatus": {
+        "description": "Готовность кандидата к предложениям. «Не ищу» скрывает профиль из банка.",
+        "enum": [
+          "active",
+          "open",
+          "not_looking"
+        ],
+        "title": "SearchStatus",
+        "type": "string"
+      },
+      "SessionOutcome": {
+        "description": "Итог теста на заявленный грейд.",
+        "enum": [
+          "passed_confident",
+          "passed",
+          "failed"
+        ],
+        "title": "SessionOutcome",
+        "type": "string"
+      },
+      "SessionRead": {
+        "description": "Состояние сессии тестирования.",
+        "properties": {
+          "answered": {
+            "title": "Answered",
+            "type": "integer"
+          },
+          "current_item": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ItemView"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "max_items": {
+            "title": "Max Items",
+            "type": "integer"
+          },
+          "min_items": {
+            "title": "Min Items",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/AssessmentMode"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SessionResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "specialization": {
+            "$ref": "#/components/schemas/SpecializationBrief"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/SessionStatus"
+          },
+          "target_grade": {
+            "$ref": "#/components/schemas/GradeBrief"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "mode",
+          "specialization",
+          "target_grade",
+          "answered",
+          "min_items",
+          "max_items",
+          "started_at",
+          "expires_at",
+          "finished_at",
+          "current_item",
+          "result"
+        ],
+        "title": "SessionRead",
+        "type": "object"
+      },
+      "SessionResult": {
+        "description": "Итог теста.",
+        "properties": {
+          "can_accept_suggested": {
+            "title": "Can Accept Suggested",
+            "type": "boolean"
+          },
+          "competencies": {
+            "items": {
+              "$ref": "#/components/schemas/CompetencyResult"
+            },
+            "title": "Competencies",
+            "type": "array"
+          },
+          "integrity_flags": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Integrity Flags",
+            "type": "object"
+          },
+          "items_scored": {
+            "title": "Items Scored",
+            "type": "integer"
+          },
+          "next_grade_unlocked": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GradeBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/SessionOutcome"
+          },
+          "resulting_category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CategoryRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "scale": {
+            "items": {
+              "$ref": "#/components/schemas/GradeScalePoint"
+            },
+            "title": "Scale",
+            "type": "array"
+          },
+          "suggested_grade": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GradeBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "target_grade": {
+            "$ref": "#/components/schemas/GradeBrief"
+          },
+          "theta": {
+            "title": "Theta",
+            "type": "number"
+          },
+          "theta_se": {
+            "title": "Theta Se",
+            "type": "number"
+          }
+        },
+        "required": [
+          "outcome",
+          "theta",
+          "theta_se",
+          "items_scored",
+          "target_grade",
+          "resulting_category",
+          "suggested_grade",
+          "can_accept_suggested",
+          "next_grade_unlocked",
+          "competencies",
+          "scale",
+          "integrity_flags"
+        ],
+        "title": "SessionResult",
+        "type": "object"
+      },
+      "SessionStart": {
+        "description": "Начало теста на выбранный грейд по последнему опросу.",
+        "properties": {
+          "mode": {
+            "$ref": "#/components/schemas/AssessmentMode",
+            "default": "full",
+            "description": "full — полный тест (12–20 заданий), express — 6–8 заданий для демонстрации"
+          },
+          "target_grade_id": {
+            "title": "Target Grade Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "target_grade_id"
+        ],
+        "title": "SessionStart",
+        "type": "object"
+      },
+      "SessionStatus": {
+        "description": "Состояние сессии тестирования.",
+        "enum": [
+          "in_progress",
+          "completed",
+          "abandoned",
+          "expired"
+        ],
+        "title": "SessionStatus",
+        "type": "string"
+      },
+      "SessionSummaryRead": {
+        "description": "Строка истории тестов.",
+        "properties": {
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "items_scored": {
+            "title": "Items Scored",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/AssessmentMode"
+          },
+          "outcome": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SessionOutcome"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "specialization": {
+            "$ref": "#/components/schemas/SpecializationBrief"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/SessionStatus"
+          },
+          "target_grade": {
+            "$ref": "#/components/schemas/GradeBrief"
+          },
+          "theta": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Theta"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "mode",
+          "outcome",
+          "specialization",
+          "target_grade",
+          "items_scored",
+          "theta",
+          "started_at",
+          "finished_at"
+        ],
+        "title": "SessionSummaryRead",
         "type": "object"
       },
       "SkillCreate": {
@@ -479,6 +2024,18 @@
         "title": "SkillRead",
         "type": "object"
       },
+      "SkillSource": {
+        "description": "Откуда навык попал в профиль: от этого зависит, насколько ему доверяет подбор.",
+        "enum": [
+          "profile",
+          "survey",
+          "resume",
+          "test",
+          "micro_task"
+        ],
+        "title": "SkillSource",
+        "type": "string"
+      },
       "SkillUpdate": {
         "description": "Изменение навыка. Slug неизменяем: по нему навыки ищутся в резюме и вакансиях.",
         "properties": {
@@ -565,6 +2122,19 @@
             "title": "Description",
             "type": "string"
           },
+          "direction_code": {
+            "default": "development",
+            "pattern": "^[a-z][a-z0-9_]{1,63}$",
+            "title": "Direction Code",
+            "type": "string"
+          },
+          "direction_name": {
+            "default": "Разработка",
+            "maxLength": 64,
+            "minLength": 2,
+            "title": "Direction Name",
+            "type": "string"
+          },
           "name": {
             "examples": [
               "Разработка игр"
@@ -590,7 +2160,7 @@
         "type": "object"
       },
       "SpecializationRead": {
-        "description": "Специализация.",
+        "description": "Специализация и её IT-направление.",
         "properties": {
           "code": {
             "title": "Code",
@@ -598,6 +2168,14 @@
           },
           "description": {
             "title": "Description",
+            "type": "string"
+          },
+          "direction_code": {
+            "title": "Direction Code",
+            "type": "string"
+          },
+          "direction_name": {
+            "title": "Direction Name",
             "type": "string"
           },
           "id": {
@@ -618,7 +2196,9 @@
           "code",
           "name",
           "description",
-          "sort_order"
+          "sort_order",
+          "direction_code",
+          "direction_name"
         ],
         "title": "SpecializationRead",
         "type": "object"
@@ -666,6 +2246,132 @@
           }
         },
         "title": "SpecializationUpdate",
+        "type": "object"
+      },
+      "SurveyCreate": {
+        "description": "Ответы опроса: отрасль, специализация, стек, опыт и заявленный грейд.",
+        "properties": {
+          "claimed_grade_id": {
+            "title": "Claimed Grade Id",
+            "type": "integer"
+          },
+          "experience_years": {
+            "maximum": 60.0,
+            "minimum": 0.0,
+            "title": "Experience Years",
+            "type": "number"
+          },
+          "industry_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 3,
+            "title": "Industry Ids",
+            "type": "array"
+          },
+          "primary_skill_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 12,
+            "minItems": 1,
+            "title": "Primary Skill Ids",
+            "type": "array"
+          },
+          "specialization_id": {
+            "title": "Specialization Id",
+            "type": "integer"
+          },
+          "team_roles": {
+            "items": {
+              "enum": [
+                "developer",
+                "team_lead",
+                "tech_lead",
+                "mentor",
+                "architect",
+                "researcher"
+              ],
+              "type": "string"
+            },
+            "maxItems": 6,
+            "title": "Team Roles",
+            "type": "array"
+          },
+          "work_formats": {
+            "items": {
+              "$ref": "#/components/schemas/WorkFormat"
+            },
+            "maxItems": 3,
+            "title": "Work Formats",
+            "type": "array"
+          }
+        },
+        "required": [
+          "specialization_id",
+          "claimed_grade_id",
+          "primary_skill_ids",
+          "experience_years"
+        ],
+        "title": "SurveyCreate",
+        "type": "object"
+      },
+      "SurveyRead": {
+        "description": "Сохранённый опрос.",
+        "properties": {
+          "claimed_grade": {
+            "$ref": "#/components/schemas/GradeBrief"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "experience_years": {
+            "title": "Experience Years",
+            "type": "number"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "industry_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Industry Ids",
+            "type": "array"
+          },
+          "primary_skill_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Primary Skill Ids",
+            "type": "array"
+          },
+          "specialization": {
+            "$ref": "#/components/schemas/SpecializationBrief"
+          },
+          "team_roles": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Team Roles",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "specialization",
+          "claimed_grade",
+          "industry_ids",
+          "primary_skill_ids",
+          "experience_years",
+          "team_roles",
+          "created_at"
+        ],
+        "title": "SurveyRead",
         "type": "object"
       },
       "TokenResponse": {
@@ -758,6 +2464,112 @@
         ],
         "title": "VerifyEmailRequest",
         "type": "object"
+      },
+      "WorkExperienceInput": {
+        "description": "Место работы.",
+        "properties": {
+          "company_name": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Company Name",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Description",
+            "type": "string"
+          },
+          "ended_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended On"
+          },
+          "position": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Position",
+            "type": "string"
+          },
+          "started_on": {
+            "format": "date",
+            "title": "Started On",
+            "type": "string"
+          }
+        },
+        "required": [
+          "company_name",
+          "position",
+          "started_on"
+        ],
+        "title": "WorkExperienceInput",
+        "type": "object"
+      },
+      "WorkExperienceRead": {
+        "description": "Место работы.",
+        "properties": {
+          "company_name": {
+            "title": "Company Name",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "ended_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended On"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "string"
+          },
+          "started_on": {
+            "format": "date",
+            "title": "Started On",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "company_name",
+          "position",
+          "started_on",
+          "ended_on",
+          "description"
+        ],
+        "title": "WorkExperienceRead",
+        "type": "object"
+      },
+      "WorkFormat": {
+        "description": "Формат работы.",
+        "enum": [
+          "office",
+          "hybrid",
+          "remote"
+        ],
+        "title": "WorkFormat",
+        "type": "string"
       }
     },
     "securitySchemes": {
@@ -775,6 +2587,988 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/assessment/blueprint": {
+      "get": {
+        "description": "Какие компетенции и с какими весами войдут в тест.\n\nЯзыково-зависимые компетенции включаются, только если в стеке есть\nсоответствующий язык.",
+        "operationId": "preview_blueprint_api_v1_assessment_blueprint_get",
+        "parameters": [
+          {
+            "description": "Специализация из справочника",
+            "in": "query",
+            "name": "specialization_id",
+            "required": true,
+            "schema": {
+              "description": "Специализация из справочника",
+              "title": "Specialization Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Навыки из опроса",
+            "in": "query",
+            "name": "skill_ids",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "integer"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Навыки из опроса",
+              "title": "Skill Ids"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlueprintRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Состав теста для специализации и стека",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
+    "/api/v1/assessment/eligibility": {
+      "get": {
+        "description": "Для каждого грейда: можно ли сейчас пройти тест, а если нет — почему и когда.",
+        "operationId": "eligibility_api_v1_assessment_eligibility_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EligibilityRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Доступные тесты",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
+    "/api/v1/assessment/history": {
+      "get": {
+        "description": "Все попытки тестов и смены категории.",
+        "operationId": "history_api_v1_assessment_history_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssessmentHistoryRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "История тестов и грейдов",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
+    "/api/v1/assessment/sessions": {
+      "post": {
+        "description": "Начинает адаптивный тест на выбранный грейд и возвращает первое задание.",
+        "operationId": "start_session_api_v1_assessment_sessions_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionStart"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Начать тест на грейд",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
+    "/api/v1/assessment/sessions/{session_id}": {
+      "get": {
+        "description": "Текущее задание или итог. Просроченное задание засчитывается как неотвеченное.",
+        "operationId": "read_session_api_v1_assessment_sessions__session_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Состояние теста",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
+    "/api/v1/assessment/sessions/{session_id}/abandon": {
+      "post": {
+        "description": "Прерывает тест. Попытка учитывается в дневном лимите.",
+        "operationId": "abandon_session_api_v1_assessment_sessions__session_id__abandon_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Прервать тест",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
+    "/api/v1/assessment/sessions/{session_id}/accept-suggested-grade": {
+      "post": {
+        "description": "Присваивает нижний грейд, который тест уверенно подтвердил, без пересдачи.",
+        "operationId": "accept_suggested_grade_api_v1_assessment_sessions__session_id__accept_suggested_grade_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Принять предложенный грейд",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
+    "/api/v1/assessment/sessions/{session_id}/answers": {
+      "post": {
+        "description": "Принимает ответ и возвращает следующее задание или итог теста.\n\nВерно ли отвечено, до конца теста не сообщается.",
+        "operationId": "submit_answer_api_v1_assessment_sessions__session_id__answers_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Ответить на текущее задание",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
+    "/api/v1/assessment/sessions/{session_id}/integrity-events": {
+      "post": {
+        "description": "Фиксирует уход со вкладки или вставку текста. Тест не прерывается.",
+        "operationId": "integrity_event_api_v1_assessment_sessions__session_id__integrity_events_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "session_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Session Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrityEventCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Сигнал целостности",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
+    "/api/v1/assessment/surveys": {
+      "post": {
+        "description": "Сохраняет опрос: специализацию, стек, опыт и заявленный грейд.\n\nОпрос задаёт состав теста (blueprint), но категорию не присваивает.",
+        "operationId": "submit_survey_api_v1_assessment_surveys_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SurveyCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Пройти опрос",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
+    "/api/v1/assessment/surveys/latest": {
+      "get": {
+        "description": "Последний пройденный опрос или null.",
+        "operationId": "latest_survey_api_v1_assessment_surveys_latest_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/SurveyRead"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Latest Survey Api V1 Assessment Surveys Latest Get"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Последний опрос",
+        "tags": [
+          "assessment"
+        ]
+      }
+    },
     "/api/v1/auth/login": {
       "post": {
         "description": "Возвращает access-токен в теле и ставит refresh-токен в httpOnly-cookie.",
@@ -1124,6 +3918,484 @@
         "summary": "Подтверждение email по ссылке из письма",
         "tags": [
           "auth"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/consents": {
+      "get": {
+        "description": "Действующие согласия на обработку ПДн и публикацию профиля в банке.",
+        "operationId": "read_consents_api_v1_candidates_me_consents_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentsRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Мои согласия",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/consents/bank-publication": {
+      "put": {
+        "description": "Даёт или отзывает согласие. Без него профиль не виден работодателям в банке.",
+        "operationId": "set_bank_publication_api_v1_candidates_me_consents_bank_publication_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_set_bank_publication_api_v1_candidates_me_consents_bank_publication_put"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentsRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Согласие на публикацию в банке кандидатов",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/privacy": {
+      "get": {
+        "description": "Что видит работодатель до раскрытия контактов.",
+        "operationId": "read_privacy_api_v1_candidates_me_privacy_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacySettingsRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Настройки приватности",
+        "tags": [
+          "candidate"
+        ]
+      },
+      "put": {
+        "description": "Меняет видимость полей и каналы связи, которые раскрываются после согласия.",
+        "operationId": "update_privacy_api_v1_candidates_me_privacy_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrivacySettingsUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacySettingsRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Изменить приватность",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/profile": {
+      "get": {
+        "description": "Профиль кандидата. При первом обращении создаётся пустой профиль с псевдонимом.",
+        "operationId": "read_profile_api_v1_candidates_me_profile_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateProfileRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Мой профиль",
+        "tags": [
+          "candidate"
+        ]
+      },
+      "put": {
+        "description": "Сохраняет анкету целиком: поля, навыки, опыт работы и образование.\n\nКатегория и подтверждённые тестом навыки анкетой не меняются.",
+        "operationId": "update_profile_api_v1_candidates_me_profile_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CandidateProfileUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateProfileRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Сохранить профиль",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/profile.pdf": {
+      "get": {
+        "description": "Профиль в едином формате платформы с отметками подтверждённых навыков.",
+        "operationId": "download_profile_pdf_api_v1_candidates_me_profile_pdf_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {}
+            },
+            "description": "PDF-профиль"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Скачать стандартизированный PDF-профиль",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/status": {
+      "get": {
+        "description": "Текущий шаг пути: профиль → опрос → выбор грейда → тест → категория.",
+        "operationId": "read_status_api_v1_candidates_me_status_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateStatusRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Статус онбординга",
+        "tags": [
+          "candidate"
         ]
       }
     },
@@ -1964,6 +5236,14 @@
     {
       "description": "Справочники: специализации, грейды, категории, отрасли, навыки. Чтение открыто всем, изменение доступно только методисту",
       "name": "dictionaries"
+    },
+    {
+      "description": "Кабинет кандидата: профиль, PDF-профиль, приватность и согласия",
+      "name": "candidate"
+    },
+    {
+      "description": "Опрос и адаптивное тестирование: уникальные экземпляры заданий из калиброванного банка, оценка θ по IRT, присвоение категории",
+      "name": "assessment"
     }
   ]
 }

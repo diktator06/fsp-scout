@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { api } from './client';
 import { unwrap } from './errors';
-import type { SkillKind } from './types';
+import type { Skill, SkillKind } from './types';
 
 const DICTIONARY_STALE_TIME = 10 * 60_000;
 
@@ -11,6 +11,7 @@ export const dictionaryKeys = {
   categories: ['dictionaries', 'categories'] as const,
   industries: ['dictionaries', 'industries'] as const,
   skills: (params: SkillSearchParams) => ['dictionaries', 'skills', params] as const,
+  skillCatalog: ['dictionaries', 'skills', 'catalog'] as const,
 };
 
 export interface SkillSearchParams {
@@ -45,6 +46,14 @@ export function useCategories() {
   });
 }
 
+export function useIndustries() {
+  return useQuery({
+    queryKey: dictionaryKeys.industries,
+    queryFn: () => unwrap(api.GET('/api/v1/dictionaries/industries')),
+    staleTime: DICTIONARY_STALE_TIME,
+  });
+}
+
 export function useSkillSearch(params: SkillSearchParams) {
   // Предыдущая страница остаётся на экране, пока грузится новая: таблица
   // не мигает пустым состоянием на каждый введённый символ.
@@ -65,6 +74,29 @@ export function useSkillSearch(params: SkillSearchParams) {
         }),
       ),
     placeholderData: keepPreviousData,
+    staleTime: DICTIONARY_STALE_TIME,
+  });
+}
+
+async function fetchSkillCatalog(): Promise<Skill[]> {
+  // Справочник навыков — пара сотен записей: забираем его целиком постранично
+  // и дальше ищем на клиенте. Поиск мгновенный, а выбор с клавиатуры
+  // не спотыкается о результаты, пришедшие позже введённого текста.
+  const pageSize = 100;
+  const skills: Skill[] = [];
+  for (let offset = 0; ; offset += pageSize) {
+    const page = await unwrap(
+      api.GET('/api/v1/dictionaries/skills', { params: { query: { limit: pageSize, offset } } }),
+    );
+    skills.push(...page.items);
+    if (page.items.length < pageSize || skills.length >= page.total) return skills;
+  }
+}
+
+export function useSkillCatalog() {
+  return useQuery({
+    queryKey: dictionaryKeys.skillCatalog,
+    queryFn: fetchSkillCatalog,
     staleTime: DICTIONARY_STALE_TIME,
   });
 }

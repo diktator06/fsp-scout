@@ -4,6 +4,233 @@
  */
 
 export interface paths {
+    "/api/v1/assessment/blueprint": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Состав теста для специализации и стека
+         * @description Какие компетенции и с какими весами войдут в тест.
+         *
+         *     Языково-зависимые компетенции включаются, только если в стеке есть
+         *     соответствующий язык.
+         */
+        get: operations["preview_blueprint_api_v1_assessment_blueprint_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessment/eligibility": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Доступные тесты
+         * @description Для каждого грейда: можно ли сейчас пройти тест, а если нет — почему и когда.
+         */
+        get: operations["eligibility_api_v1_assessment_eligibility_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessment/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * История тестов и грейдов
+         * @description Все попытки тестов и смены категории.
+         */
+        get: operations["history_api_v1_assessment_history_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessment/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Начать тест на грейд
+         * @description Начинает адаптивный тест на выбранный грейд и возвращает первое задание.
+         */
+        post: operations["start_session_api_v1_assessment_sessions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessment/sessions/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Состояние теста
+         * @description Текущее задание или итог. Просроченное задание засчитывается как неотвеченное.
+         */
+        get: operations["read_session_api_v1_assessment_sessions__session_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessment/sessions/{session_id}/abandon": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Прервать тест
+         * @description Прерывает тест. Попытка учитывается в дневном лимите.
+         */
+        post: operations["abandon_session_api_v1_assessment_sessions__session_id__abandon_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessment/sessions/{session_id}/accept-suggested-grade": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Принять предложенный грейд
+         * @description Присваивает нижний грейд, который тест уверенно подтвердил, без пересдачи.
+         */
+        post: operations["accept_suggested_grade_api_v1_assessment_sessions__session_id__accept_suggested_grade_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessment/sessions/{session_id}/answers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ответить на текущее задание
+         * @description Принимает ответ и возвращает следующее задание или итог теста.
+         *
+         *     Верно ли отвечено, до конца теста не сообщается.
+         */
+        post: operations["submit_answer_api_v1_assessment_sessions__session_id__answers_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessment/sessions/{session_id}/integrity-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Сигнал целостности
+         * @description Фиксирует уход со вкладки или вставку текста. Тест не прерывается.
+         */
+        post: operations["integrity_event_api_v1_assessment_sessions__session_id__integrity_events_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessment/surveys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Пройти опрос
+         * @description Сохраняет опрос: специализацию, стек, опыт и заявленный грейд.
+         *
+         *     Опрос задаёт состав теста (blueprint), но категорию не присваивает.
+         */
+        post: operations["submit_survey_api_v1_assessment_surveys_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/assessment/surveys/latest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Последний опрос
+         * @description Последний пройденный опрос или null.
+         */
+        get: operations["latest_survey_api_v1_assessment_surveys_latest_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/login": {
         parameters: {
             query?: never;
@@ -147,6 +374,136 @@ export interface paths {
          * @description Подтверждает адрес и сразу открывает сессию: повторно вводить пароль не нужно.
          */
         post: operations["verify_email_api_v1_auth_verify_email_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Мои согласия
+         * @description Действующие согласия на обработку ПДн и публикацию профиля в банке.
+         */
+        get: operations["read_consents_api_v1_candidates_me_consents_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/consents/bank-publication": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Согласие на публикацию в банке кандидатов
+         * @description Даёт или отзывает согласие. Без него профиль не виден работодателям в банке.
+         */
+        put: operations["set_bank_publication_api_v1_candidates_me_consents_bank_publication_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/privacy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Настройки приватности
+         * @description Что видит работодатель до раскрытия контактов.
+         */
+        get: operations["read_privacy_api_v1_candidates_me_privacy_get"];
+        /**
+         * Изменить приватность
+         * @description Меняет видимость полей и каналы связи, которые раскрываются после согласия.
+         */
+        put: operations["update_privacy_api_v1_candidates_me_privacy_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Мой профиль
+         * @description Профиль кандидата. При первом обращении создаётся пустой профиль с псевдонимом.
+         */
+        get: operations["read_profile_api_v1_candidates_me_profile_get"];
+        /**
+         * Сохранить профиль
+         * @description Сохраняет анкету целиком: поля, навыки, опыт работы и образование.
+         *
+         *     Категория и подтверждённые тестом навыки анкетой не меняются.
+         */
+        put: operations["update_profile_api_v1_candidates_me_profile_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/profile.pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Скачать стандартизированный PDF-профиль
+         * @description Профиль в едином формате платформы с отметками подтверждённых навыков.
+         */
+        get: operations["download_profile_pdf_api_v1_candidates_me_profile_pdf_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Статус онбординга
+         * @description Текущий шаг пути: профиль → опрос → выбор грейда → тест → категория.
+         */
+        get: operations["read_status_api_v1_candidates_me_status_get"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -334,6 +691,237 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /**
+         * AnswerSubmit
+         * @description Ответ на текущее задание: ключ варианта (a–d) или число строкой.
+         */
+        AnswerSubmit: {
+            /** Answer */
+            answer: string;
+            /**
+             * Item Id
+             * Format: uuid
+             */
+            item_id: string;
+        };
+        /**
+         * AssessmentHistoryRead
+         * @description История тестов и смен категории.
+         */
+        AssessmentHistoryRead: {
+            /** Grade Changes */
+            grade_changes: components["schemas"]["GradeHistoryRead"][];
+            /** Sessions */
+            sessions: components["schemas"]["SessionSummaryRead"][];
+        };
+        /**
+         * AssessmentMode
+         * @description Режим теста: полный (12–20 заданий) или экспресс для демонстрации (6–8 заданий).
+         * @enum {string}
+         */
+        AssessmentMode: "full" | "express";
+        /**
+         * BlueprintCompetency
+         * @description Компетенция в тесте и её доля.
+         */
+        BlueprintCompetency: {
+            /** Bank Size */
+            bank_size: number;
+            /** Code */
+            code: string;
+            /**
+             * Included
+             * @description false — компетенция отключена: в опросе нет нужного навыка
+             */
+            included: boolean;
+            /** Name */
+            name: string;
+            /** Weight */
+            weight: number;
+        };
+        /**
+         * BlueprintRead
+         * @description Из чего будет состоять тест специализации для этого кандидата.
+         */
+        BlueprintRead: {
+            /** Available */
+            available: boolean;
+            /** Competencies */
+            competencies: components["schemas"]["BlueprintCompetency"][];
+            /** Max Items */
+            max_items: number;
+            /** Min Items */
+            min_items: number;
+            specialization: components["schemas"]["SpecializationBrief"];
+        };
+        /** Body_set_bank_publication_api_v1_candidates_me_consents_bank_publication_put */
+        Body_set_bank_publication_api_v1_candidates_me_consents_bank_publication_put: {
+            /**
+             * Granted
+             * @description true — дать согласие, false — отозвать
+             */
+            granted: boolean;
+        };
+        /**
+         * CandidateProfileRead
+         * @description Профиль кандидата глазами самого кандидата (с контактами).
+         */
+        CandidateProfileRead: {
+            /** About */
+            about: string;
+            category: components["schemas"]["CategoryRead"] | null;
+            /** City */
+            city: string | null;
+            /**
+             * Completeness
+             * @description Заполненность профиля в процентах
+             */
+            completeness: number;
+            /** Educations */
+            educations: components["schemas"]["EducationRead"][];
+            /** Email */
+            email: string;
+            /** Experience Years */
+            experience_years: number | null;
+            /** Experiences */
+            experiences: components["schemas"]["WorkExperienceRead"][];
+            /** Full Name */
+            full_name: string | null;
+            /** Grade Assigned At */
+            grade_assigned_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Phone */
+            phone: string | null;
+            /** Public Alias */
+            public_alias: string;
+            /** Relocation Ready */
+            relocation_ready: boolean;
+            /** Salary Expectation From */
+            salary_expectation_from: number | null;
+            /** Salary Expectation Gross */
+            salary_expectation_gross: boolean;
+            search_status: components["schemas"]["SearchStatus"];
+            /** Skills */
+            skills: components["schemas"]["CandidateSkillRead"][];
+            /** Soft Skills */
+            soft_skills: string[];
+            /** Team Roles */
+            team_roles: string[];
+            /** Telegram */
+            telegram: string | null;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Work Formats */
+            work_formats: string[];
+        };
+        /**
+         * CandidateProfileUpdate
+         * @description Анкета кандидата целиком: PUT заменяет все поля, списки — полностью.
+         */
+        CandidateProfileUpdate: {
+            /**
+             * About
+             * @default
+             */
+            about: string;
+            /** City */
+            city?: string | null;
+            /** Educations */
+            educations?: components["schemas"]["EducationInput"][];
+            /** Experience Years */
+            experience_years?: number | null;
+            /** Experiences */
+            experiences?: components["schemas"]["WorkExperienceInput"][];
+            /** Full Name */
+            full_name?: string | null;
+            /** Phone */
+            phone?: string | null;
+            /**
+             * Relocation Ready
+             * @default false
+             */
+            relocation_ready: boolean;
+            /** Salary Expectation From */
+            salary_expectation_from?: number | null;
+            /**
+             * Salary Expectation Gross
+             * @description true — сумма до вычета НДФЛ, false — «на руки»
+             * @default true
+             */
+            salary_expectation_gross: boolean;
+            /** @default open */
+            search_status: components["schemas"]["SearchStatus"];
+            /** Skills */
+            skills?: components["schemas"]["CandidateSkillInput"][];
+            /** Soft Skills */
+            soft_skills?: string[];
+            /** Team Roles */
+            team_roles?: ("developer" | "team_lead" | "tech_lead" | "mentor" | "architect" | "researcher")[];
+            /** Telegram */
+            telegram?: string | null;
+            /** Work Formats */
+            work_formats?: components["schemas"]["WorkFormat"][];
+        };
+        /**
+         * CandidateSkillInput
+         * @description Навык в анкете с самооценкой уровня.
+         */
+        CandidateSkillInput: {
+            /** Self Level */
+            self_level?: number | null;
+            /** Skill Id */
+            skill_id: number;
+        };
+        /**
+         * CandidateSkillRead
+         * @description Навык в профиле.
+         */
+        CandidateSkillRead: {
+            /** Is Verified */
+            is_verified: boolean;
+            /** Self Level */
+            self_level: number | null;
+            skill: components["schemas"]["SkillRead"];
+            source: components["schemas"]["SkillSource"];
+            /** Verified At */
+            verified_at: string | null;
+        };
+        /**
+         * CandidateStatusRead
+         * @description Где кандидат находится на пути к категории.
+         */
+        CandidateStatusRead: {
+            /** Active Session Id */
+            active_session_id: string | null;
+            /** Bank Published */
+            bank_published: boolean;
+            category: components["schemas"]["CategoryRead"] | null;
+            claimed_category: components["schemas"]["CategoryRead"] | null;
+            /** Completeness */
+            completeness: number;
+            /**
+             * Grade Status
+             * @description confirmed — категория подтверждена тестом; unconfirmed — заявлена в опросе, но не подтверждена; not_declared — опрос не пройден
+             * @enum {string}
+             */
+            grade_status: "confirmed" | "unconfirmed" | "not_declared";
+            /**
+             * Onboarding Step
+             * @enum {string}
+             */
+            onboarding_step: "profile" | "survey" | "grade" | "test" | "done";
+            /** Profile Completed */
+            profile_completed: boolean;
+            /** Survey Completed */
+            survey_completed: boolean;
+        };
+        /**
          * CategoryRead
          * @description Категория кандидатов: специализация × грейд.
          */
@@ -348,6 +936,84 @@ export interface components {
             theta_cut: number;
             /** Title */
             title: string;
+        };
+        /**
+         * CompetencyResult
+         * @description Результат по компетенции.
+         */
+        CompetencyResult: {
+            /** Answered */
+            answered: number;
+            /** Code */
+            code: string;
+            /** Correct */
+            correct: number;
+            /** Name */
+            name: string;
+        };
+        /**
+         * ConsentsRead
+         * @description Состояние согласий кандидата.
+         */
+        ConsentsRead: {
+            /** Bank Publication */
+            bank_publication: boolean;
+            /** Bank Publication Granted At */
+            bank_publication_granted_at: string | null;
+            /** Personal Data Processing */
+            personal_data_processing: boolean;
+        };
+        /**
+         * ContactChannel
+         * @description Каналы связи, которые раскрываются работодателю после согласия кандидата.
+         * @enum {string}
+         */
+        ContactChannel: "email" | "phone" | "telegram";
+        /**
+         * EducationInput
+         * @description Образование.
+         */
+        EducationInput: {
+            /**
+             * Degree
+             * @default
+             */
+            degree: string;
+            /** Graduated Year */
+            graduated_year?: number | null;
+            /** Institution */
+            institution: string;
+        };
+        /**
+         * EducationRead
+         * @description Образование.
+         */
+        EducationRead: {
+            /** Degree */
+            degree: string;
+            /** Graduated Year */
+            graduated_year: number | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Institution */
+            institution: string;
+        };
+        /**
+         * EligibilityRead
+         * @description Доступные тесты, текущая категория и незавершённая сессия.
+         */
+        EligibilityRead: {
+            /** Active Session Id */
+            active_session_id: string | null;
+            current_category: components["schemas"]["CategoryRead"] | null;
+            /** Express Available */
+            express_available: boolean;
+            /** Options */
+            options: components["schemas"]["GradeOptionRead"][];
+            survey: components["schemas"]["SurveyRead"] | null;
         };
         /**
          * ErrorBody
@@ -391,6 +1057,40 @@ export interface components {
             rank: number;
         };
         /**
+         * GradeChangeReason
+         * @description Почему у кандидата сменилась категория.
+         * @enum {string}
+         */
+        GradeChangeReason: "initial" | "upgrade" | "downgrade_voluntary" | "accepted_lower";
+        /**
+         * GradeHistoryRead
+         * @description Смена категории.
+         */
+        GradeHistoryRead: {
+            category: components["schemas"]["CategoryRead"];
+            /**
+             * Changed At
+             * Format: date-time
+             */
+            changed_at: string;
+            reason: components["schemas"]["GradeChangeReason"];
+            /** Session Id */
+            session_id: string | null;
+        };
+        /**
+         * GradeOptionRead
+         * @description Можно ли сейчас пройти тест на грейд.
+         */
+        GradeOptionRead: {
+            /** Allowed */
+            allowed: boolean;
+            /** Available At */
+            available_at: string | null;
+            grade: components["schemas"]["GradeBrief"];
+            /** Reason */
+            reason: string;
+        };
+        /**
          * GradeRead
          * @description Грейд с пояснением и порогом по шкале способностей.
          */
@@ -409,6 +1109,15 @@ export interface components {
             name: string;
             /** Rank */
             rank: number;
+        };
+        /**
+         * GradeScalePoint
+         * @description Порог грейда на шкале способностей.
+         */
+        GradeScalePoint: {
+            grade: components["schemas"]["GradeBrief"];
+            /** Theta Cut */
+            theta_cut: number;
         };
         /**
          * HealthResponse
@@ -439,6 +1148,80 @@ export interface components {
             id: number;
             /** Name */
             name: string;
+        };
+        /**
+         * IntegrityEventCreate
+         * @description Событие, которое может указывать на помощь со стороны (без блокировки теста).
+         */
+        IntegrityEventCreate: {
+            /**
+             * Event
+             * @enum {string}
+             */
+            event: "focus_lost" | "paste" | "fullscreen_exit";
+        };
+        /**
+         * ItemOption
+         * @description Вариант ответа.
+         */
+        ItemOption: {
+            /** Key */
+            key: string;
+            /** Text */
+            text: string;
+        };
+        /**
+         * ItemTable
+         * @description Таблица в условии задания.
+         */
+        ItemTable: {
+            /** Columns */
+            columns: string[];
+            /** Rows */
+            rows: unknown[][];
+            /** Title */
+            title: string;
+        };
+        /**
+         * ItemView
+         * @description Задание, как его видит кандидат. Ключа ответа здесь нет и быть не может.
+         */
+        ItemView: {
+            /** Code */
+            code?: string | null;
+            /** Code Language */
+            code_language?: string | null;
+            /** Competency */
+            competency: string;
+            /** Competency Name */
+            competency_name: string;
+            /**
+             * Deadline At
+             * Format: date-time
+             */
+            deadline_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Input Hint */
+            input_hint?: string | null;
+            /** Options */
+            options?: components["schemas"]["ItemOption"][];
+            /** Position */
+            position: number;
+            /** Prompt */
+            prompt: string;
+            response_format: components["schemas"]["ResponseFormat"];
+            /** Seconds Left */
+            seconds_left: number;
+            /** Tables */
+            tables?: components["schemas"]["ItemTable"][];
+            /** Time Limit Sec */
+            time_limit_sec: number;
+            /** Unit */
+            unit?: string | null;
         };
         /**
          * LoginRequest
@@ -475,6 +1258,38 @@ export interface components {
             offset: number;
             /** Total */
             total: number;
+        };
+        /**
+         * PrivacySettingsRead
+         * @description Что видит работодатель до раскрытия контактов.
+         */
+        PrivacySettingsRead: {
+            /** Revealed Channels */
+            revealed_channels: components["schemas"]["ContactChannel"][];
+            /** Show City */
+            show_city: boolean;
+            /** Show Company Names */
+            show_company_names: boolean;
+            /** Show Fsp Achievements */
+            show_fsp_achievements: boolean;
+            /** Show Salary Expectation */
+            show_salary_expectation: boolean;
+        };
+        /**
+         * PrivacySettingsUpdate
+         * @description Изменение настроек приватности.
+         */
+        PrivacySettingsUpdate: {
+            /** Revealed Channels */
+            revealed_channels: components["schemas"]["ContactChannel"][];
+            /** Show City */
+            show_city: boolean;
+            /** Show Company Names */
+            show_company_names: boolean;
+            /** Show Fsp Achievements */
+            show_fsp_achievements: boolean;
+            /** Show Salary Expectation */
+            show_salary_expectation: boolean;
         };
         /**
          * RegisterRequest
@@ -535,6 +1350,132 @@ export interface components {
             email: string;
         };
         /**
+         * ResponseFormat
+         * @description Формат ответа на задание.
+         * @enum {string}
+         */
+        ResponseFormat: "single_choice" | "numeric";
+        /**
+         * SearchStatus
+         * @description Готовность кандидата к предложениям. «Не ищу» скрывает профиль из банка.
+         * @enum {string}
+         */
+        SearchStatus: "active" | "open" | "not_looking";
+        /**
+         * SessionOutcome
+         * @description Итог теста на заявленный грейд.
+         * @enum {string}
+         */
+        SessionOutcome: "passed_confident" | "passed" | "failed";
+        /**
+         * SessionRead
+         * @description Состояние сессии тестирования.
+         */
+        SessionRead: {
+            /** Answered */
+            answered: number;
+            current_item: components["schemas"]["ItemView"] | null;
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /** Finished At */
+            finished_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Max Items */
+            max_items: number;
+            /** Min Items */
+            min_items: number;
+            mode: components["schemas"]["AssessmentMode"];
+            result: components["schemas"]["SessionResult"] | null;
+            specialization: components["schemas"]["SpecializationBrief"];
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            status: components["schemas"]["SessionStatus"];
+            target_grade: components["schemas"]["GradeBrief"];
+        };
+        /**
+         * SessionResult
+         * @description Итог теста.
+         */
+        SessionResult: {
+            /** Can Accept Suggested */
+            can_accept_suggested: boolean;
+            /** Competencies */
+            competencies: components["schemas"]["CompetencyResult"][];
+            /** Integrity Flags */
+            integrity_flags: {
+                [key: string]: number;
+            };
+            /** Items Scored */
+            items_scored: number;
+            next_grade_unlocked: components["schemas"]["GradeBrief"] | null;
+            outcome: components["schemas"]["SessionOutcome"];
+            resulting_category: components["schemas"]["CategoryRead"] | null;
+            /** Scale */
+            scale: components["schemas"]["GradeScalePoint"][];
+            suggested_grade: components["schemas"]["GradeBrief"] | null;
+            target_grade: components["schemas"]["GradeBrief"];
+            /** Theta */
+            theta: number;
+            /** Theta Se */
+            theta_se: number;
+        };
+        /**
+         * SessionStart
+         * @description Начало теста на выбранный грейд по последнему опросу.
+         */
+        SessionStart: {
+            /**
+             * @description full — полный тест (12–20 заданий), express — 6–8 заданий для демонстрации
+             * @default full
+             */
+            mode: components["schemas"]["AssessmentMode"];
+            /** Target Grade Id */
+            target_grade_id: number;
+        };
+        /**
+         * SessionStatus
+         * @description Состояние сессии тестирования.
+         * @enum {string}
+         */
+        SessionStatus: "in_progress" | "completed" | "abandoned" | "expired";
+        /**
+         * SessionSummaryRead
+         * @description Строка истории тестов.
+         */
+        SessionSummaryRead: {
+            /** Finished At */
+            finished_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Items Scored */
+            items_scored: number;
+            mode: components["schemas"]["AssessmentMode"];
+            outcome: components["schemas"]["SessionOutcome"] | null;
+            specialization: components["schemas"]["SpecializationBrief"];
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+            status: components["schemas"]["SessionStatus"];
+            target_grade: components["schemas"]["GradeBrief"];
+            /** Theta */
+            theta: number | null;
+        };
+        /**
          * SkillCreate
          * @description Новый навык.
          */
@@ -580,6 +1521,12 @@ export interface components {
             slug: string;
         };
         /**
+         * SkillSource
+         * @description Откуда навык попал в профиль: от этого зависит, насколько ему доверяет подбор.
+         * @enum {string}
+         */
+        SkillSource: "profile" | "survey" | "resume" | "test" | "micro_task";
+        /**
          * SkillUpdate
          * @description Изменение навыка. Slug неизменяем: по нему навыки ищутся в резюме и вакансиях.
          */
@@ -618,6 +1565,16 @@ export interface components {
              */
             description: string;
             /**
+             * Direction Code
+             * @default development
+             */
+            direction_code: string;
+            /**
+             * Direction Name
+             * @default Разработка
+             */
+            direction_name: string;
+            /**
              * Name
              * @example Разработка игр
              */
@@ -630,13 +1587,17 @@ export interface components {
         };
         /**
          * SpecializationRead
-         * @description Специализация.
+         * @description Специализация и её IT-направление.
          */
         SpecializationRead: {
             /** Code */
             code: string;
             /** Description */
             description: string;
+            /** Direction Code */
+            direction_code: string;
+            /** Direction Name */
+            direction_name: string;
             /** Id */
             id: number;
             /** Name */
@@ -655,6 +1616,52 @@ export interface components {
             name?: string | null;
             /** Sort Order */
             sort_order?: number | null;
+        };
+        /**
+         * SurveyCreate
+         * @description Ответы опроса: отрасль, специализация, стек, опыт и заявленный грейд.
+         */
+        SurveyCreate: {
+            /** Claimed Grade Id */
+            claimed_grade_id: number;
+            /** Experience Years */
+            experience_years: number;
+            /** Industry Ids */
+            industry_ids?: number[];
+            /** Primary Skill Ids */
+            primary_skill_ids: number[];
+            /** Specialization Id */
+            specialization_id: number;
+            /** Team Roles */
+            team_roles?: ("developer" | "team_lead" | "tech_lead" | "mentor" | "architect" | "researcher")[];
+            /** Work Formats */
+            work_formats?: components["schemas"]["WorkFormat"][];
+        };
+        /**
+         * SurveyRead
+         * @description Сохранённый опрос.
+         */
+        SurveyRead: {
+            claimed_grade: components["schemas"]["GradeBrief"];
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Experience Years */
+            experience_years: number;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Industry Ids */
+            industry_ids: number[];
+            /** Primary Skill Ids */
+            primary_skill_ids: number[];
+            specialization: components["schemas"]["SpecializationBrief"];
+            /** Team Roles */
+            team_roles: string[];
         };
         /**
          * TokenResponse
@@ -713,6 +1720,58 @@ export interface components {
             /** Token */
             token: string;
         };
+        /**
+         * WorkExperienceInput
+         * @description Место работы.
+         */
+        WorkExperienceInput: {
+            /** Company Name */
+            company_name: string;
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            /** Ended On */
+            ended_on?: string | null;
+            /** Position */
+            position: string;
+            /**
+             * Started On
+             * Format: date
+             */
+            started_on: string;
+        };
+        /**
+         * WorkExperienceRead
+         * @description Место работы.
+         */
+        WorkExperienceRead: {
+            /** Company Name */
+            company_name: string;
+            /** Description */
+            description: string;
+            /** Ended On */
+            ended_on: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Position */
+            position: string;
+            /**
+             * Started On
+             * Format: date
+             */
+            started_on: string;
+        };
+        /**
+         * WorkFormat
+         * @description Формат работы.
+         * @enum {string}
+         */
+        WorkFormat: "office" | "hybrid" | "remote";
     };
     responses: never;
     parameters: never;
@@ -722,6 +1781,750 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    preview_blueprint_api_v1_assessment_blueprint_get: {
+        parameters: {
+            query: {
+                /** @description Специализация из справочника */
+                specialization_id: number;
+                /** @description Навыки из опроса */
+                skill_ids?: number[] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BlueprintRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    eligibility_api_v1_assessment_eligibility_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EligibilityRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    history_api_v1_assessment_history_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssessmentHistoryRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    start_session_api_v1_assessment_sessions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SessionStart"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_session_api_v1_assessment_sessions__session_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    abandon_session_api_v1_assessment_sessions__session_id__abandon_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    accept_suggested_grade_api_v1_assessment_sessions__session_id__accept_suggested_grade_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    submit_answer_api_v1_assessment_sessions__session_id__answers_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnswerSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    integrity_event_api_v1_assessment_sessions__session_id__integrity_events_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IntegrityEventCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    submit_survey_api_v1_assessment_surveys_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SurveyCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SurveyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    latest_survey_api_v1_assessment_surveys_latest_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SurveyRead"] | null;
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     login_api_v1_auth_login_post: {
         parameters: {
             query?: never;
@@ -1011,6 +2814,394 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_consents_api_v1_candidates_me_consents_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentsRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    set_bank_publication_api_v1_candidates_me_consents_bank_publication_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Body_set_bank_publication_api_v1_candidates_me_consents_bank_publication_put"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentsRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_privacy_api_v1_candidates_me_privacy_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrivacySettingsRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_privacy_api_v1_candidates_me_privacy_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrivacySettingsUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrivacySettingsRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_profile_api_v1_candidates_me_profile_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateProfileRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_profile_api_v1_candidates_me_profile_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CandidateProfileUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateProfileRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    download_profile_pdf_api_v1_candidates_me_profile_pdf_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description PDF-профиль */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": unknown;
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_status_api_v1_candidates_me_status_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateStatusRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
