@@ -45,13 +45,24 @@ class Industry(Base):
 
 
 class Specialization(TimestampMixin, Base):
-    """ИТ-специализация (backend, frontend, …), первая ось категории кандидата."""
+    """ИТ-специализация (backend, frontend, …), первая ось категории кандидата.
+
+    `direction_*` — IT-направление, которое ТЗ называет «отраслью» (уточнение менторов):
+    «Разработка», «Данные и ML», «Качество», «Инфраструктура». По нему группируется
+    выбор специализации в опросе.
+    """
 
     __tablename__ = "specializations"
 
     id: Mapped[int] = mapped_column(SmallInteger, Identity(), primary_key=True)
     code: Mapped[str] = mapped_column(String(64), unique=True)
     name: Mapped[str] = mapped_column(String(128))
+    direction_code: Mapped[str] = mapped_column(
+        String(32), default="development", server_default="development"
+    )
+    direction_name: Mapped[str] = mapped_column(
+        String(64), default="Разработка", server_default="Разработка"
+    )
     description: Mapped[str] = mapped_column(Text, default="", server_default="")
     sort_order: Mapped[int] = mapped_column(SmallInteger, default=0, server_default="0")
 

@@ -38,10 +38,12 @@ class SpecializationBrief(ORMModel):
 
 
 class SpecializationRead(SpecializationBrief):
-    """Специализация."""
+    """Специализация и её IT-направление."""
 
     description: str
     sort_order: int
+    direction_code: str
+    direction_name: str
 
 
 class SpecializationCreate(BaseModel):
@@ -51,6 +53,8 @@ class SpecializationCreate(BaseModel):
     name: str = Field(min_length=2, max_length=128, examples=["Разработка игр"])
     description: str = Field(default="", max_length=2000)
     sort_order: int = Field(default=100, ge=0, le=1000)
+    direction_code: str = Field(default="development", pattern=_CODE_PATTERN)
+    direction_name: str = Field(default="Разработка", min_length=2, max_length=64)
 
 
 class SpecializationUpdate(BaseModel):

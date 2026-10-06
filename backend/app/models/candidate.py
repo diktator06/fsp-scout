@@ -106,6 +106,7 @@ class CandidateProfile(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     )
     relocation_ready: Mapped[bool] = mapped_column(default=False, server_default=false())
     salary_expectation_from: Mapped[int | None] = mapped_column(Integer)
+    salary_expectation_gross: Mapped[bool] = mapped_column(default=True, server_default=true())
     search_status: Mapped[SearchStatus] = mapped_column(
         pg_enum(SearchStatus, "search_status"),
         default=SearchStatus.OPEN,

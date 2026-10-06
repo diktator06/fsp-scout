@@ -88,6 +88,7 @@ def build_context(profile: CandidateProfileRead) -> dict[str, Any]:
         "salary": f"{profile.salary_expectation_from:,}".replace(",", " ")
         if profile.salary_expectation_from
         else None,
+        "salary_basis": "до вычета НДФЛ" if profile.salary_expectation_gross else "на руки",
         "relocation_ready": profile.relocation_ready,
         "category": category,
         "skills": [

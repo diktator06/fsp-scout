@@ -83,7 +83,7 @@ h2 { font-size: 10.5pt; font-weight: 800; color: #520978; text-transform: upperc
     <h2>Роли и условия</h2>
     {% if team_roles %}<div class="fact"><span>Роли в команде:</span> {{ team_roles }}</div>{% endif %}
     {% if soft_skills %}<div class="fact"><span>Софт-скиллы:</span> {{ soft_skills }}</div>{% endif %}
-    {% if salary %}<div class="fact"><span>Ожидания:</span> от {{ salary }} ₽</div>{% endif %}
+    {% if salary %}<div class="fact"><span>Ожидания:</span> от {{ salary }} ₽ ({{ salary_basis }})</div>{% endif %}
     <div class="fact"><span>Релокация:</span> {{ "готов(а)" if relocation_ready else "не рассматриваю" }}</div>
   </div>
 </div>
