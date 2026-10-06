@@ -7,7 +7,7 @@ FRONTEND := cd frontend &&
 .DEFAULT_GOAL := help
 .PHONY: help up down restart logs ps reset db install install-backend install-frontend \
         dev-backend dev-frontend test test-backend test-frontend lint lint-backend lint-frontend \
-        style format migrate revision seed openapi check
+        style format migrate revision seed openapi simulate check
 
 help: ## Показать список команд
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -81,5 +81,8 @@ seed: ## Наполнить справочники и демо-аккаунты
 openapi: ## Выгрузить OpenAPI и перегенерировать типы фронтенда
 	$(BACKEND) uv run python -m scripts.export_openapi
 	$(FRONTEND) npm run gen:api
+
+simulate: ## Симуляция адаптивного теста и отчёт в docs/validation
+	$(BACKEND) uv run python -m evaluation.simulate_assessment
 
 check: lint test ## Всё, что проверяет CI
