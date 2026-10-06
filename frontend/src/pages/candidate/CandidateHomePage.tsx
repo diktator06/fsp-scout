@@ -1,73 +1,215 @@
-import { Badge, Card, Group, SimpleGrid, Stack, Text, ThemeIcon, Title } from '@mantine/core';
-import { IconEyeOff, IconLock, IconTargetArrow } from '@tabler/icons-react';
+import {
+  Badge,
+  Button,
+  Card,
+  Group,
+  Progress,
+  SimpleGrid,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title,
+} from '@mantine/core';
+import { IconArrowRight, IconEyeOff, IconLock, IconTargetArrow } from '@tabler/icons-react';
+import { Link } from 'react-router';
+import { useCandidateStatus } from '@/api/candidate';
+import { errorMessage } from '@/api/errors';
+import type { CandidateStatus } from '@/api/types';
 import { useAuth } from '@/features/auth/useAuth';
+import { GRADE_STATUS_COPY } from '@/shared/lib/candidate';
 import type { TimelineStep } from '@/shared/lib/invitationStatus';
-import { type ScoreFactor } from '@/shared/lib/score';
 import {
   CategoryBadge,
+  ErrorState,
+  LoadingState,
   PageHeader,
   SalaryRange,
   StatusTimeline,
-  VerifiedScoreBar,
 } from '@/shared/ui';
 
-const ONBOARDING_STEPS: TimelineStep[] = [
-  { key: 'account', label: 'Аккаунт', state: 'done', description: 'Email подтверждён' },
-  { key: 'profile', label: 'Профиль', state: 'current', description: 'Форма или PDF-резюме' },
-  { key: 'survey', label: 'Опрос', state: 'upcoming', description: 'Специализация и стек' },
-  { key: 'test', label: 'Тест на грейд', state: 'upcoming', description: '20–30 минут' },
-  { key: 'category', label: 'Категория', state: 'upcoming', description: 'Вас видят компании' },
-];
+const STEP_ORDER = ['profile', 'survey', 'grade', 'test', 'done'] as const;
 
-const SAMPLE_FACTORS: ScoreFactor[] = [
-  { key: 'test', label: 'Адаптивный тест', value: 0, weight: 0.55, hint: 'Появится после теста' },
-  { key: 'tasks', label: 'Микрозадачи', value: 0, weight: 0.2 },
-  { key: 'fsp', label: 'Достижения ФСП', value: 0, weight: 0.15, hint: 'Привяжите ФСП ID' },
-  { key: 'profile', label: 'Подтверждённость профиля', value: 0.3, weight: 0.1 },
-];
+function buildTimeline(status: CandidateStatus): TimelineStep[] {
+  // Шаг «тест» объединяет выбор уровня и прохождение: для кандидата это одно действие.
+  const position = STEP_ORDER.indexOf(status.onboarding_step);
+  const stateOf = (index: number): TimelineStep['state'] =>
+    position > index ? 'done' : position === index ? 'current' : 'upcoming';
+  const testIndex = status.onboarding_step === 'test' ? 3 : 2;
+  return [
+    { key: 'account', label: 'Аккаунт', state: 'done', description: 'Email подтверждён' },
+    { key: 'profile', label: 'О себе', state: stateOf(0), description: 'Имя, опыт, формат' },
+    { key: 'survey', label: 'Опрос', state: stateOf(1), description: 'Специализация и стек' },
+    {
+      key: 'test',
+      label: 'Тест на грейд',
+      state: status.onboarding_step === 'done' ? 'done' : stateOf(testIndex),
+      description: 'Адаптивный, 12–20 заданий',
+    },
+    {
+      key: 'category',
+      label: 'Категория',
+      state: status.onboarding_step === 'done' ? 'success' : 'upcoming',
+      description: 'Вас видят компании',
+    },
+  ];
+}
+
+function NextAction({ status }: { status: CandidateStatus }) {
+  // Одна главная кнопка под текущий шаг: человеку не нужно искать, что делать дальше.
+  const actions: Record<
+    CandidateStatus['onboarding_step'],
+    { text: string; to: string; label: string }
+  > = {
+    profile: {
+      text: 'Начните с пары фактов о себе — это займёт минуту.',
+      to: '/c/onboarding',
+      label: 'Заполнить',
+    },
+    survey: {
+      text: 'Расскажите о стеке: из него соберём тест под вашу специализацию.',
+      to: '/c/onboarding',
+      label: 'Пройти опрос',
+    },
+    grade: {
+      text: 'Всё готово к тесту. Выберите уровень и режим.',
+      to: '/c/onboarding',
+      label: 'Выбрать тест',
+    },
+    test: {
+      text: 'У вас есть незавершённый тест.',
+      to: status.active_session_id
+        ? `/c/assessment/sessions/${status.active_session_id}`
+        : '/c/assessment',
+      label: 'Продолжить тест',
+    },
+    done: {
+      text: 'Категория подтверждена. Следующий уровень — тестом в разделе «Категория и тест».',
+      to: '/c/assessment',
+      label: 'Открыть раздел',
+    },
+  };
+  const action = actions[status.onboarding_step];
+  return (
+    <Group justify="space-between" wrap="wrap" gap="md" mt="lg">
+      <Text size="sm" c="dimmed">
+        {action.text}
+      </Text>
+      <Button component={Link} to={action.to} rightSection={<IconArrowRight size={16} />}>
+        {action.label}
+      </Button>
+    </Group>
+  );
+}
 
 export function CandidateHomePage() {
   const { user } = useAuth();
+  const status = useCandidateStatus();
+
+  const header = (
+    <PageHeader
+      kicker="Кабинет специалиста"
+      title="Путь к вашей категории"
+      description={
+        <>
+          Вы вошли как <b>{user?.email}</b>. Категория определяется опросом и тестом, а не резюме.
+          Как только она появится, работодатели смогут пригласить вас с вилкой зарплаты.
+        </>
+      }
+    />
+  );
+
+  if (status.isPending) {
+    return (
+      <>
+        {header}
+        <LoadingState />
+      </>
+    );
+  }
+  if (status.isError) {
+    return (
+      <>
+        {header}
+        <ErrorState message={errorMessage(status.error)} onRetry={() => void status.refetch()} />
+      </>
+    );
+  }
+
+  const data = status.data;
+  const gradeCopy = GRADE_STATUS_COPY[data.grade_status];
+  const category = data.category ?? data.claimed_category;
+  const doneSteps = buildTimeline(data).filter(
+    (step) => step.state === 'done' || step.state === 'success',
+  ).length;
+
   return (
     <>
-      <PageHeader
-        kicker="Кабинет специалиста"
-        title="Путь к вашей категории"
-        description={
-          <>
-            Вы вошли как <b>{user?.email}</b>. Категория определяется опросом и тестом, а не резюме.
-            Как только она появится, работодатели смогут пригласить вас с вилкой зарплаты.
-          </>
-        }
-      />
-
+      {header}
       <Card mb="lg">
         <Group justify="space-between" mb="lg" wrap="wrap" gap="sm">
           <Title order={4}>Шаги онбординга</Title>
           <Badge color="lilac" variant="light">
-            Шаг 2 из 5
+            {doneSteps} из 5
           </Badge>
         </Group>
-        <StatusTimeline steps={ONBOARDING_STEPS} />
+        <StatusTimeline steps={buildTimeline(data)} />
+        <NextAction status={data} />
       </Card>
 
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
         <Card>
           <Stack gap="md">
-            <Group gap="sm">
-              <ThemeIcon color="fsp" variant="light" radius="md" size={36}>
-                <IconTargetArrow size={20} />
-              </ThemeIcon>
-              <Title order={4}>Текущий статус</Title>
+            <Group justify="space-between" wrap="wrap" gap="sm">
+              <Group gap="sm">
+                <ThemeIcon color="fsp" variant="light" radius="md" size={36}>
+                  <IconTargetArrow size={20} />
+                </ThemeIcon>
+                <Title order={4}>Текущий статус</Title>
+              </Group>
+              <Badge color={gradeCopy.color} variant="light">
+                {gradeCopy.label}
+              </Badge>
             </Group>
-            <Text c="dimmed" size="sm">
-              Категория пока не присвоена. После теста здесь появится бейдж категории, например:
-            </Text>
-            <Group gap="xs">
-              <CategoryBadge specialization="Backend-разработка" grade="middle" />
-              <CategoryBadge specialization="Аналитика данных" grade="junior" size="sm" />
+            {category ? (
+              <CategoryBadge
+                specialization={category.specialization.name}
+                grade={category.grade.code}
+                gradeLabel={category.grade.name}
+                unconfirmed={data.grade_status !== 'confirmed'}
+              />
+            ) : (
+              <Text c="dimmed" size="sm">
+                Категория пока не заявлена. После опроса здесь появится грейд с пометкой «не
+                подтверждён», после теста — подтверждённая категория.
+              </Text>
+            )}
+            <Stack gap={6}>
+              <Group justify="space-between">
+                <Text size="sm" fw={600}>
+                  Профиль заполнен
+                </Text>
+                <Text size="sm" fw={700} className="tabular">
+                  {data.completeness}%
+                </Text>
+              </Group>
+              <Progress
+                value={data.completeness}
+                color="fsp"
+                size="md"
+                radius="xl"
+                aria-label="Заполненность профиля"
+              />
+            </Stack>
+            <Group gap={8}>
+              <Badge color={data.bank_published ? 'teal' : 'gray'} variant="dot">
+                {data.bank_published ? 'Опубликован в банке кандидатов' : 'Не опубликован в банке'}
+              </Badge>
+              {!data.bank_published && (
+                <Button component={Link} to="/c/settings" variant="subtle" size="compact-sm">
+                  Включить
+                </Button>
+              )}
             </Group>
-            <VerifiedScoreBar factors={SAMPLE_FACTORS} />
           </Stack>
         </Card>
 

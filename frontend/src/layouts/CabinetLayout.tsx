@@ -47,11 +47,11 @@ interface NavItem {
 const NAVIGATION: Record<UserRole, NavItem[]> = {
   candidate: [
     { to: '/c', label: 'Главная', icon: IconHome },
-    { to: '/c/profile', label: 'Профиль', icon: IconUserCircle, soon: true },
-    { to: '/c/assessment', label: 'Категория и тест', icon: IconTargetArrow, soon: true },
+    { to: '/c/profile', label: 'Профиль', icon: IconUserCircle },
+    { to: '/c/assessment', label: 'Категория и тест', icon: IconTargetArrow },
     { to: '/c/invitations', label: 'Приглашения', icon: IconMailOpened, soon: true },
     { to: '/c/vacancies', label: 'Вакансии', icon: IconBriefcase, soon: true },
-    { to: '/c/settings', label: 'Приватность', icon: IconShieldCheck, soon: true },
+    { to: '/c/settings', label: 'Приватность', icon: IconShieldCheck },
   ],
   employer: [
     { to: '/e', label: 'Главная', icon: IconHome },

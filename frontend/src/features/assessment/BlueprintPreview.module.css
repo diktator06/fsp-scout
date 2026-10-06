@@ -1,0 +1,49 @@
+.list {
+  display: grid;
+  gap: rem(10px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: rem(4px) rem(12px);
+  align-items: baseline;
+}
+
+.name {
+  font-size: rem(14px);
+  font-weight: 600;
+  color: #1c1d22;
+}
+
+.share {
+  font-size: rem(13px);
+  font-weight: 700;
+  color: #520978;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar {
+  grid-column: 1 / -1;
+  height: rem(6px);
+  border-radius: rem(999px);
+  background: #ece8f3;
+  overflow: hidden;
+}
+
+.bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #8a83d1, #520978);
+  transition: width 300ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar > span {
+    transition: none;
+  }
+}

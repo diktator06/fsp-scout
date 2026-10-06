@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 import { createBrowserRouter } from 'react-router';
 import { GuestOnly, RequireRole } from '@/features/auth/guards';
 import { AuthLayout } from '@/layouts/AuthLayout';
@@ -7,13 +8,15 @@ import { CheckEmailPage } from '@/pages/auth/CheckEmailPage';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { VerifyEmailPage } from '@/pages/auth/VerifyEmailPage';
-import { CandidateHomePage } from '@/pages/candidate/CandidateHomePage';
-import { EmployerHomePage } from '@/pages/employer/EmployerHomePage';
-import { MethodistHomePage } from '@/pages/methodist/MethodistHomePage';
-import { DesignSystemPage } from '@/pages/public/DesignSystemPage';
 import { LandingPage } from '@/pages/public/LandingPage';
 import { PersonalDataPolicyPage } from '@/pages/public/PersonalDataPolicyPage';
 import { ForbiddenPage, NotFoundPage, RouteErrorPage } from '@/pages/public/StatusPages';
+
+function page<T>(load: () => Promise<T>, pick: (module: T) => ComponentType) {
+  // Страницы кабинетов грузятся отдельными чанками: лендингу и входу не нужны
+  // подсветка кода, формы анкеты и таблицы методиста.
+  return async () => ({ Component: pick(await load()) });
+}
 
 export const router = createBrowserRouter([
   {
@@ -21,7 +24,13 @@ export const router = createBrowserRouter([
     errorElement: <RouteErrorPage />,
     children: [
       { index: true, element: <LandingPage /> },
-      { path: 'design-system', element: <DesignSystemPage /> },
+      {
+        path: 'design-system',
+        lazy: page(
+          () => import('@/pages/public/DesignSystemPage'),
+          (module) => module.DesignSystemPage,
+        ),
+      },
       { path: 'legal/personal-data', element: <PersonalDataPolicyPage /> },
       { path: 'forbidden', element: <ForbiddenPage /> },
       { path: '*', element: <NotFoundPage /> },
@@ -60,7 +69,51 @@ export const router = createBrowserRouter([
       </RequireRole>
     ),
     errorElement: <RouteErrorPage />,
-    children: [{ index: true, element: <CandidateHomePage /> }],
+    children: [
+      {
+        index: true,
+        lazy: page(
+          () => import('@/pages/candidate/CandidateHomePage'),
+          (module) => module.CandidateHomePage,
+        ),
+      },
+      {
+        path: 'onboarding',
+        lazy: page(
+          () => import('@/pages/candidate/OnboardingPage'),
+          (module) => module.OnboardingPage,
+        ),
+      },
+      {
+        path: 'profile',
+        lazy: page(
+          () => import('@/pages/candidate/ProfilePage'),
+          (module) => module.ProfilePage,
+        ),
+      },
+      {
+        path: 'assessment',
+        lazy: page(
+          () => import('@/pages/candidate/AssessmentPage'),
+          (module) => module.AssessmentPage,
+        ),
+      },
+      {
+        path: 'assessment/sessions/:sessionId',
+        lazy: page(
+          () => import('@/pages/candidate/AssessmentSessionPage'),
+          (module) => module.AssessmentSessionPage,
+        ),
+      },
+      {
+        path: 'settings',
+        lazy: page(
+          () => import('@/pages/candidate/SettingsPage'),
+          (module) => module.SettingsPage,
+        ),
+      },
+      { path: '*', element: <NotFoundPage /> },
+    ],
   },
   {
     path: 'e',
@@ -70,7 +123,15 @@ export const router = createBrowserRouter([
       </RequireRole>
     ),
     errorElement: <RouteErrorPage />,
-    children: [{ index: true, element: <EmployerHomePage /> }],
+    children: [
+      {
+        index: true,
+        lazy: page(
+          () => import('@/pages/employer/EmployerHomePage'),
+          (module) => module.EmployerHomePage,
+        ),
+      },
+    ],
   },
   {
     path: 'm',
@@ -80,6 +141,14 @@ export const router = createBrowserRouter([
       </RequireRole>
     ),
     errorElement: <RouteErrorPage />,
-    children: [{ index: true, element: <MethodistHomePage /> }],
+    children: [
+      {
+        index: true,
+        lazy: page(
+          () => import('@/pages/methodist/MethodistHomePage'),
+          (module) => module.MethodistHomePage,
+        ),
+      },
+    ],
   },
 ]);

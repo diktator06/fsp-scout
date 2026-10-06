@@ -1,0 +1,25 @@
+.prompt {
+  margin: 0;
+  font-size: rem(19px);
+  font-weight: 600;
+  line-height: 1.5;
+  color: #1c1d22;
+  white-space: pre-line;
+}
+
+.inlineCode {
+  padding: rem(1px) rem(6px);
+  border-radius: rem(6px);
+  background: #f1eff6;
+  color: #420762;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.86em;
+  font-weight: 600;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 36em) {
+  .prompt {
+    font-size: rem(17px);
+  }
+}

@@ -1,0 +1,30 @@
+.option {
+  display: flex;
+  align-items: flex-start;
+  height: 100%;
+  padding: rem(14px) rem(16px);
+  border-radius: var(--mantine-radius-md);
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.option[data-checked] {
+  border-color: #520978;
+  background: #f7f0fb;
+  box-shadow: inset 0 0 0 1px #520978;
+}
+
+.option:disabled {
+  cursor: not-allowed;
+  background: var(--scout-surface-muted);
+}
+
+.modes {
+  align-self: flex-start;
+}
+
+.option > * {
+  flex: 1;
+  min-width: 0;
+}

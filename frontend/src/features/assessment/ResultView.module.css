@@ -1,0 +1,131 @@
+.hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xl);
+  padding: rem(32px);
+  border-radius: var(--mantine-radius-lg);
+  background: var(--scout-hero-gradient);
+  color: #ffffff;
+  box-shadow: var(--mantine-shadow-lg);
+}
+
+.hero[data-outcome='failed'] {
+  background: linear-gradient(140deg, #1c1d22 0%, #310f53 70%, #5a0b3a 100%);
+}
+
+.heroMain {
+  min-width: 0;
+}
+
+.stats {
+  display: flex;
+  gap: rem(28px);
+  margin: 0;
+}
+
+.stats div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: rem(4px);
+}
+
+.stats dt {
+  font-size: rem(12px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.stats dd {
+  margin: 0;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: rem(30px);
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.stats small {
+  font-size: rem(15px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+@media (min-width: 75em) {
+  .scaleCard {
+    grid-column: span 3;
+  }
+
+  .topicsCard {
+    grid-column: span 2;
+  }
+}
+
+.competencies {
+  display: grid;
+  gap: rem(12px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.competency {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: rem(4px) rem(12px);
+  align-items: baseline;
+}
+
+.competencyName {
+  font-size: rem(14px);
+  font-weight: 600;
+}
+
+.competencyScore {
+  font-size: rem(13px);
+  color: var(--mantine-color-dimmed);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.competencyBar {
+  grid-column: 1 / -1;
+  height: rem(6px);
+  border-radius: rem(999px);
+  background: #ece8f3;
+  overflow: hidden;
+}
+
+.competencyBar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.competencyBar > span[data-level='high'] {
+  background: #0c8a6b;
+}
+
+.competencyBar > span[data-level='mid'] {
+  background: #8a83d1;
+}
+
+.competencyBar > span[data-level='low'] {
+  background: #d90047;
+}
+
+.offer {
+  border-color: #b7b2e5;
+  background: #f7f0fb;
+}
+
+@media (max-width: 48em) {
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: rem(24px);
+  }
+}
