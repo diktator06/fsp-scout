@@ -12,9 +12,11 @@ from app.core.exceptions import AuthenticationError
 from app.db.session import get_session
 from app.integrations.mailer import Mailer, build_mailer
 from app.models.user import User, UserRole
+from app.services.assessment.assessment_service import AssessmentService
 from app.services.auth.access import ensure_role, resolve_user_by_access_token
 from app.services.auth.auth_service import AuthService
 from app.services.auth.tokens import ClientContext
+from app.services.candidate.profile_service import CandidateProfileService
 from app.services.dictionary_service import DictionaryService
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
@@ -67,6 +69,7 @@ def require_roles(*roles: UserRole) -> Callable[..., Awaitable[User]]:
 
 
 MethodistUser = Annotated[User, Depends(require_roles(UserRole.METHODIST))]
+CandidateUser = Annotated[User, Depends(require_roles(UserRole.CANDIDATE))]
 
 
 def get_auth_service(session: SessionDep, settings: SettingsDep, mailer: MailerDep) -> AuthService:
@@ -79,7 +82,19 @@ def get_dictionary_service(session: SessionDep) -> DictionaryService:
     return DictionaryService(session)
 
 
+def get_profile_service(session: SessionDep) -> CandidateProfileService:
+    """Сервис профиля кандидата на время запроса."""
+    return CandidateProfileService(session)
+
+
+def get_assessment_service(session: SessionDep, settings: SettingsDep) -> AssessmentService:
+    """Сервис опроса и тестирования на время запроса."""
+    return AssessmentService(session, settings)
+
+
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
+ProfileServiceDep = Annotated[CandidateProfileService, Depends(get_profile_service)]
+AssessmentServiceDep = Annotated[AssessmentService, Depends(get_assessment_service)]
 DictionaryServiceDep = Annotated[DictionaryService, Depends(get_dictionary_service)]
 
 
