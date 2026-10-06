@@ -22,6 +22,9 @@ class EngineConfig:
     pilot_items: int = 1
 
 
+EXPRESS_CONFIG = EngineConfig(min_items=6, max_items=8, target_se=0.45, pilot_items=0)
+
+
 @dataclass(frozen=True, slots=True)
 class PoolItem:
     """Семейство-кандидат на показ."""

@@ -8,6 +8,7 @@ from app.crud import (
     assessment_session_crud,
     candidate_profile_crud,
     candidate_skill_crud,
+    category_crud,
     consent_crud,
     education_crud,
     privacy_settings_crud,
@@ -25,6 +26,7 @@ from app.schemas.candidate import (
     CandidateStatusRead,
     ConsentsRead,
     EducationRead,
+    GradeStatus,
     OnboardingStep,
     PrivacySettingsRead,
     PrivacySettingsUpdate,
@@ -206,6 +208,21 @@ class CandidateProfileService:
         skills = await candidate_skill_crud.list_with_skills(self._session, profile.id)
         experiences = await work_experience_crud.list_for_candidate(self._session, profile.id)
 
+        claimed = (
+            await category_crud.get_by_pair(
+                self._session, survey.specialization_id, survey.claimed_grade_id
+            )
+            if survey
+            else None
+        )
+        grade_status: GradeStatus
+        if profile.current_category is not None:
+            grade_status = "confirmed"
+        elif survey is not None:
+            grade_status = "unconfirmed"
+        else:
+            grade_status = "not_declared"
+
         completed = is_profile_completed(profile)
         step: OnboardingStep
         if not completed:
@@ -222,6 +239,8 @@ class CandidateProfileService:
             onboarding_step=step,
             profile_completed=completed,
             survey_completed=survey is not None,
+            grade_status=grade_status,
+            claimed_category=CategoryRead.model_validate(claimed) if claimed else None,
             category=CategoryRead.model_validate(profile.current_category)
             if profile.current_category
             else None,
@@ -252,6 +271,7 @@ class CandidateProfileService:
             work_formats=current.work_formats,
             relocation_ready=current.relocation_ready,
             salary_expectation_from=current.salary_expectation_from,
+            salary_expectation_gross=current.salary_expectation_gross,
             search_status=current.search_status,
             category=CategoryRead.model_validate(current.current_category)
             if current.current_category

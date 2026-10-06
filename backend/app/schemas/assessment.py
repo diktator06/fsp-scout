@@ -4,7 +4,13 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.models.assessment import GradeChangeReason, ResponseFormat, SessionOutcome, SessionStatus
+from app.models.assessment import (
+    AssessmentMode,
+    GradeChangeReason,
+    ResponseFormat,
+    SessionOutcome,
+    SessionStatus,
+)
 from app.models.candidate import WorkFormat
 from app.schemas.candidate import TeamRole
 from app.schemas.dictionary import CategoryRead, GradeBrief, SpecializationBrief
@@ -75,6 +81,7 @@ class GradeOptionRead(BaseModel):
 class EligibilityRead(BaseModel):
     """Доступные тесты, текущая категория и незавершённая сессия."""
 
+    express_available: bool
     current_category: CategoryRead | None
     active_session_id: uuid.UUID | None
     survey: SurveyRead | None
@@ -85,6 +92,10 @@ class SessionStart(BaseModel):
     """Начало теста на выбранный грейд по последнему опросу."""
 
     target_grade_id: int
+    mode: AssessmentMode = Field(
+        default=AssessmentMode.FULL,
+        description="full — полный тест (12–20 заданий), express — 6–8 заданий для демонстрации",
+    )
 
 
 class ItemOption(BaseModel):
@@ -173,6 +184,7 @@ class SessionRead(BaseModel):
 
     id: uuid.UUID
     status: SessionStatus
+    mode: AssessmentMode
     specialization: SpecializationBrief
     target_grade: GradeBrief
     answered: int
@@ -190,6 +202,7 @@ class SessionSummaryRead(BaseModel):
 
     id: uuid.UUID
     status: SessionStatus
+    mode: AssessmentMode
     outcome: SessionOutcome | None
     specialization: SpecializationBrief
     target_grade: GradeBrief

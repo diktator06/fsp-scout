@@ -1,5 +1,6 @@
 from app.models.assessment import (
     AssessmentItem,
+    AssessmentMode,
     AssessmentSession,
     Competency,
     GradeChangeReason,
@@ -39,6 +40,7 @@ from app.models.user import AuthProvider, User, UserRole
 
 __all__ = [
     "AssessmentItem",
+    "AssessmentMode",
     "AssessmentSession",
     "AuthProvider",
     "CandidateProfile",

@@ -11,6 +11,7 @@ from app.schemas.dictionary import CategoryRead, SkillRead
 
 TeamRole = Literal["developer", "team_lead", "tech_lead", "mentor", "architect", "researcher"]
 OnboardingStep = Literal["profile", "survey", "grade", "test", "done"]
+GradeStatus = Literal["confirmed", "unconfirmed", "not_declared"]
 
 _PHONE = re.compile(r"^\+?[0-9()\-\s]{7,20}$")
 _TELEGRAM = re.compile(r"^@?[A-Za-z0-9_]{5,32}$")
@@ -72,6 +73,9 @@ class CandidateProfileUpdate(BaseModel):
     work_formats: list[WorkFormat] = Field(default_factory=list, max_length=3)
     relocation_ready: bool = False
     salary_expectation_from: int | None = Field(default=None, gt=0, le=10_000_000)
+    salary_expectation_gross: bool = Field(
+        default=True, description="true — сумма до вычета НДФЛ, false — «на руки»"
+    )
     search_status: SearchStatus = SearchStatus.OPEN
     skills: list[CandidateSkillInput] = Field(default_factory=list, max_length=40)
     experiences: list[WorkExperienceInput] = Field(default_factory=list, max_length=20)
@@ -174,6 +178,7 @@ class CandidateProfileRead(BaseModel):
     work_formats: list[str]
     relocation_ready: bool
     salary_expectation_from: int | None
+    salary_expectation_gross: bool
     search_status: SearchStatus
     category: CategoryRead | None
     grade_assigned_at: datetime | None
@@ -224,7 +229,12 @@ class CandidateStatusRead(BaseModel):
     onboarding_step: OnboardingStep
     profile_completed: bool
     survey_completed: bool
+    grade_status: GradeStatus = Field(
+        description="confirmed — категория подтверждена тестом; unconfirmed — заявлена в опросе, "
+        "но не подтверждена; not_declared — опрос не пройден"
+    )
     category: CategoryRead | None
+    claimed_category: CategoryRead | None
     active_session_id: uuid.UUID | None
     bank_published: bool
     completeness: int

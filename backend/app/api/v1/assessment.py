@@ -92,7 +92,7 @@ async def start_session(
     payload: SessionStart, user: CandidateUser, service: AssessmentServiceDep
 ) -> SessionRead:
     """Начинает адаптивный тест на выбранный грейд и возвращает первое задание."""
-    return await service.start_session(user, payload.target_grade_id)
+    return await service.start_session(user, payload.target_grade_id, payload.mode)
 
 
 @router.get(

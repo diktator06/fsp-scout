@@ -54,6 +54,13 @@ class ItemOrigin(StrEnum):
     LLM_ASSISTED = "llm_assisted"
 
 
+class AssessmentMode(StrEnum):
+    """Режим теста: полный (12–20 заданий) или экспресс для демонстрации (6–8 заданий)."""
+
+    FULL = "full"
+    EXPRESS = "express"
+
+
 class SessionStatus(StrEnum):
     """Состояние сессии тестирования."""
 
@@ -215,6 +222,11 @@ class AssessmentSession(UUIDPrimaryKeyMixin, Base):
     )
     target_grade_id: Mapped[int] = mapped_column(ForeignKey("grades.id", ondelete="RESTRICT"))
     status: Mapped[SessionStatus] = mapped_column(pg_enum(SessionStatus, "session_status"))
+    mode: Mapped[AssessmentMode] = mapped_column(
+        pg_enum(AssessmentMode, "assessment_mode"),
+        default=AssessmentMode.FULL,
+        server_default=AssessmentMode.FULL.value,
+    )
     seed_salt: Mapped[str] = mapped_column(String(32))
     blueprint: Mapped[dict[str, float]] = mapped_column(JSONB)
     pilot_positions: Mapped[list[int]] = mapped_column(

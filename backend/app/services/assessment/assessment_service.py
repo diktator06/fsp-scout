@@ -29,6 +29,7 @@ from app.crud import (
 )
 from app.models.assessment import (
     AssessmentItem,
+    AssessmentMode,
     AssessmentSession,
     Competency,
     GradeChangeReason,
@@ -63,6 +64,7 @@ from app.schemas.assessment import (
 from app.schemas.dictionary import CategoryRead, GradeBrief, SpecializationBrief
 from app.services.assessment.adaptive_engine import (
     ALGORITHM_VERSION,
+    EXPRESS_CONFIG,
     EngineConfig,
     PoolItem,
     select_next_item,
@@ -123,7 +125,7 @@ class AssessmentService:
         self._policy = PolicyConfig(
             grade_change_cooldown_days=settings.grade_change_cooldown_days,
             upgrade_retry_days=settings.upgrade_retry_days,
-            onboarding_daily_sessions=settings.onboarding_daily_sessions,
+            onboarding_retry_hours=settings.onboarding_retry_hours,
         )
         self._profiles = CandidateProfileService(session)
 
@@ -225,6 +227,7 @@ class AssessmentService:
         active = await assessment_session_crud.active_for_candidate(self._session, profile.id)
         survey = await survey_crud.latest_for_candidate(self._session, profile.id)
         return EligibilityRead(
+            express_available=self._settings.assessment_express_enabled,
             current_category=self._category_view(profile.current_category),
             active_session_id=active.id if active else None,
             survey=await self._survey_view(survey) if survey else None,
@@ -244,9 +247,19 @@ class AssessmentService:
             ],
         )
 
-    async def start_session(self, user: User, target_grade_id: int) -> SessionRead:
-        """Начинает адаптивный тест на выбранный грейд по последнему опросу."""
+    async def start_session(
+        self, user: User, target_grade_id: int, mode: AssessmentMode = AssessmentMode.FULL
+    ) -> SessionRead:
+        """Начинает адаптивный тест на выбранный грейд по последнему опросу.
+
+        Экспресс-режим (6–8 заданий) нужен для демонстрации и ручной проверки жюри:
+        менторы попросили дать возможность пройти тест за несколько минут. Механика та
+        же, меньше только длина. Режим сохраняется в сессии и виден в результате.
+        """
         now = _now()
+        if mode is AssessmentMode.EXPRESS and not self._settings.assessment_express_enabled:
+            raise DomainValidationError("Экспресс-режим на этом стенде выключен")
+        engine = self._engine_for(mode)
         profile = await self._profiles.ensure_profile(user, for_update=True)
         survey = await survey_crud.latest_for_candidate(self._session, profile.id)
         if survey is None:
@@ -277,10 +290,10 @@ class AssessmentService:
         pilot_positions = (
             sorted(
                 Random(secrets.randbits(32)).sample(
-                    range(3, self._engine.min_items + 1), self._engine.pilot_items
+                    range(3, engine.min_items + 1), engine.pilot_items
                 )
             )
-            if pilots
+            if pilots and engine.pilot_items
             else []
         )
         assessment = await assessment_session_crud.create(
@@ -291,6 +304,7 @@ class AssessmentService:
                 "specialization_id": survey.specialization_id,
                 "target_grade_id": target.id,
                 "status": SessionStatus.IN_PROGRESS,
+                "mode": mode,
                 "seed_salt": secrets.token_hex(16),
                 "blueprint": blueprint,
                 "pilot_positions": pilot_positions,
@@ -423,6 +437,7 @@ class AssessmentService:
                 SessionSummaryRead(
                     id=item.id,
                     status=item.status,
+                    mode=item.mode,
                     outcome=item.outcome,
                     specialization=SpecializationBrief.model_validate(
                         specializations[item.specialization_id]
@@ -611,6 +626,7 @@ class AssessmentService:
         position = len(items) + 1
         used = {item.family_id for item in items}
         cut = await self._target_cut(assessment)
+        engine = self._engine_for(assessment.mode)
 
         if position in assessment.pilot_positions:
             pilot = await self._pick_pilot(assessment, used, position)
@@ -624,7 +640,7 @@ class AssessmentService:
             scored_items=len(_scored(items)),
             estimate=estimate,
             cut=cut,
-            config=self._engine,
+            config=engine,
             pool_exhausted=not pool,
         ):
             await self._finish(assessment, profile, items, now)
@@ -642,7 +658,7 @@ class AssessmentService:
             administered,
             estimate,
             rng,
-            self._engine,
+            engine,
         )
         if chosen is None:
             await self._finish(assessment, profile, items, now)
@@ -867,6 +883,10 @@ class AssessmentService:
         suggested = await grade_crud.get(self._session, assessment.suggested_grade_id)
         return suggested is not None and suggested.rank > profile.current_category.grade.rank
 
+    def _engine_for(self, mode: AssessmentMode) -> EngineConfig:
+        """Конфигурация движка для режима сессии."""
+        return EXPRESS_CONFIG if mode is AssessmentMode.EXPRESS else self._engine
+
     @staticmethod
     def _is_active(assessment: AssessmentSession) -> bool:
         """Сессия ещё идёт (статус может смениться внутри обработки таймаутов)."""
@@ -946,8 +966,9 @@ class AssessmentService:
             specialization=SpecializationBrief.model_validate(specialization),
             target_grade=_grade_brief(target),
             answered=len([item for item in items if item.answered_at is not None]),
-            min_items=self._engine.min_items,
-            max_items=self._engine.max_items + len(assessment.pilot_positions),
+            mode=assessment.mode,
+            min_items=self._engine_for(assessment.mode).min_items,
+            max_items=self._engine_for(assessment.mode).max_items + len(assessment.pilot_positions),
             started_at=assessment.started_at,
             expires_at=assessment.expires_at,
             finished_at=assessment.finished_at,
