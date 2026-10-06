@@ -1,0 +1,65 @@
+.root {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100dvh;
+  background: #f6f4fa;
+}
+
+.brand {
+  position: relative;
+  overflow: hidden;
+  padding: rem(20px) rem(24px);
+  background: var(--scout-hero-gradient);
+  color: #ffffff;
+}
+
+.brandContent {
+  position: relative;
+  z-index: 1;
+}
+
+.pitch,
+.brand img {
+  display: none;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  padding: rem(32px) rem(16px) rem(48px);
+}
+
+.formColumn {
+  width: 100%;
+  max-width: rem(460px);
+}
+
+@media (min-width: $mantine-breakpoint-md) {
+  .root {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  }
+
+  .brand {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    padding: rem(40px) rem(48px);
+  }
+
+  .pitch {
+    display: flex;
+  }
+
+  .brand img {
+    display: block;
+  }
+
+  .content {
+    align-items: center;
+    padding: rem(48px) rem(32px);
+  }
+}
+
+.pitchTitle {
+  max-width: rem(460px);
+}
