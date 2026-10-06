@@ -1,0 +1,37 @@
+:root {
+  --scout-surface: #ffffff;
+  --scout-surface-muted: #faf9fd;
+  --scout-line: #e2deec;
+  --scout-line-strong: #cfc8df;
+  --scout-ink-soft: #3d3b4a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-feature-settings: 'tnum' 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #ffd6e4;
+  color: #1c1d22;
+}
+
+a {
+  color: var(--mantine-color-anchor);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

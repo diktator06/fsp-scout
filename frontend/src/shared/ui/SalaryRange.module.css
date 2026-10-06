@@ -1,0 +1,58 @@
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  gap: rem(2px);
+  min-width: 0;
+}
+
+.label {
+  font-size: rem(11px);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #5b5e6b;
+}
+
+.value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: rem(6px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #1c1d22;
+  white-space: nowrap;
+}
+
+.currency {
+  color: #d90047;
+}
+
+.caption {
+  font-size: rem(12px);
+  color: #5b5e6b;
+}
+
+.root[data-size='sm'] .value {
+  font-size: rem(16px);
+}
+
+.root[data-size='md'] .value {
+  font-size: rem(22px);
+}
+
+.root[data-size='lg'] .value {
+  font-size: rem(32px);
+}
+
+.root[data-tone='dark'] .label,
+.root[data-tone='dark'] .caption {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.root[data-tone='dark'] .value {
+  color: #ffffff;
+}
+
+.root[data-tone='dark'] .currency {
+  color: #ff5c90;
+}

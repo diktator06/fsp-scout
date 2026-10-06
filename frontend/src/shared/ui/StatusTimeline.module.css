@@ -1,0 +1,219 @@
+.root {
+  --node-size: rem(24px);
+  --line: #ddd6e9;
+  display: flex;
+  flex-direction: column;
+  gap: rem(14px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  position: relative;
+  display: flex;
+  gap: rem(12px);
+  min-width: 0;
+}
+
+.node {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--node-size);
+  height: var(--node-size);
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 2px var(--line);
+  color: #ffffff;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: rem(2px);
+  min-width: 0;
+  padding-top: rem(2px);
+}
+
+.label {
+  font-size: rem(14px);
+  font-weight: 600;
+  color: #1c1d22;
+}
+
+.time,
+.description {
+  font-size: rem(12px);
+  color: #5b5e6b;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.root[data-orientation='vertical'] .step:not(:last-child)::after,
+.root[data-orientation='auto'] .step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(var(--node-size) / 2 - 1px);
+  top: var(--node-size);
+  bottom: rem(-14px);
+  width: 2px;
+  background: var(--line);
+}
+
+.step[data-state='done'] .node {
+  background: #520978;
+  box-shadow: none;
+}
+
+.step[data-state='success'] .node {
+  background: #0c8a6b;
+  box-shadow: none;
+}
+
+.step[data-state='negative'] .node {
+  background: #d90047;
+  box-shadow: none;
+}
+
+.step[data-state='current'] .node {
+  box-shadow:
+    inset 0 0 0 2px #520978,
+    0 0 0 4px rgba(82, 9, 120, 0.12);
+}
+
+.step[data-state='current'] .node::after {
+  content: '';
+  width: rem(8px);
+  height: rem(8px);
+  border-radius: 50%;
+  background: #520978;
+}
+
+.step[data-state='upcoming'] .label {
+  color: #5b5e6b;
+  font-weight: 500;
+}
+
+.step[data-state='done']:not(:last-child)::after,
+.step[data-state='success']:not(:last-child)::after {
+  background: #520978 !important;
+}
+
+@media (min-width: $mantine-breakpoint-sm) {
+  .root[data-orientation='auto'] {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .root[data-orientation='auto'] .step {
+    flex: 1;
+    flex-direction: column;
+    gap: rem(8px);
+    padding-right: rem(12px);
+  }
+
+  .root[data-orientation='auto'] .step:not(:last-child)::after {
+    left: var(--node-size);
+    right: 0;
+    top: calc(var(--node-size) / 2 - 1px);
+    bottom: auto;
+    width: auto;
+    height: 2px;
+  }
+}
+
+.root[data-orientation='horizontal'] {
+  flex-direction: row;
+  gap: 0;
+}
+
+.root[data-orientation='horizontal'] .step {
+  flex: 1;
+  flex-direction: column;
+  gap: rem(8px);
+  min-width: 0;
+  padding-right: rem(10px);
+}
+
+.root[data-orientation='horizontal'] .label {
+  font-size: rem(13px);
+  line-height: 1.3;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+@media (max-width: $mantine-breakpoint-xs) {
+  .root[data-orientation='horizontal'] .label {
+    font-size: rem(12px);
+  }
+
+  .root[data-orientation='horizontal'] .time {
+    display: none;
+  }
+}
+
+.root[data-orientation='horizontal'] .step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: var(--node-size);
+  right: 0;
+  top: calc(var(--node-size) / 2 - 1px);
+  height: 2px;
+  background: var(--line);
+}
+
+.root[data-tone='dark'] {
+  --line: rgba(255, 255, 255, 0.22);
+}
+
+.root[data-tone='dark'] .label {
+  color: #ffffff;
+}
+
+.root[data-tone='dark'] .time,
+.root[data-tone='dark'] .description,
+.root[data-tone='dark'] .step[data-state='upcoming'] .label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.root[data-tone='dark'] .node {
+  background: transparent;
+}
+
+.root[data-tone='dark'] .step[data-state='done'] .node {
+  background: #ffffff;
+  color: #520978;
+}
+
+.root[data-tone='dark'] .step[data-state='done']:not(:last-child)::after {
+  background: #ffffff !important;
+}
+
+.root[data-tone='dark'] .step[data-state='current'] .node {
+  box-shadow:
+    inset 0 0 0 2px #ffffff,
+    0 0 0 4px rgba(255, 255, 255, 0.16);
+}
+
+.root[data-tone='dark'] .step[data-state='current'] .node::after {
+  background: #ffffff;
+}
+
+.root[data-tone='dark'] .step[data-state='success'] .node {
+  background: #19c39a;
+}
+
+.root[data-tone='dark'] .step[data-state='negative'] .node {
+  background: #ff0053;
+}

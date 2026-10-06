@@ -1,0 +1,31 @@
+.root {
+  user-select: none;
+}
+
+.mark {
+  flex: none;
+  display: block;
+}
+
+.wordmark {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--scout-ink);
+}
+
+.root[data-tone='light'] .wordmark {
+  color: #ffffff;
+}
+
+.root[data-size='sm'] .wordmark {
+  font-size: rem(18px);
+}
+
+.root[data-size='md'] .wordmark {
+  font-size: rem(22px);
+}
+
+.root[data-size='lg'] .wordmark {
+  font-size: rem(28px);
+}

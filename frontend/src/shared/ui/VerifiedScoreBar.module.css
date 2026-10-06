@@ -1,0 +1,125 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: rem(10px);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: rem(12px);
+}
+
+.title {
+  font-size: rem(13px);
+  font-weight: 600;
+  color: #3d3b4a;
+}
+
+.score {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: rem(28px);
+  font-weight: 700;
+  line-height: 1;
+  color: #310f53;
+}
+
+.root[data-compact] .score {
+  font-size: rem(20px);
+}
+
+.outOf {
+  margin-left: rem(2px);
+  font-size: rem(13px);
+  font-weight: 500;
+  color: #5b5e6b;
+}
+
+.track {
+  display: flex;
+  height: rem(10px);
+  border-radius: rem(999px);
+  background: #ece8f3;
+  overflow: hidden;
+}
+
+.segment {
+  height: 100%;
+  min-width: 0;
+  transition: width 400ms ease;
+}
+
+.segment + .segment {
+  box-shadow: inset 2px 0 0 #ffffff;
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: rem(6px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legendItem {
+  display: grid;
+  grid-template-columns: rem(10px) 1fr auto auto;
+  align-items: center;
+  column-gap: rem(10px);
+  font-size: rem(13px);
+}
+
+.dot {
+  width: rem(10px);
+  height: rem(10px);
+  border-radius: rem(3px);
+}
+
+.legendLabel {
+  color: #1c1d22;
+}
+
+.legendValue {
+  font-weight: 700;
+  color: #1c1d22;
+}
+
+.legendWeight {
+  font-size: rem(12px);
+  color: #5b5e6b;
+  min-width: rem(54px);
+  text-align: right;
+}
+
+.legendHint {
+  grid-column: 2 / -1;
+  font-size: rem(12px);
+  color: #5b5e6b;
+}
+
+.root[data-tone='dark'] .title,
+.root[data-tone='dark'] .legendLabel,
+.root[data-tone='dark'] .legendValue {
+  color: #ffffff;
+}
+
+.root[data-tone='dark'] .score {
+  color: #ffffff;
+}
+
+.root[data-tone='dark'] .outOf,
+.root[data-tone='dark'] .legendWeight,
+.root[data-tone='dark'] .legendHint {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.root[data-tone='dark'] .track {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.root[data-tone='dark'] .segment + .segment {
+  box-shadow: inset 2px 0 0 #2a0d47;
+}
