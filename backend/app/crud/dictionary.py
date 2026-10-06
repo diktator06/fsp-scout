@@ -110,7 +110,7 @@ class CategoryCRUD(CRUDBase[Category]):
     ) -> Category | None:
         """Категория по паре «специализация + грейд»."""
         return await session.scalar(
-            select(Category).where(
+            self._with_relations().where(
                 Category.specialization_id == specialization_id, Category.grade_id == grade_id
             )
         )

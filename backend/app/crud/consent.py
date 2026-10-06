@@ -1,7 +1,8 @@
 import uuid
 from collections.abc import Sequence
+from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
@@ -37,6 +38,35 @@ class ConsentCRUD(CRUDBase[Consent]):
             select(Consent).where(Consent.user_id == user_id).order_by(Consent.granted_at.desc())
         )
         return result.all()
+
+    async def active(
+        self, session: AsyncSession, user_id: uuid.UUID, consent_type: ConsentType
+    ) -> Consent | None:
+        """Действующее (не отозванное) согласие указанного вида."""
+        return await session.scalar(
+            select(Consent)
+            .where(
+                Consent.user_id == user_id,
+                Consent.consent_type == consent_type,
+                Consent.revoked_at.is_(None),
+            )
+            .order_by(Consent.granted_at.desc())
+            .limit(1)
+        )
+
+    async def revoke_active(
+        self, session: AsyncSession, user_id: uuid.UUID, consent_type: ConsentType, at: datetime
+    ) -> None:
+        """Отзывает действующие согласия вида; записи остаются в журнале с датой отзыва."""
+        await session.execute(
+            update(Consent)
+            .where(
+                Consent.user_id == user_id,
+                Consent.consent_type == consent_type,
+                Consent.revoked_at.is_(None),
+            )
+            .values(revoked_at=at)
+        )
 
 
 consent_crud = ConsentCRUD(Consent)
