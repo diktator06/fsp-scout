@@ -12,9 +12,17 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PYTHON_DOWNLOADS=never \
+    XDG_CACHE_HOME=/tmp/.cache \
     PATH="/app/.venv/bin:$PATH"
 COPY --from=ghcr.io/astral-sh/uv:0.12 /uv /usr/local/bin/uv
 WORKDIR /app
+
+# WeasyPrint рисует PDF-профиль через Pango и HarfBuzz. DejaVu — запасной шрифт на
+# случай символов, которых нет во встроенном Montserrat.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fonts-dejavu-core \
+ && rm -rf /var/lib/apt/lists/*
 
 # Зависимости ставятся отдельным слоем: при правке кода они берутся из кеша сборки.
 COPY pyproject.toml uv.lock .python-version ./
@@ -22,7 +30,9 @@ RUN uv sync --frozen --no-dev --no-install-project
 
 COPY . .
 COPY --from=swagger-assets /swagger ./static/swagger
-RUN useradd --system --uid 10001 --home-dir /app scout && chown -R scout /app
+# Код и зависимости остаются во владении root и доступны приложению только на чтение.
+# Заодно не нужен chown -R: он скопировал бы весь .venv в ещё один слой образа.
+RUN useradd --system --uid 10001 --home-dir /app scout
 USER scout
 
 EXPOSE 8000

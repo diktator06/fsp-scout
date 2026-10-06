@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <title>Профиль специалиста {{ alias }}</title>
 <style>
-{% for weight in (400, 600, 800) %}{% for subset in ("cyrillic", "latin") %}
-@font-face { font-family: "Montserrat"; font-weight: {{ weight }}; src: url("{{ fonts_url }}/montserrat-{{ subset }}-{{ weight }}-normal.woff"); }
+{% for weight in (400, 600, 800) %}{% for subset in ("latin", "cyrillic") %}
+@font-face { font-family: "Montserrat {{ subset | capitalize }}"; font-weight: {{ weight }}; src: url("{{ fonts_url }}/montserrat-{{ subset }}-{{ weight }}-normal.woff"); }
 {% endfor %}{% endfor %}
 @page {
   size: A4;
   margin: 18mm 16mm 20mm;
-  @bottom-left { content: "Скаут · профиль {{ alias }} · сформирован {{ generated_at }}"; font-family: Montserrat; font-size: 7.5pt; color: #5b5e6b; }
-  @bottom-right { content: counter(page) " / " counter(pages); font-family: Montserrat; font-size: 7.5pt; color: #5b5e6b; }
+  @bottom-left { content: "Скаут · профиль {{ alias }} · сформирован {{ generated_at }}"; font-family: "Montserrat Latin", "Montserrat Cyrillic", "DejaVu Sans", sans-serif; font-size: 7.5pt; color: #5b5e6b; }
+  @bottom-right { content: counter(page) " / " counter(pages); font-family: "Montserrat Latin", "Montserrat Cyrillic", "DejaVu Sans", sans-serif; font-size: 7.5pt; color: #5b5e6b; }
 }
 * { box-sizing: border-box; }
-body { font-family: Montserrat, "DejaVu Sans", sans-serif; color: #1c1d22; font-size: 9.5pt; line-height: 1.5; margin: 0; }
+body { font-family: "Montserrat Latin", "Montserrat Cyrillic", "DejaVu Sans", sans-serif; color: #1c1d22; font-size: 9.5pt; line-height: 1.5; margin: 0; }
 .header { display: flex; justify-content: space-between; align-items: flex-start; padding: 14pt 16pt; border-radius: 12pt; background: #310f53; color: #fff; }
 .brand { font-size: 8pt; letter-spacing: 1.2pt; text-transform: uppercase; color: #d9cfee; }
 .name { font-size: 20pt; font-weight: 800; margin: 4pt 0 2pt; letter-spacing: -0.3pt; }

@@ -236,7 +236,6 @@ async def test_onboarding_status_progresses(client: AsyncClient, make_user: User
 
 async def test_profile_pdf(client: AsyncClient, make_user: UserFactory) -> None:
     """PDF-профиль скачивается файлом с понятным именем."""
-    pytest.importorskip("weasyprint")
     headers = auth_headers(await make_user())
     await client.put(PROFILE_URL, json=_profile_payload(), headers=headers)
     response = await client.get("/api/v1/candidates/me/profile.pdf", headers=headers)
