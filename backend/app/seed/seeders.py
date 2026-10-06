@@ -11,17 +11,22 @@ from app.core.config import Settings
 from app.core.security import hash_password
 from app.crud import (
     category_crud,
+    competency_crud,
     consent_crud,
     grade_crud,
     industry_crud,
+    item_family_crud,
     skill_crud,
+    specialization_competency_crud,
     specialization_crud,
     specialization_skill_crud,
     user_crud,
 )
+from app.models.assessment import ItemOrigin
 from app.models.consent import ConsentType
 from app.models.dictionary import Grade, Specialization
 from app.models.user import UserRole
+from app.services.assessment.item_generators import REGISTRY
 from app.services.consents import PERSONAL_DATA_POLICY_VERSION
 from app.services.dictionary_service import build_category_code, build_category_title
 
@@ -146,8 +151,102 @@ async def _upsert_skills(session: AsyncSession, report: SeedReport) -> None:
         )
 
 
+async def _upsert_competencies(session: AsyncSession, report: SeedReport) -> None:
+    """Компетенции и blueprint специализаций из competencies.yaml."""
+    with (DATA_DIR / "competencies.yaml").open(encoding="utf-8") as stream:
+        data = yaml.safe_load(stream)
+
+    for record in data["competencies"]:
+        values = {
+            "code": record["code"],
+            "name": record["name"],
+            "description": record.get("description", ""),
+            "gate_skill_slugs": list(record.get("gate_skills", [])),
+            "verifies_skill_slugs": list(record.get("verifies_skills", [])),
+        }
+        competency = await competency_crud.get_by_code(session, record["code"])
+        if competency is None:
+            await competency_crud.create(session, values)
+            report.count("competencies", created=True)
+        else:
+            changes = {k: v for k, v in values.items() if getattr(competency, k) != v}
+            if changes:
+                await competency_crud.update(session, competency, changes)
+                report.count("competencies", created=False)
+
+    competencies = {c.code: c for c in await competency_crud.list_all(session)}
+    for spec_code, weights in data["blueprints"].items():
+        specialization = await specialization_crud.get_by_code(session, spec_code)
+        if specialization is None:
+            raise ValueError(f"Blueprint ссылается на неизвестную специализацию {spec_code}")
+        for competency_code, weight in weights.items():
+            competency = competencies[competency_code]
+            link = await specialization_competency_crud.get_pair(
+                session, specialization.id, competency.id
+            )
+            if link is None:
+                await specialization_competency_crud.create(
+                    session,
+                    {
+                        "specialization_id": specialization.id,
+                        "competency_id": competency.id,
+                        "weight": weight,
+                    },
+                )
+                report.count("blueprints", created=True)
+            elif link.weight != weight:
+                await specialization_competency_crud.update(session, link, {"weight": weight})
+                report.count("blueprints", created=False)
+
+
+async def _sync_item_families(session: AsyncSession, report: SeedReport) -> None:
+    """Синхронизирует банк семейств с реестром генераторов.
+
+    Структуру семейства (название, компетенцию, формат, лимит времени) задаёт код,
+    и она обновляется. Калиброванные параметры IRT, статус и счётчики принадлежат
+    базе: их меняют калибровка и детектор утечек, поэтому сид выставляет их только
+    при первом создании семейства.
+    """
+    competencies = {c.code: c for c in await competency_crud.list_all(session)}
+    grades = {g.code: g for g in await grade_crud.list_all(session)}
+    for spec in sorted(REGISTRY.values(), key=lambda item: item.code):
+        competency = competencies.get(spec.competency)
+        if competency is None:
+            raise ValueError(f"Семейство {spec.code}: неизвестная компетенция {spec.competency}")
+        structure = {
+            "title": spec.title,
+            "competency_id": competency.id,
+            "response_format": spec.response_format,
+            "nominal_grade_id": grades[spec.nominal_grade].id,
+            "time_limit_sec": spec.time_limit_sec,
+        }
+        family = await item_family_crud.get_by_code(session, spec.code)
+        if family is None:
+            await item_family_crud.create(
+                session,
+                {
+                    **structure,
+                    "code": spec.code,
+                    "irt_a": spec.discrimination,
+                    "irt_b": spec.prior_difficulty,
+                    "irt_c": spec.guessing,
+                    "status": spec.status,
+                    "origin": ItemOrigin.EXPERT,
+                },
+            )
+            report.count("item_families", created=True)
+        else:
+            changes = {k: v for k, v in structure.items() if getattr(family, k) != v}
+            if changes:
+                await item_family_crud.update(session, family, changes)
+                report.count("item_families", created=False)
+
+
 async def seed_reference_data(session: AsyncSession) -> SeedReport:
-    """Наполняет справочники из YAML-файлов `app/seed/data`. Транзакцию не фиксирует."""
+    """Наполняет справочники и банк заданий из `app/seed/data` и реестра генераторов.
+
+    Транзакцию не фиксирует.
+    """
     report = SeedReport()
     await _upsert_by_code(
         session, industry_crud, load_records("industries.yaml"), "industries", report
@@ -162,6 +261,8 @@ async def seed_reference_data(session: AsyncSession) -> SeedReport:
     await _upsert_by_code(session, grade_crud, load_records("grades.yaml"), "grades", report)
     await _ensure_categories(session, report)
     await _upsert_skills(session, report)
+    await _upsert_competencies(session, report)
+    await _sync_item_families(session, report)
     return report
 
 
