@@ -1,0 +1,100 @@
+# Локальный стенд «Скаута»: docker compose up --build
+# Фронтенд: http://localhost:8080 · Swagger: http://localhost:8080/api/docs · Mailpit: http://localhost:8025
+name: fsp-scout
+
+x-backend-environment: &backend-environment
+  APP_ENV: ${APP_ENV:-local}
+  DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-fsp}:${POSTGRES_PASSWORD:-fsp}@db:5432/${POSTGRES_DB:-fsp_scout}
+  JWT_SECRET: ${JWT_SECRET:-dev-only-jwt-secret-change-me-in-production}
+  ACCESS_TOKEN_TTL_MINUTES: ${ACCESS_TOKEN_TTL_MINUTES:-15}
+  REFRESH_TOKEN_TTL_DAYS: ${REFRESH_TOKEN_TTL_DAYS:-14}
+  REFRESH_COOKIE_SECURE: ${REFRESH_COOKIE_SECURE:-false}
+  EMAIL_VERIFICATION_TTL_HOURS: ${EMAIL_VERIFICATION_TTL_HOURS:-24}
+  RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED:-true}
+  MAIL_BACKEND: ${MAIL_BACKEND:-smtp}
+  SMTP_HOST: ${SMTP_HOST:-mailpit}
+  SMTP_PORT: ${SMTP_PORT:-1025}
+  SMTP_USE_TLS: ${SMTP_USE_TLS:-false}
+  MAIL_FROM: "${MAIL_FROM:-Скаут <no-reply@fsp-scout.local>}"
+  FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}
+  SEED_DEMO_USERS: ${SEED_DEMO_USERS:-true}
+  DEMO_PASSWORD: ${DEMO_PASSWORD:-ScoutDemo2026}
+
+services:
+  db:
+    image: pgvector/pgvector:0.8.7-pg16-trixie
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fsp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fsp}
+      POSTGRES_DB: ${POSTGRES_DB:-fsp_scout}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  mailpit:
+    image: axllent/mailpit:v1.31
+    restart: unless-stopped
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "true"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+      MP_MAX_MESSAGES: "2000"
+    ports:
+      - "127.0.0.1:${MAILPIT_UI_HOST_PORT:-8025}:8025"
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment: *backend-environment
+    depends_on:
+      db:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
+    ports:
+      - "127.0.0.1:${BACKEND_HOST_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 640M
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_MAILPIT_URL: ${VITE_MAILPIT_URL:-http://localhost:8025}
+        VITE_SHOW_DEMO_ACCOUNTS: ${VITE_SHOW_DEMO_ACCOUNTS:-true}
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_HOST_PORT:-8080}:80"
+    deploy:
+      resources:
+        limits:
+          memory: 32M
+
+volumes:
+  db-data:
