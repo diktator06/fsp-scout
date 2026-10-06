@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Профиль специалиста {{ alias }}</title>
+<style>
+{% for weight in (400, 600, 800) %}{% for subset in ("cyrillic", "latin") %}
+@font-face { font-family: "Montserrat"; font-weight: {{ weight }}; src: url("{{ fonts_url }}/montserrat-{{ subset }}-{{ weight }}-normal.woff"); }
+{% endfor %}{% endfor %}
+@page {
+  size: A4;
+  margin: 18mm 16mm 20mm;
+  @bottom-left { content: "Скаут · профиль {{ alias }} · сформирован {{ generated_at }}"; font-family: Montserrat; font-size: 7.5pt; color: #5b5e6b; }
+  @bottom-right { content: counter(page) " / " counter(pages); font-family: Montserrat; font-size: 7.5pt; color: #5b5e6b; }
+}
+* { box-sizing: border-box; }
+body { font-family: Montserrat, "DejaVu Sans", sans-serif; color: #1c1d22; font-size: 9.5pt; line-height: 1.5; margin: 0; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; padding: 14pt 16pt; border-radius: 12pt; background: #310f53; color: #fff; }
+.brand { font-size: 8pt; letter-spacing: 1.2pt; text-transform: uppercase; color: #d9cfee; }
+.name { font-size: 20pt; font-weight: 800; margin: 4pt 0 2pt; letter-spacing: -0.3pt; }
+.subline { color: #e6dcf5; font-size: 9pt; }
+.category { display: inline-block; margin-top: 8pt; padding: 3pt 10pt; border-radius: 999pt; background: rgba(255,255,255,0.12); border: 0.6pt solid rgba(255,255,255,0.35); font-weight: 600; }
+.category b { font-weight: 800; }
+.pending { color: #ffadc8; }
+.contacts { text-align: right; font-size: 8.5pt; color: #e6dcf5; }
+.contacts div { margin-bottom: 2pt; }
+.alias { font-weight: 800; color: #fff; font-size: 11pt; }
+h2 { font-size: 10.5pt; font-weight: 800; color: #520978; text-transform: uppercase; letter-spacing: 0.8pt; margin: 16pt 0 6pt; padding-bottom: 3pt; border-bottom: 1pt solid #e6dcf5; }
+.grid { display: flex; gap: 14pt; }
+.col { flex: 1; }
+.fact { margin-bottom: 4pt; }
+.fact span { color: #5b5e6b; }
+.chips { display: flex; flex-wrap: wrap; gap: 4pt; }
+.chip { padding: 2pt 8pt; border-radius: 999pt; border: 0.6pt solid #d6d2e1; font-size: 8.5pt; }
+.chip.verified { background: #f7f0fb; border-color: #c493e1; color: #310f53; font-weight: 600; }
+.chip.verified::before { content: "✓ "; color: #0c8a6b; }
+.legend { font-size: 7.5pt; color: #5b5e6b; margin-top: 4pt; }
+.job { margin-bottom: 8pt; page-break-inside: avoid; }
+.job-title { font-weight: 600; }
+.job-meta { color: #5b5e6b; font-size: 8.5pt; }
+.about { white-space: pre-line; }
+.muted { color: #5b5e6b; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="brand">Скаут · профиль специалиста</div>
+    <div class="name">{{ full_name or "Имя не указано" }}</div>
+    <div class="subline">{% if city %}{{ city }} · {% endif %}{% if experience_years is not none %}опыт {{ experience_years }}{% endif %}{% if work_formats %} · {{ work_formats }}{% endif %}</div>
+    {% if category %}
+      <div class="category">{{ category.specialization }} · <b>{{ category.grade }}</b> — подтверждено тестом {{ category.assigned_at }}</div>
+    {% else %}
+      <div class="category pending">Категория ещё не присвоена</div>
+    {% endif %}
+  </div>
+  <div class="contacts">
+    <div class="alias">#{{ alias }}</div>
+    <div>{{ email }}</div>
+    {% if phone %}<div>{{ phone }}</div>{% endif %}
+    {% if telegram %}<div>{{ telegram }}</div>{% endif %}
+  </div>
+</div>
+
+{% if about %}
+<h2>О себе</h2>
+<div class="about">{{ about }}</div>
+{% endif %}
+
+<div class="grid">
+  <div class="col">
+    <h2>Навыки</h2>
+    {% if skills %}
+      <div class="chips">
+        {% for skill in skills %}<span class="chip{% if skill.verified %} verified{% endif %}">{{ skill.name }}{% if skill.level %} · {{ skill.level }}/5{% endif %}</span>{% endfor %}
+      </div>
+      <div class="legend">✓ — навык подтверждён результатом теста на платформе</div>
+    {% else %}
+      <div class="muted">Навыки не указаны</div>
+    {% endif %}
+  </div>
+  <div class="col">
+    <h2>Роли и условия</h2>
+    {% if team_roles %}<div class="fact"><span>Роли в команде:</span> {{ team_roles }}</div>{% endif %}
+    {% if soft_skills %}<div class="fact"><span>Софт-скиллы:</span> {{ soft_skills }}</div>{% endif %}
+    {% if salary %}<div class="fact"><span>Ожидания:</span> от {{ salary }} ₽</div>{% endif %}
+    <div class="fact"><span>Релокация:</span> {{ "готов(а)" if relocation_ready else "не рассматриваю" }}</div>
+  </div>
+</div>
+
+<h2>Опыт работы</h2>
+{% for job in experiences %}
+  <div class="job">
+    <div class="job-title">{{ job.position }} — {{ job.company_name }}</div>
+    <div class="job-meta">{{ job.period }}</div>
+    {% if job.description %}<div>{{ job.description }}</div>{% endif %}
+  </div>
+{% else %}
+  <div class="muted">Опыт работы не указан</div>
+{% endfor %}
+
+{% if educations %}
+<h2>Образование</h2>
+{% for item in educations %}
+  <div class="job">
+    <div class="job-title">{{ item.institution }}</div>
+    <div class="job-meta">{{ item.degree }}{% if item.graduated_year %}{% if item.degree %}, {% endif %}{{ item.graduated_year }}{% endif %}</div>
+  </div>
+{% endfor %}
+{% endif %}
+</body>
+</html>
