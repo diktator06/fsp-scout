@@ -47,6 +47,13 @@ class Settings(BaseSettings):
 
     rate_limit_enabled: bool = True
 
+    assessment_secret: str = "dev-only-assessment-secret-change-me"
+    grade_change_cooldown_days: int = Field(default=90, ge=0, le=365)
+    upgrade_retry_days: int = Field(default=30, ge=0, le=365)
+    onboarding_daily_sessions: int = Field(default=3, ge=1, le=20)
+    assessment_session_minutes: int = Field(default=60, ge=10, le=240)
+    item_grace_seconds: int = Field(default=5, ge=0, le=60)
+
     seed_demo_users: bool = True
     demo_password: str = "ScoutDemo2026"
 
