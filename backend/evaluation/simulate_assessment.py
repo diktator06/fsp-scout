@@ -12,6 +12,7 @@ import yaml
 
 from app.models.assessment import ItemFamilyStatus, SessionOutcome
 from app.services.assessment.adaptive_engine import (
+    EXPRESS_CONFIG,
     EngineConfig,
     PoolItem,
     select_next_item,
@@ -58,6 +59,7 @@ class SpecializationReport:
     """Метрики стенда по одной специализации."""
 
     specialization: str
+    mode: str
     candidates: int
     bank_size: int
     theta_correlation: float
@@ -261,6 +263,7 @@ def simulate_specialization(
     candidates: int = 400,
     seed: int = 2026,
     config: EngineConfig | None = None,
+    mode: str = "full",
     noise_b: float = 0.3,
     noise_log_a: float = 0.15,
 ) -> SpecializationReport:
@@ -333,6 +336,7 @@ def simulate_specialization(
 
     return SpecializationReport(
         specialization=specialization,
+        mode=mode,
         candidates=candidates,
         bank_size=len(bank),
         theta_correlation=round(float(np.corrcoef(theta_array, estimate_array)[0, 1]), 3),
@@ -388,6 +392,16 @@ def main() -> None:
         simulate_specialization(code, candidates=args.candidates, seed=args.seed + index)
         for index, code in enumerate(args.specializations)
     ]
+    reports += [
+        simulate_specialization(
+            code,
+            candidates=args.candidates,
+            seed=args.seed + 100 + index,
+            config=EXPRESS_CONFIG,
+            mode="express",
+        )
+        for index, code in enumerate(args.specializations)
+    ]
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     REPORT_PATH.write_text(
         json.dumps([asdict(report) for report in reports], ensure_ascii=False, indent=2) + "\n",
@@ -395,7 +409,7 @@ def main() -> None:
     )
     for report in reports:
         print(
-            f"{report.specialization:15} банк={report.bank_size:2} "
+            f"{report.specialization:15} {report.mode:7} банк={report.bank_size:2} "
             f"r(θ)={report.theta_correlation:.3f} "
             f"RMSE={report.theta_rmse:.3f} решение={report.decision_accuracy:.1%} "
             f"грейд={report.grade_exact:.1%} (±1: {report.grade_within_one:.1%}) "

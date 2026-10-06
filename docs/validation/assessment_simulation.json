@@ -1,6 +1,7 @@
 [
   {
     "specialization": "backend",
+    "mode": "full",
     "candidates": 300,
     "bank_size": 36,
     "theta_correlation": 0.898,
@@ -84,6 +85,7 @@
   },
   {
     "specialization": "frontend",
+    "mode": "full",
     "candidates": 300,
     "bank_size": 26,
     "theta_correlation": 0.91,
@@ -167,6 +169,7 @@
   },
   {
     "specialization": "data_analytics",
+    "mode": "full",
     "candidates": 300,
     "bank_size": 23,
     "theta_correlation": 0.888,
@@ -250,6 +253,7 @@
   },
   {
     "specialization": "ml",
+    "mode": "full",
     "candidates": 300,
     "bank_size": 28,
     "theta_correlation": 0.894,
@@ -333,6 +337,7 @@
   },
   {
     "specialization": "qa",
+    "mode": "full",
     "candidates": 300,
     "bank_size": 18,
     "theta_correlation": 0.857,
@@ -416,6 +421,7 @@
   },
   {
     "specialization": "devops",
+    "mode": "full",
     "candidates": 300,
     "bank_size": 14,
     "theta_correlation": 0.88,
@@ -499,6 +505,7 @@
   },
   {
     "specialization": "mobile",
+    "mode": "full",
     "candidates": 300,
     "bank_size": 18,
     "theta_correlation": 0.835,
@@ -577,6 +584,594 @@
         "junior": 2,
         "middle": 8,
         "senior": 18
+      }
+    }
+  },
+  {
+    "specialization": "backend",
+    "mode": "express",
+    "candidates": 300,
+    "bank_size": 36,
+    "theta_correlation": 0.792,
+    "theta_rmse": 0.652,
+    "theta_bias": 0.001,
+    "decision_accuracy": 0.717,
+    "grade_exact": 0.507,
+    "grade_within_one": 0.967,
+    "retest_decision_agreement": 0.73,
+    "retest_grade_kappa": 0.245,
+    "retest_theta_correlation": 0.601,
+    "mean_items": 7.49,
+    "mean_se": 0.574,
+    "max_exposure_rate": 0.485,
+    "onboarding_exact": 0.533,
+    "onboarding_within_one": 0.887,
+    "onboarding_mean_sessions": 1.05,
+    "confusion": {
+      "intern": {
+        "intern": 47,
+        "junior": 40,
+        "middle": 1,
+        "senior": 0
+      },
+      "junior": {
+        "intern": 18,
+        "junior": 58,
+        "middle": 21,
+        "senior": 1
+      },
+      "middle": {
+        "intern": 3,
+        "junior": 34,
+        "middle": 31,
+        "senior": 8
+      },
+      "senior": {
+        "intern": 0,
+        "junior": 5,
+        "middle": 17,
+        "senior": 16
+      }
+    },
+    "onboarding_confusion": {
+      "none": {
+        "none": 8,
+        "intern": 13,
+        "junior": 1,
+        "middle": 0,
+        "senior": 0
+      },
+      "intern": {
+        "none": 4,
+        "intern": 58,
+        "junior": 4,
+        "middle": 0,
+        "senior": 0
+      },
+      "junior": {
+        "none": 0,
+        "intern": 32,
+        "junior": 63,
+        "middle": 3,
+        "senior": 0
+      },
+      "middle": {
+        "none": 0,
+        "intern": 17,
+        "junior": 39,
+        "middle": 19,
+        "senior": 1
+      },
+      "senior": {
+        "none": 0,
+        "intern": 2,
+        "junior": 14,
+        "middle": 10,
+        "senior": 12
+      }
+    }
+  },
+  {
+    "specialization": "frontend",
+    "mode": "express",
+    "candidates": 300,
+    "bank_size": 26,
+    "theta_correlation": 0.803,
+    "theta_rmse": 0.593,
+    "theta_bias": -0.08,
+    "decision_accuracy": 0.787,
+    "grade_exact": 0.563,
+    "grade_within_one": 0.973,
+    "retest_decision_agreement": 0.763,
+    "retest_grade_kappa": 0.249,
+    "retest_theta_correlation": 0.645,
+    "mean_items": 7.51,
+    "mean_se": 0.582,
+    "max_exposure_rate": 0.534,
+    "onboarding_exact": 0.543,
+    "onboarding_within_one": 0.943,
+    "onboarding_mean_sessions": 1.06,
+    "confusion": {
+      "intern": {
+        "intern": 54,
+        "junior": 26,
+        "middle": 2,
+        "senior": 0
+      },
+      "junior": {
+        "intern": 16,
+        "junior": 59,
+        "middle": 22,
+        "senior": 0
+      },
+      "middle": {
+        "intern": 3,
+        "junior": 26,
+        "middle": 38,
+        "senior": 11
+      },
+      "senior": {
+        "intern": 0,
+        "junior": 3,
+        "middle": 22,
+        "senior": 18
+      }
+    },
+    "onboarding_confusion": {
+      "none": {
+        "none": 4,
+        "intern": 8,
+        "junior": 0,
+        "middle": 0,
+        "senior": 0
+      },
+      "intern": {
+        "none": 3,
+        "intern": 57,
+        "junior": 10,
+        "middle": 0,
+        "senior": 0
+      },
+      "junior": {
+        "none": 0,
+        "intern": 37,
+        "junior": 54,
+        "middle": 6,
+        "senior": 0
+      },
+      "middle": {
+        "none": 0,
+        "intern": 5,
+        "junior": 33,
+        "middle": 38,
+        "senior": 2
+      },
+      "senior": {
+        "none": 0,
+        "intern": 2,
+        "junior": 10,
+        "middle": 21,
+        "senior": 10
+      }
+    }
+  },
+  {
+    "specialization": "data_analytics",
+    "mode": "express",
+    "candidates": 300,
+    "bank_size": 23,
+    "theta_correlation": 0.834,
+    "theta_rmse": 0.573,
+    "theta_bias": 0.017,
+    "decision_accuracy": 0.75,
+    "grade_exact": 0.577,
+    "grade_within_one": 0.98,
+    "retest_decision_agreement": 0.73,
+    "retest_grade_kappa": 0.26,
+    "retest_theta_correlation": 0.639,
+    "mean_items": 7.49,
+    "mean_se": 0.541,
+    "max_exposure_rate": 0.527,
+    "onboarding_exact": 0.62,
+    "onboarding_within_one": 0.93,
+    "onboarding_mean_sessions": 1.05,
+    "confusion": {
+      "intern": {
+        "intern": 55,
+        "junior": 32,
+        "middle": 1,
+        "senior": 0
+      },
+      "junior": {
+        "intern": 15,
+        "junior": 59,
+        "middle": 23,
+        "senior": 1
+      },
+      "middle": {
+        "intern": 2,
+        "junior": 31,
+        "middle": 41,
+        "senior": 1
+      },
+      "senior": {
+        "intern": 0,
+        "junior": 2,
+        "middle": 19,
+        "senior": 18
+      }
+    },
+    "onboarding_confusion": {
+      "none": {
+        "none": 5,
+        "intern": 18,
+        "junior": 0,
+        "middle": 0,
+        "senior": 0
+      },
+      "intern": {
+        "none": 2,
+        "intern": 57,
+        "junior": 6,
+        "middle": 0,
+        "senior": 0
+      },
+      "junior": {
+        "none": 0,
+        "intern": 31,
+        "junior": 61,
+        "middle": 6,
+        "senior": 0
+      },
+      "middle": {
+        "none": 0,
+        "intern": 10,
+        "junior": 21,
+        "middle": 42,
+        "senior": 2
+      },
+      "senior": {
+        "none": 0,
+        "intern": 0,
+        "junior": 11,
+        "middle": 7,
+        "senior": 21
+      }
+    }
+  },
+  {
+    "specialization": "ml",
+    "mode": "express",
+    "candidates": 300,
+    "bank_size": 28,
+    "theta_correlation": 0.813,
+    "theta_rmse": 0.582,
+    "theta_bias": 0.001,
+    "decision_accuracy": 0.823,
+    "grade_exact": 0.57,
+    "grade_within_one": 0.983,
+    "retest_decision_agreement": 0.737,
+    "retest_grade_kappa": 0.256,
+    "retest_theta_correlation": 0.632,
+    "mean_items": 7.48,
+    "mean_se": 0.559,
+    "max_exposure_rate": 0.572,
+    "onboarding_exact": 0.533,
+    "onboarding_within_one": 0.933,
+    "onboarding_mean_sessions": 1.07,
+    "confusion": {
+      "intern": {
+        "intern": 63,
+        "junior": 31,
+        "middle": 1,
+        "senior": 0
+      },
+      "junior": {
+        "intern": 24,
+        "junior": 50,
+        "middle": 22,
+        "senior": 1
+      },
+      "middle": {
+        "intern": 2,
+        "junior": 25,
+        "middle": 36,
+        "senior": 10
+      },
+      "senior": {
+        "intern": 0,
+        "junior": 1,
+        "middle": 12,
+        "senior": 22
+      }
+    },
+    "onboarding_confusion": {
+      "none": {
+        "none": 7,
+        "intern": 9,
+        "junior": 1,
+        "middle": 0,
+        "senior": 0
+      },
+      "intern": {
+        "none": 8,
+        "intern": 61,
+        "junior": 9,
+        "middle": 0,
+        "senior": 0
+      },
+      "junior": {
+        "none": 0,
+        "intern": 41,
+        "junior": 52,
+        "middle": 4,
+        "senior": 0
+      },
+      "middle": {
+        "none": 0,
+        "intern": 10,
+        "junior": 39,
+        "middle": 23,
+        "senior": 1
+      },
+      "senior": {
+        "none": 0,
+        "intern": 0,
+        "junior": 9,
+        "middle": 9,
+        "senior": 17
+      }
+    }
+  },
+  {
+    "specialization": "qa",
+    "mode": "express",
+    "candidates": 300,
+    "bank_size": 18,
+    "theta_correlation": 0.788,
+    "theta_rmse": 0.593,
+    "theta_bias": 0.081,
+    "decision_accuracy": 0.76,
+    "grade_exact": 0.533,
+    "grade_within_one": 0.983,
+    "retest_decision_agreement": 0.73,
+    "retest_grade_kappa": 0.241,
+    "retest_theta_correlation": 0.609,
+    "mean_items": 7.56,
+    "mean_se": 0.594,
+    "max_exposure_rate": 1.0,
+    "onboarding_exact": 0.527,
+    "onboarding_within_one": 0.913,
+    "onboarding_mean_sessions": 1.05,
+    "confusion": {
+      "intern": {
+        "intern": 62,
+        "junior": 35,
+        "middle": 2,
+        "senior": 0
+      },
+      "junior": {
+        "intern": 20,
+        "junior": 58,
+        "middle": 36,
+        "senior": 1
+      },
+      "middle": {
+        "intern": 1,
+        "junior": 25,
+        "middle": 30,
+        "senior": 5
+      },
+      "senior": {
+        "intern": 0,
+        "junior": 1,
+        "middle": 14,
+        "senior": 10
+      }
+    },
+    "onboarding_confusion": {
+      "none": {
+        "none": 3,
+        "intern": 19,
+        "junior": 0,
+        "middle": 0,
+        "senior": 0
+      },
+      "intern": {
+        "none": 2,
+        "intern": 64,
+        "junior": 11,
+        "middle": 0,
+        "senior": 0
+      },
+      "junior": {
+        "none": 0,
+        "intern": 44,
+        "junior": 67,
+        "middle": 4,
+        "senior": 0
+      },
+      "middle": {
+        "none": 0,
+        "intern": 19,
+        "junior": 19,
+        "middle": 20,
+        "senior": 3
+      },
+      "senior": {
+        "none": 0,
+        "intern": 2,
+        "junior": 5,
+        "middle": 14,
+        "senior": 4
+      }
+    }
+  },
+  {
+    "specialization": "devops",
+    "mode": "express",
+    "candidates": 300,
+    "bank_size": 14,
+    "theta_correlation": 0.789,
+    "theta_rmse": 0.652,
+    "theta_bias": -0.065,
+    "decision_accuracy": 0.777,
+    "grade_exact": 0.55,
+    "grade_within_one": 0.967,
+    "retest_decision_agreement": 0.78,
+    "retest_grade_kappa": 0.23,
+    "retest_theta_correlation": 0.647,
+    "mean_items": 7.46,
+    "mean_se": 0.589,
+    "max_exposure_rate": 1.0,
+    "onboarding_exact": 0.577,
+    "onboarding_within_one": 0.9,
+    "onboarding_mean_sessions": 1.07,
+    "confusion": {
+      "intern": {
+        "intern": 55,
+        "junior": 37,
+        "middle": 0,
+        "senior": 0
+      },
+      "junior": {
+        "intern": 18,
+        "junior": 59,
+        "middle": 22,
+        "senior": 1
+      },
+      "middle": {
+        "intern": 5,
+        "junior": 13,
+        "middle": 39,
+        "senior": 5
+      },
+      "senior": {
+        "intern": 0,
+        "junior": 4,
+        "middle": 30,
+        "senior": 12
+      }
+    },
+    "onboarding_confusion": {
+      "none": {
+        "none": 6,
+        "intern": 11,
+        "junior": 1,
+        "middle": 0,
+        "senior": 0
+      },
+      "intern": {
+        "none": 6,
+        "intern": 66,
+        "junior": 2,
+        "middle": 0,
+        "senior": 0
+      },
+      "junior": {
+        "none": 0,
+        "intern": 37,
+        "junior": 57,
+        "middle": 6,
+        "senior": 0
+      },
+      "middle": {
+        "none": 0,
+        "intern": 7,
+        "junior": 21,
+        "middle": 32,
+        "senior": 2
+      },
+      "senior": {
+        "none": 0,
+        "intern": 1,
+        "junior": 21,
+        "middle": 12,
+        "senior": 12
+      }
+    }
+  },
+  {
+    "specialization": "mobile",
+    "mode": "express",
+    "candidates": 300,
+    "bank_size": 18,
+    "theta_correlation": 0.77,
+    "theta_rmse": 0.674,
+    "theta_bias": 0.159,
+    "decision_accuracy": 0.737,
+    "grade_exact": 0.497,
+    "grade_within_one": 0.963,
+    "retest_decision_agreement": 0.727,
+    "retest_grade_kappa": 0.254,
+    "retest_theta_correlation": 0.595,
+    "mean_items": 7.51,
+    "mean_se": 0.597,
+    "max_exposure_rate": 0.649,
+    "onboarding_exact": 0.547,
+    "onboarding_within_one": 0.93,
+    "onboarding_mean_sessions": 1.06,
+    "confusion": {
+      "intern": {
+        "intern": 48,
+        "junior": 49,
+        "middle": 5,
+        "senior": 0
+      },
+      "junior": {
+        "intern": 10,
+        "junior": 57,
+        "middle": 28,
+        "senior": 3
+      },
+      "middle": {
+        "intern": 1,
+        "junior": 24,
+        "middle": 32,
+        "senior": 10
+      },
+      "senior": {
+        "intern": 0,
+        "junior": 2,
+        "middle": 19,
+        "senior": 12
+      }
+    },
+    "onboarding_confusion": {
+      "none": {
+        "none": 5,
+        "intern": 17,
+        "junior": 1,
+        "middle": 0,
+        "senior": 0
+      },
+      "intern": {
+        "none": 3,
+        "intern": 66,
+        "junior": 10,
+        "middle": 0,
+        "senior": 0
+      },
+      "junior": {
+        "none": 0,
+        "intern": 28,
+        "junior": 58,
+        "middle": 12,
+        "senior": 0
+      },
+      "middle": {
+        "none": 0,
+        "intern": 10,
+        "junior": 29,
+        "middle": 24,
+        "senior": 4
+      },
+      "senior": {
+        "none": 0,
+        "intern": 1,
+        "junior": 9,
+        "middle": 12,
+        "senior": 11
       }
     }
   }
