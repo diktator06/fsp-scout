@@ -12,7 +12,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_PYTHON_DOWNLOADS=never \
-    XDG_CACHE_HOME=/tmp/.cache \
     PATH="/app/.venv/bin:$PATH"
 COPY --from=ghcr.io/astral-sh/uv:0.12 /uv /usr/local/bin/uv
 WORKDIR /app
@@ -25,14 +24,17 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 # Зависимости ставятся отдельным слоем: при правке кода они берутся из кеша сборки.
+# Кеш скачанных пакетов uv живёт в cache mount и в образ не попадает.
 COPY pyproject.toml uv.lock .python-version ./
-RUN uv sync --frozen --no-dev --no-install-project
+RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-dev --no-install-project
 
 COPY . .
 COPY --from=swagger-assets /swagger ./static/swagger
 # Код и зависимости остаются во владении root и доступны приложению только на чтение.
 # Заодно не нужен chown -R: он скопировал бы весь .venv в ещё один слой образа.
+# Кеш шрифтов fontconfig пишется во временный каталог, раз /app только для чтения.
 RUN useradd --system --uid 10001 --home-dir /app scout
+ENV XDG_CACHE_HOME=/tmp/.cache
 USER scout
 
 EXPOSE 8000
