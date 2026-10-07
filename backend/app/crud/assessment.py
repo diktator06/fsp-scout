@@ -1,5 +1,6 @@
 import uuid
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
+from dataclasses import dataclass
 from datetime import datetime
 
 from sqlalchemy import func, select, update
@@ -19,6 +20,15 @@ from app.models.assessment import (
     SurveyResponse,
 )
 from app.models.dictionary import Category
+
+
+@dataclass
+class FamilyCounters:
+    """Приращения счётчиков одного семейства за транзакцию."""
+
+    exposures: int = 0
+    responses: int = 0
+    correct: int = 0
 
 
 class CompetencyCRUD(CRUDBase[Competency]):
@@ -100,28 +110,27 @@ class ItemFamilyCRUD(CRUDBase[ItemFamily]):
         )
         return dict(result.all())
 
-    async def register_exposure(self, session: AsyncSession, family_id: int) -> None:
-        """Атомарно увеличивает счётчик показов семейства.
+    async def apply_counters(
+        self, session: AsyncSession, counters: Mapping[int, FamilyCounters]
+    ) -> None:
+        """Атомарно увеличивает счётчики показов и ответов семейств.
 
-        UPDATE … SET exposure_count = exposure_count + 1 не теряет показы при
-        параллельных сессиях, в отличие от «прочитать, прибавить, записать».
+        `UPDATE … SET count = count + n` не теряет приращения при параллельных сессиях.
+        Строки обновляются строго по возрастанию id: если две транзакции трогают
+        одни и те же семейства, они берут блокировки в одном порядке и не
+        попадают во взаимоблокировку.
         """
-        await session.execute(
-            update(ItemFamily)
-            .where(ItemFamily.id == family_id)
-            .values(exposure_count=ItemFamily.exposure_count + 1)
-        )
-
-    async def register_response(self, session: AsyncSession, family_id: int, correct: bool) -> None:
-        """Атомарно учитывает ответ на семейство (для калибровки и детектора дрейфа)."""
-        await session.execute(
-            update(ItemFamily)
-            .where(ItemFamily.id == family_id)
-            .values(
-                responses_count=ItemFamily.responses_count + 1,
-                correct_count=ItemFamily.correct_count + (1 if correct else 0),
+        for family_id in sorted(counters):
+            delta = counters[family_id]
+            await session.execute(
+                update(ItemFamily)
+                .where(ItemFamily.id == family_id)
+                .values(
+                    exposure_count=ItemFamily.exposure_count + delta.exposures,
+                    responses_count=ItemFamily.responses_count + delta.responses,
+                    correct_count=ItemFamily.correct_count + delta.correct,
+                )
             )
-        )
 
 
 class SurveyCRUD(CRUDBase[SurveyResponse]):

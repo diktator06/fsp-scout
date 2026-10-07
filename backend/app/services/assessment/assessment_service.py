@@ -2,7 +2,7 @@ import logging
 import secrets
 import uuid
 from collections import defaultdict
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from datetime import UTC, datetime, timedelta
 from random import Random
 from typing import Any
@@ -27,6 +27,7 @@ from app.crud import (
     specialization_crud,
     survey_crud,
 )
+from app.crud.assessment import FamilyCounters
 from app.models.assessment import (
     AssessmentItem,
     AssessmentMode,
@@ -117,10 +118,18 @@ class AssessmentService:
     вкладки не создадут два задания на одну позицию.
     """
 
-    def __init__(self, session: AsyncSession, settings: Settings) -> None:
-        """Собирает конфигурацию движка и политики из настроек."""
+    def __init__(
+        self, session: AsyncSession, settings: Settings, clock: Callable[[], datetime] = _now
+    ) -> None:
+        """Собирает конфигурацию движка и политики из настроек.
+
+        `clock` подменяется только генератором демо-популяции: синтетические кандидаты
+        проходят тест тем же сервисом, но с правдоподобным временем ответов.
+        """
         self._session = session
         self._settings = settings
+        self._clock = clock
+        self._counters: dict[int, FamilyCounters] = {}
         self._engine = EngineConfig()
         self._policy = PolicyConfig(
             grade_change_cooldown_days=settings.grade_change_cooldown_days,
@@ -182,13 +191,13 @@ class AssessmentService:
         await candidate_skill_crud.upsert_declared(
             self._session, profile.id, dict.fromkeys(payload.primary_skill_ids), SkillSource.SURVEY
         )
-        await self._session.commit()
+        await self._commit()
         return await self._survey_view(survey)
 
     async def latest_survey(self, user: User) -> SurveyRead | None:
         """Последний опрос кандидата."""
         profile = await self._profiles.ensure_profile(user)
-        await self._session.commit()
+        await self._commit()
         survey = await survey_crud.latest_for_candidate(self._session, profile.id)
         return await self._survey_view(survey) if survey else None
 
@@ -222,7 +231,7 @@ class AssessmentService:
     async def eligibility(self, user: User) -> EligibilityRead:
         """Какие тесты кандидат может пройти сейчас."""
         profile = await self._profiles.ensure_profile(user)
-        await self._session.commit()
+        await self._commit()
         options = await self._grade_options(profile)
         active = await assessment_session_crud.active_for_candidate(self._session, profile.id)
         survey = await survey_crud.latest_for_candidate(self._session, profile.id)
@@ -256,7 +265,7 @@ class AssessmentService:
         менторы попросили дать возможность пройти тест за несколько минут. Механика та
         же, меньше только длина. Режим сохраняется в сессии и виден в результате.
         """
-        now = _now()
+        now = self._clock()
         if mode is AssessmentMode.EXPRESS and not self._settings.assessment_express_enabled:
             raise DomainValidationError("Экспресс-режим на этом стенде выключен")
         engine = self._engine_for(mode)
@@ -314,7 +323,7 @@ class AssessmentService:
             },
         )
         await self._advance(assessment, profile, [], now)
-        await self._session.commit()
+        await self._commit()
         logger.info("Начата сессия %s на грейд %s", assessment.id, target.code)
         return await self._session_view(assessment, profile)
 
@@ -328,8 +337,8 @@ class AssessmentService:
         profile = await self._profiles.ensure_profile(user, for_update=True)
         assessment = await self._owned_session(profile, session_id, for_update=True)
         if assessment.status is SessionStatus.IN_PROGRESS:
-            await self._handle_timeouts(assessment, profile, _now())
-        await self._session.commit()
+            await self._handle_timeouts(assessment, profile, self._clock())
+        await self._commit()
         return await self._session_view(assessment, profile)
 
     async def submit_answer(
@@ -340,14 +349,14 @@ class AssessmentService:
         Правильность ответа кандидату не сообщается: иначе ключи ответов можно было бы
         собирать и распространять. Результат по компетенциям виден только в итоге теста.
         """
-        now = _now()
+        now = self._clock()
         profile = await self._profiles.ensure_profile(user, for_update=True)
         assessment = await self._owned_session(profile, session_id, for_update=True)
         if not self._is_active(assessment):
             raise ConflictError("Тест уже завершён")
         await self._handle_timeouts(assessment, profile, now)
         if not self._is_active(assessment):
-            await self._session.commit()
+            await self._commit()
             return await self._session_view(assessment, profile)
 
         items = list(await assessment_item_crud.list_for_session(self._session, assessment.id))
@@ -367,13 +376,13 @@ class AssessmentService:
                 "response_time_ms": elapsed_ms,
             },
         )
-        await item_family_crud.register_response(self._session, current.family_id, score >= 1.0)
+        self._count_response(current.family_id, correct=score >= 1.0)
         if score >= 1.0 and elapsed_ms < min(
             FAST_ANSWER_MAX_MS, FAST_ANSWER_SHARE * current.family.time_limit_sec * 1000
         ):
             self._bump_integrity(assessment, "fast_correct")
         await self._after_answer(assessment, profile, items, now)
-        await self._session.commit()
+        await self._commit()
         return await self._session_view(assessment, profile)
 
     async def abandon(self, user: User, session_id: uuid.UUID) -> SessionRead:
@@ -383,9 +392,11 @@ class AssessmentService:
         if assessment.status is not SessionStatus.IN_PROGRESS:
             raise ConflictError("Тест уже завершён")
         await assessment_session_crud.update(
-            self._session, assessment, {"status": SessionStatus.ABANDONED, "finished_at": _now()}
+            self._session,
+            assessment,
+            {"status": SessionStatus.ABANDONED, "finished_at": self._clock()},
         )
-        await self._session.commit()
+        await self._commit()
         return await self._session_view(assessment, profile)
 
     async def record_integrity_event(
@@ -401,11 +412,11 @@ class AssessmentService:
         assessment = await self._owned_session(profile, session_id, for_update=True)
         if assessment.status is SessionStatus.IN_PROGRESS:
             self._bump_integrity(assessment, event)
-            await self._session.commit()
+            await self._commit()
 
     async def accept_suggested_grade(self, user: User, session_id: uuid.UUID) -> SessionRead:
         """Присваивает предложенный нижний грейд без пересдачи (только в онбординге)."""
-        now = _now()
+        now = self._clock()
         profile = await self._profiles.ensure_profile(user, for_update=True)
         assessment = await self._owned_session(profile, session_id, for_update=True)
         if not await self._can_accept_suggested(assessment, profile):
@@ -421,13 +432,13 @@ class AssessmentService:
         await assessment_session_crud.update(
             self._session, assessment, {"resulting_category_id": category.id}
         )
-        await self._session.commit()
+        await self._commit()
         return await self._session_view(assessment, profile)
 
     async def history(self, user: User) -> AssessmentHistoryRead:
         """История тестов и смен категории."""
         profile = await self._profiles.ensure_profile(user)
-        await self._session.commit()
+        await self._commit()
         sessions = await assessment_session_crud.list_for_candidate(self._session, profile.id)
         specializations = {s.id: s for s in await specialization_crud.list_all(self._session)}
         grades = {g.id: g for g in await grade_crud.list_all(self._session)}
@@ -460,6 +471,24 @@ class AssessmentService:
                 for change, category in changes
             ],
         )
+
+    def _count_response(self, family_id: int, *, correct: bool) -> None:
+        """Учитывает ответ на семейство (для калибровки и детектора дрейфа)."""
+        counters = self._counters.setdefault(family_id, FamilyCounters())
+        counters.responses += 1
+        counters.correct += int(correct)
+
+    async def _commit(self) -> None:
+        """Фиксирует транзакцию, перед этим применяя накопленные счётчики семейств.
+
+        Счётчики общие для всех кандидатов. Если обновлять их по ходу сценария, две
+        параллельные сессии захватывают строки семейств в разном порядке и ловят
+        взаимоблокировку. Отложенное применение в порядке id это исключает.
+        """
+        if self._counters:
+            await item_family_crud.apply_counters(self._session, self._counters)
+            self._counters = {}
+        await self._session.commit()
 
     async def _owned_session(
         self, profile: CandidateProfile, session_id: uuid.UUID, *, for_update: bool = False
@@ -499,7 +528,7 @@ class AssessmentService:
                 )
                 for item in sessions
             ],
-            now=now or _now(),
+            now=now or self._clock(),
             config=self._policy,
         )
 
@@ -576,7 +605,7 @@ class AssessmentService:
                 current,
                 {"score": 0.0, "timed_out": True, "answered_at": now, "response": {"raw": None}},
             )
-            await item_family_crud.register_response(self._session, current.family_id, False)
+            self._count_response(current.family_id, correct=False)
             await self._after_answer(assessment, profile, items, now)
 
     async def _after_answer(
@@ -753,7 +782,7 @@ class AssessmentService:
                 "deadline_at": now + timedelta(seconds=family.time_limit_sec),
             },
         )
-        await item_family_crud.register_exposure(self._session, family.id)
+        self._counters.setdefault(family.id, FamilyCounters()).exposures += 1
         item.family = family
         return item
 
@@ -928,7 +957,7 @@ class AssessmentService:
         self, assessment: AssessmentSession, profile: CandidateProfile
     ) -> SessionRead:
         """Состояние сессии для кандидата: текущее задание или итог."""
-        now = _now()
+        now = self._clock()
         items = list(await assessment_item_crud.list_for_session(self._session, assessment.id))
         specialization = await specialization_crud.get(self._session, assessment.specialization_id)
         target = await grade_crud.get(self._session, assessment.target_grade_id)
