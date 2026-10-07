@@ -420,6 +420,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/candidates/me/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Мои отклики
+         * @description Отклики со статусами и таймлайном.
+         */
+        get: operations["my_applications_api_v1_candidates_me_applications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/applications/{application_id}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Отозвать отклик
+         * @description Можно, пока компания не ответила.
+         */
+        post: operations["withdraw_api_v1_candidates_me_applications__application_id__withdraw_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/candidates/me/consents": {
         parameters: {
             query?: never;
@@ -875,6 +915,46 @@ export interface paths {
         patch: operations["update_specialization_api_v1_dictionaries_specializations__specialization_id__patch"];
         trace?: never;
     };
+    "/api/v1/employer/applications/{application_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Отклик (отмечается просмотренным)
+         * @description Первое открытие переводит отклик в «просмотрено» — это видит кандидат.
+         */
+        get: operations["read_application_api_v1_employer_applications__application_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/applications/{application_id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ответ на отклик
+         * @description Приглашение на собеседование или отказ с причиной; кандидат получает уведомление.
+         */
+        post: operations["decide_application_api_v1_employer_applications__application_id__decision_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/employer/candidates": {
         parameters: {
             query?: never;
@@ -1224,6 +1304,114 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/employer/vacancies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Вакансии компании
+         * @description Вакансии компании с числом откликов по статусам.
+         */
+        get: operations["list_vacancies_api_v1_employer_vacancies_get"];
+        put?: never;
+        /**
+         * Создать вакансию
+         * @description Создаёт вакансию. Вилка «от–до» обязательна; публикация ограничена уровнем доверия.
+         */
+        post: operations["create_vacancy_api_v1_employer_vacancies_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/vacancies/{vacancy_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Вакансия
+         * @description Вакансия своей компании; чужая — 404.
+         */
+        get: operations["read_vacancy_api_v1_employer_vacancies__vacancy_id__get"];
+        /**
+         * Изменить вакансию
+         * @description Правит черновик или опубликованную вакансию.
+         */
+        put: operations["update_vacancy_api_v1_employer_vacancies__vacancy_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/vacancies/{vacancy_id}/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Отклики на вакансию
+         * @description Отклики с карточками, баллом соответствия и контактами кандидатов.
+         */
+        get: operations["vacancy_applications_api_v1_employer_vacancies__vacancy_id__applications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/vacancies/{vacancy_id}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Снять с публикации
+         * @description Новые отклики не принимаются, прежние остаются в работе.
+         */
+        post: operations["close_vacancy_api_v1_employer_vacancies__vacancy_id__close_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/vacancies/{vacancy_id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Опубликовать вакансию
+         * @description Публикует черновик или снова открывает закрытую вакансию.
+         */
+        post: operations["publish_vacancy_api_v1_employer_vacancies__vacancy_id__publish_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health": {
         parameters: {
             query?: never;
@@ -1304,6 +1492,69 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/vacancies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Открытые вакансии
+         * @description Опубликованные вакансии с баллом соответствия кандидату и отметкой об отклике.
+         *
+         *     Если кандидат прошёл опрос, список упорядочен по соответствию — тем же правилам,
+         *     по которым работодатель видит подборку.
+         */
+        get: operations["vacancy_board_api_v1_vacancies_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vacancies/{vacancy_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Вакансия
+         * @description Вакансия с компанией, вилкой и объяснением соответствия.
+         */
+        get: operations["read_vacancy_api_v1_vacancies__vacancy_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/vacancies/{vacancy_id}/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Откликнуться
+         * @description Отклик открывает компании контакты кандидата — с его явного согласия.
+         */
+        post: operations["apply_api_v1_vacancies__vacancy_id__applications_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1321,6 +1572,79 @@ export interface components {
              */
             item_id: string;
         };
+        /**
+         * ApplicationBrief
+         * @description Отклик кандидата на вакансию — для метки в списке.
+         */
+        ApplicationBrief: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            status: components["schemas"]["ApplicationStatus"];
+        };
+        /**
+         * ApplicationCreate
+         * @description Отклик кандидата. Согласие открыть контакты компании обязательно: отклик их раскрывает.
+         */
+        ApplicationCreate: {
+            /**
+             * Cover Letter
+             * @default
+             */
+            cover_letter: string;
+            /**
+             * Share Contacts
+             * @description Согласие открыть компании контакты: отклик — собственная инициатива кандидата
+             */
+            share_contacts: boolean;
+        };
+        /**
+         * ApplicationDecision
+         * @description Решение работодателя по отклику: пригласить на собеседование или отказать с причиной.
+         */
+        ApplicationDecision: {
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            reject_reason?: components["schemas"]["RejectReason"] | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "interview" | "rejected";
+        };
+        /**
+         * ApplicationEventRead
+         * @description Шаг таймлайна отклика.
+         */
+        ApplicationEventRead: {
+            /**
+             * Actor
+             * @enum {string}
+             */
+            actor: "candidate" | "employer";
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            status: components["schemas"]["ApplicationStatus"];
+        };
+        /**
+         * ApplicationStatus
+         * @description Статусы отклика. Переходы задаёт автомат в `services/vacancies/state_machine.py`.
+         * @enum {string}
+         */
+        ApplicationStatus: "submitted" | "viewed" | "interview" | "rejected" | "withdrawn";
         /**
          * AssessmentHistoryRead
          * @description История тестов и смен категории.
@@ -1462,6 +1786,36 @@ export interface components {
             verified_score: components["schemas"]["VerifiedScoreRead"];
             /** Work Formats */
             work_formats: string[];
+        };
+        /**
+         * CandidateApplicationRead
+         * @description Отклик глазами кандидата. Контакты работодателя — после приглашения на собеседование.
+         */
+        CandidateApplicationRead: {
+            /** Cover Letter */
+            cover_letter: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            employer_contacts: components["schemas"]["EmployerContacts"] | null;
+            /** Events */
+            events: components["schemas"]["ApplicationEventRead"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Reject Comment */
+            reject_comment: string;
+            reject_reason: components["schemas"]["RejectReason"] | null;
+            /** Responded At */
+            responded_at: string | null;
+            status: components["schemas"]["ApplicationStatus"];
+            vacancy: components["schemas"]["VacancyBriefRead"];
+            /** Viewed At */
+            viewed_at: string | null;
         };
         /**
          * CandidateCardRead
@@ -2018,6 +2372,43 @@ export interface components {
             /** Options */
             options: components["schemas"]["GradeOptionRead"][];
             survey: components["schemas"]["SurveyRead"] | null;
+        };
+        /**
+         * EmployerApplicationRead
+         * @description Отклик глазами работодателя: карточка, балл соответствия и контакты кандидата.
+         */
+        EmployerApplicationRead: {
+            card: components["schemas"]["CandidateAnonymousCard"] | null;
+            contacts: components["schemas"]["DisclosedContacts"] | null;
+            /** Cover Letter */
+            cover_letter: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Events */
+            events: components["schemas"]["ApplicationEventRead"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Match Score */
+            match_score: number | null;
+            /** Reject Comment */
+            reject_comment: string;
+            reject_reason: components["schemas"]["RejectReason"] | null;
+            /** Responded At */
+            responded_at: string | null;
+            status: components["schemas"]["ApplicationStatus"];
+            /**
+             * Vacancy Id
+             * Format: uuid
+             */
+            vacancy_id: string;
+            /** Viewed At */
+            viewed_at: string | null;
         };
         /**
          * EmployerContacts
@@ -2881,7 +3272,7 @@ export interface components {
          * @description Виды уведомлений в кабинете.
          * @enum {string}
          */
-        NotificationKind: "invitation_received" | "invitation_accepted" | "invitation_declined" | "invitation_withdrawn" | "invitation_expired";
+        NotificationKind: "invitation_received" | "invitation_accepted" | "invitation_declined" | "invitation_withdrawn" | "invitation_expired" | "application_received" | "application_updated";
         /**
          * NotificationListRead
          * @description Последние уведомления и число непрочитанных.
@@ -3017,6 +3408,12 @@ export interface components {
              */
             verification_email_sent: boolean;
         };
+        /**
+         * RejectReason
+         * @description Причина отказа по отклику: кандидат видит её и понимает, что подтянуть.
+         * @enum {string}
+         */
+        RejectReason: "skills" | "grade" | "salary" | "position_filled" | "other";
         /**
          * ResendVerificationRequest
          * @description Запрос повторной отправки письма с подтверждением.
@@ -3549,6 +3946,173 @@ export interface components {
          * @enum {string}
          */
         UserRole: "candidate" | "employer" | "methodist";
+        /**
+         * VacancyBoardPage
+         * @description Страница списка вакансий для кандидата.
+         */
+        VacancyBoardPage: {
+            /**
+             * Can Apply
+             * @description Пройден ли опрос: без категории откликаться рано
+             */
+            can_apply: boolean;
+            /** Items */
+            items: components["schemas"]["VacancyPublicRead"][];
+            /** Total */
+            total: number;
+        };
+        /**
+         * VacancyBriefRead
+         * @description Вакансия в отклике кандидата.
+         */
+        VacancyBriefRead: {
+            company: components["schemas"]["CompanyBrief"];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Salary From */
+            salary_from: number;
+            /** Salary Gross */
+            salary_gross: boolean;
+            /** Salary To */
+            salary_to: number;
+            status: components["schemas"]["VacancyStatus"];
+            /** Title */
+            title: string;
+        };
+        /**
+         * VacancyCreate
+         * @description Вакансия работодателя. Вилка «от–до» обязательна, как и в приглашении (ТЗ §2.2).
+         */
+        VacancyCreate: {
+            /** City */
+            city?: string | null;
+            /** Description */
+            description: string;
+            /** Grade Ids */
+            grade_ids: number[];
+            /** Need Id */
+            need_id?: string | null;
+            /** Salary From */
+            salary_from: number;
+            /**
+             * Salary Gross
+             * @default true
+             */
+            salary_gross: boolean;
+            /** Salary To */
+            salary_to: number;
+            /** Skills */
+            skills?: components["schemas"]["NeedSkillInput"][];
+            /** Specialization Id */
+            specialization_id: number;
+            /**
+             * Title
+             * @example Python-разработчик (Middle)
+             */
+            title: string;
+            /** Work Formats */
+            work_formats: components["schemas"]["WorkFormat"][];
+        };
+        /**
+         * VacancyPublicRead
+         * @description Вакансия глазами кандидата: компания и вилка видны сразу.
+         */
+        VacancyPublicRead: {
+            application: components["schemas"]["ApplicationBrief"] | null;
+            /** City */
+            city: string | null;
+            company: components["schemas"]["CompanyBrief"];
+            /** Description */
+            description: string;
+            /** Grades */
+            grades: components["schemas"]["GradeBrief"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** @description Соответствие кандидату; нет, пока кандидат не прошёл опрос */
+            match: components["schemas"]["MatchRead"] | null;
+            /** Published At */
+            published_at: string | null;
+            /** Salary From */
+            salary_from: number;
+            /** Salary Gross */
+            salary_gross: boolean;
+            /** Salary To */
+            salary_to: number;
+            /** Skills */
+            skills: components["schemas"]["NeedSkillRead"][];
+            specialization: components["schemas"]["SpecializationBrief"];
+            /** Title */
+            title: string;
+            /** Work Formats */
+            work_formats: components["schemas"]["WorkFormat"][];
+        };
+        /**
+         * VacancyRead
+         * @description Вакансия глазами работодателя: статус и воронка откликов.
+         */
+        VacancyRead: {
+            /** Applications By Status */
+            applications_by_status: {
+                [key: string]: number;
+            };
+            /** Applications New */
+            applications_new: number;
+            /** Applications Total */
+            applications_total: number;
+            /** City */
+            city: string | null;
+            /** Closed At */
+            closed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Description */
+            description: string;
+            /** Grades */
+            grades: components["schemas"]["GradeBrief"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Need Id */
+            need_id: string | null;
+            /** Published At */
+            published_at: string | null;
+            /** Salary From */
+            salary_from: number;
+            /** Salary Gross */
+            salary_gross: boolean;
+            /** Salary To */
+            salary_to: number;
+            /** Skills */
+            skills: components["schemas"]["NeedSkillRead"][];
+            specialization: components["schemas"]["SpecializationBrief"];
+            status: components["schemas"]["VacancyStatus"];
+            /** Title */
+            title: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Work Formats */
+            work_formats: components["schemas"]["WorkFormat"][];
+        };
+        /**
+         * VacancyStatus
+         * @description Статус вакансии: черновик не виден кандидатам, закрытая остаётся в истории откликов.
+         * @enum {string}
+         */
+        VacancyStatus: "draft" | "published" | "closed";
         /**
          * VerifiedScoreRead
          * @description Индекс подтверждённого профиля (0–100) — ранг внутри категории.
@@ -4791,6 +5355,138 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    my_applications_api_v1_candidates_me_applications_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateApplicationRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    withdraw_api_v1_candidates_me_applications__application_id__withdraw_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                application_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateApplicationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6378,6 +7074,162 @@ export interface operations {
             };
         };
     };
+    read_application_api_v1_employer_applications__application_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                application_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployerApplicationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    decide_application_api_v1_employer_applications__application_id__decision_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                application_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplicationDecision"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployerApplicationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     search_candidates_api_v1_employer_candidates_get: {
         parameters: {
             query?: {
@@ -7830,6 +8682,545 @@ export interface operations {
             };
         };
     };
+    list_vacancies_api_v1_employer_vacancies_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VacancyRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_vacancy_api_v1_employer_vacancies_post: {
+        parameters: {
+            query?: {
+                /** @description Сразу опубликовать */
+                publish?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VacancyCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VacancyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_vacancy_api_v1_employer_vacancies__vacancy_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vacancy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VacancyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_vacancy_api_v1_employer_vacancies__vacancy_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vacancy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VacancyCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VacancyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    vacancy_applications_api_v1_employer_vacancies__vacancy_id__applications_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vacancy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployerApplicationRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    close_vacancy_api_v1_employer_vacancies__vacancy_id__close_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vacancy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VacancyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    publish_vacancy_api_v1_employer_vacancies__vacancy_id__publish_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vacancy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VacancyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     health_api_v1_health_get: {
         parameters: {
             query?: never;
@@ -7966,6 +9357,221 @@ export interface operations {
             };
             /** @description Объект не найден */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    vacancy_board_api_v1_vacancies_get: {
+        parameters: {
+            query?: {
+                specialization_id?: number | null;
+                grade_id?: number | null;
+                work_format?: components["schemas"]["WorkFormat"] | null;
+                /** @description Верхняя граница вилки не ниже */
+                salary_min?: number | null;
+                /** @description Поиск в названии и описании */
+                text?: string | null;
+                /** @description Размер страницы */
+                limit?: number;
+                /** @description Смещение от начала списка */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VacancyBoardPage"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_vacancy_api_v1_vacancies__vacancy_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vacancy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VacancyPublicRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    apply_api_v1_vacancies__vacancy_id__applications_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vacancy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplicationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateApplicationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

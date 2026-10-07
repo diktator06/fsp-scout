@@ -1,6 +1,5 @@
 import {
   Alert,
-  Badge,
   Button,
   Card,
   Group,
@@ -13,20 +12,17 @@ import {
   Title,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconCheck, IconLockOpen, IconWorld } from '@tabler/icons-react';
+import { IconCheck, IconLockOpen } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useParams } from 'react-router';
 import { errorMessage } from '@/api/errors';
 import { useCandidateInvitation, useRespondInvitation } from '@/api/invitations';
 import type { CandidateInvitation, DeclineReason } from '@/api/types';
 import { invitationTimeline } from '@/features/invitations/timeline';
+import { CompanyCard } from '@/features/vacancies/CompanyCard';
 import { WORK_FORMAT_LABELS } from '@/shared/lib/candidate';
 import { formatDate } from '@/shared/lib/format';
-import {
-  COMPANY_SIZE_LABELS,
-  DECLINE_REASON_LABELS,
-  TRUST_LEVEL_COPY,
-} from '@/shared/lib/matching';
+import { DECLINE_REASON_LABELS } from '@/shared/lib/matching';
 import {
   ErrorState,
   InvitationStatusBadge,
@@ -91,7 +87,6 @@ function InvitationView({ invitation }: { invitation: CandidateInvitation }) {
   const respond = useRespondInvitation(invitation.id);
   const [declineOpened, decline] = useDisclosure(false);
   const active = invitation.status === 'sent' || invitation.status === 'viewed';
-  const trust = TRUST_LEVEL_COPY[invitation.company.trust_level];
   return (
     <Stack gap="lg">
       <section className={classes.hero}>
@@ -135,35 +130,7 @@ function InvitationView({ invitation }: { invitation: CandidateInvitation }) {
             )}
           </Stack>
         </Card>
-        <Card>
-          <Stack gap="sm">
-            <Group justify="space-between">
-              <Title order={4}>Компания</Title>
-              <Badge color={trust.color} variant="light">
-                {trust.label}
-              </Badge>
-            </Group>
-            {invitation.company.industry && <Text size="sm">{invitation.company.industry}</Text>}
-            {invitation.company.size && (
-              <Text size="sm" c="dimmed">
-                {COMPANY_SIZE_LABELS[invitation.company.size]}
-              </Text>
-            )}
-            {invitation.company.description && (
-              <Text size="sm" lh={1.6}>
-                {invitation.company.description}
-              </Text>
-            )}
-            {invitation.company.website && (
-              <Text size="sm">
-                <IconWorld size={14} style={{ verticalAlign: '-2px' }} />{' '}
-                <a href={invitation.company.website} target="_blank" rel="noreferrer noopener">
-                  {invitation.company.website.replace(/^https?:\/\//, '')}
-                </a>
-              </Text>
-            )}
-          </Stack>
-        </Card>
+        <CompanyCard company={invitation.company} />
       </SimpleGrid>
 
       {invitation.employer_contacts && (

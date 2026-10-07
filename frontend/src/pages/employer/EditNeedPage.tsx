@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useNeed, useSaveNeed } from '@/api/employer';
 import { errorMessage } from '@/api/errors';
 import { NeedForm } from '@/features/employer/NeedForm';
-import { needToValues } from '@/features/employer/needValues';
+import { needToValues, valuesToPayload } from '@/features/employer/needValues';
 import { ErrorState, LoadingState, PageHeader } from '@/shared/ui';
 
 export function EditNeedPage() {
@@ -25,8 +25,10 @@ export function EditNeedPage() {
         <NeedForm
           initial={needToValues(need.data)}
           submitLabel="Сохранить"
-          onSubmit={(payload) => save.mutateAsync(payload)}
-          onSaved={(saved) => navigate(`/e/needs/${saved.id}`)}
+          onSubmit={async (values) => {
+            const saved = await save.mutateAsync(valuesToPayload(values));
+            navigate(`/e/needs/${saved.id}`);
+          }}
         />
       )}
     </>

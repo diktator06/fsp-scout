@@ -18,22 +18,24 @@ import { IconAlertCircle, IconSparkles } from '@tabler/icons-react';
 import { useMemo, useState, type ReactNode } from 'react';
 import { useGrades, useSpecializations } from '@/api/dictionaries';
 import { errorMessage, fieldErrors } from '@/api/errors';
-import type { Need, NeedCreate, WorkFormat } from '@/api/types';
+import type { WorkFormat } from '@/api/types';
 import { SkillPicker } from '@/features/candidate/SkillPicker';
 import { groupByDirection } from '@/shared/lib/assessment';
 import { WORK_FORMAT_LABELS, toOptions } from '@/shared/lib/candidate';
 import { salaryRangeError } from '@/shared/lib/salary';
 import { SalaryRangeInput } from '@/shared/ui';
 import type { NeedFormValues } from './needValues';
-import { valuesToPayload } from './needValues';
 
 interface NeedFormProps {
   initial: NeedFormValues;
   evidence?: Record<string, string>;
   submitLabel: string;
-  onSubmit: (payload: NeedCreate) => Promise<Need>;
-  onSaved: (need: Need) => void;
+  variant?: 'need' | 'vacancy';
+  footer?: ReactNode;
+  onSubmit: (values: NeedFormValues) => Promise<void>;
 }
+
+const MIN_VACANCY_DESCRIPTION = 20;
 
 function Evidence({ text }: { text: string | undefined }) {
   // Фрагмент исходного текста, по которому разбор заполнил поле.
@@ -58,11 +60,14 @@ export function NeedForm({
   initial,
   evidence = {},
   submitLabel,
+  variant = 'need',
+  footer,
   onSubmit,
-  onSaved,
 }: NeedFormProps) {
-  // Потребность — основа подбора: специализация и грейды задают жёсткий фильтр, навыки
-  // и описание команды — балл соответствия, вилка — условия и предупреждения.
+  // Одна форма для потребности и для вакансии: требования у них общие. Специализация
+  // и грейды задают жёсткий фильтр, навыки и описание — балл соответствия, вилка —
+  // условия. У вакансии описание и формат работы обязательны: кандидат читает их сам.
+  const vacancy = variant === 'vacancy';
   const specializations = useSpecializations();
   const grades = useGrades();
   const [failure, setFailure] = useState<string | null>(null);
@@ -75,6 +80,12 @@ export function NeedForm({
       grade_ids: (value) => (value.length ? null : 'Выберите хотя бы один грейд'),
       salary_to: (_, values) =>
         salaryRangeError({ from: values.salary_from, to: values.salary_to }),
+      team_description: (value) =>
+        vacancy && value.trim().length < MIN_VACANCY_DESCRIPTION
+          ? 'Опишите задачи, команду и условия — хотя бы пару предложений'
+          : null,
+      work_formats: (value) =>
+        vacancy && value.length === 0 ? 'Выберите хотя бы один формат' : null,
     },
   });
 
@@ -93,7 +104,7 @@ export function NeedForm({
     setFailure(null);
     setSaving(true);
     try {
-      onSaved(await onSubmit(valuesToPayload(values)));
+      await onSubmit(values);
     } catch (error) {
       const byField = fieldErrors(error);
       if (Object.keys(byField).length > 0) form.setErrors(byField);
@@ -110,7 +121,7 @@ export function NeedForm({
           <Stack gap="md">
             <Field evidence={evidence.title}>
               <TextInput
-                label="Название"
+                label={vacancy ? 'Название вакансии' : 'Название'}
                 placeholder="Python-разработчик в команду платежей"
                 required
                 {...form.getInputProps('title')}
@@ -199,7 +210,13 @@ export function NeedForm({
                 />
               </Input.Wrapper>
               <Field evidence={evidence.work_formats}>
-                <Input.Wrapper label="Формат работы" description="Пусто — любой" size="md">
+                <Input.Wrapper
+                  label="Формат работы"
+                  description={vacancy ? undefined : 'Пусто — любой'}
+                  required={vacancy}
+                  error={form.errors.work_formats}
+                  size="md"
+                >
                   <Chip.Group<true, WorkFormat>
                     multiple
                     value={form.values.work_formats}
@@ -225,11 +242,16 @@ export function NeedForm({
               </Field>
             </SimpleGrid>
             <Textarea
-              label="Чем занимается команда"
-              description="По этому тексту ищутся кандидаты с близким опытом: платежи, геоданные, highload…"
+              label={vacancy ? 'Описание вакансии' : 'Чем занимается команда'}
+              description={
+                vacancy
+                  ? 'Задачи, команда и условия — кандидат читает это вместе с вилкой'
+                  : 'По этому тексту ищутся кандидаты с близким опытом: платежи, геоданные, highload…'
+              }
+              required={vacancy}
               autosize
-              minRows={3}
-              maxLength={3000}
+              minRows={vacancy ? 5 : 3}
+              maxLength={vacancy ? 8000 : 3000}
               {...form.getInputProps('team_description')}
             />
           </Stack>
@@ -243,6 +265,7 @@ export function NeedForm({
           <Button type="submit" size="md" loading={saving}>
             {submitLabel}
           </Button>
+          {footer}
         </Group>
       </Stack>
     </form>

@@ -23,6 +23,7 @@ import {
   IconLogout,
   IconMailOpened,
   IconRadar,
+  IconSend,
   IconSettings,
   IconShieldCheck,
   IconTargetArrow,
@@ -53,7 +54,8 @@ const NAVIGATION: Record<UserRole, NavItem[]> = {
     { to: '/c/assessment', label: 'Категория и тест', icon: IconTargetArrow },
     { to: '/c/fsp', label: 'Достижения ФСП', icon: IconTrophy },
     { to: '/c/invitations', label: 'Приглашения', icon: IconMailOpened },
-    { to: '/c/vacancies', label: 'Вакансии', icon: IconBriefcase, soon: true },
+    { to: '/c/vacancies', label: 'Вакансии', icon: IconBriefcase },
+    { to: '/c/applications', label: 'Мои отклики', icon: IconSend },
     { to: '/c/settings', label: 'Приватность', icon: IconShieldCheck },
   ],
   employer: [
@@ -61,7 +63,7 @@ const NAVIGATION: Record<UserRole, NavItem[]> = {
     { to: '/e/needs', label: 'Подборки', icon: IconRadar },
     { to: '/e/bank', label: 'Банк кандидатов', icon: IconUsersGroup },
     { to: '/e/invitations', label: 'Приглашения', icon: IconMailOpened },
-    { to: '/e/vacancies', label: 'Вакансии', icon: IconBriefcase, soon: true },
+    { to: '/e/vacancies', label: 'Вакансии', icon: IconBriefcase },
     { to: '/e/company', label: 'Компания', icon: IconBuildingSkyscraper },
   ],
   methodist: [

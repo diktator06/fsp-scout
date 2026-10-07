@@ -1,0 +1,31 @@
+.card {
+  display: block;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.card:hover {
+  border-color: var(--mantine-color-fsp-3);
+  box-shadow: var(--mantine-shadow-sm);
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--mantine-spacing-md);
+  align-items: start;
+}
+
+.title {
+  font-weight: 800;
+  font-size: rem(17px);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 36em) {
+  .head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -1,4 +1,13 @@
-import type { Need, NeedCreate, NeedDraft, Skill, SkillImportance, WorkFormat } from '@/api/types';
+import type {
+  Need,
+  NeedCreate,
+  NeedDraft,
+  Skill,
+  SkillImportance,
+  Vacancy,
+  VacancyCreate,
+  WorkFormat,
+} from '@/api/types';
 
 export interface NeedSkillValue {
   skill: Skill;
@@ -67,5 +76,51 @@ export function valuesToPayload(values: NeedFormValues): NeedCreate {
     salary_from: values.salary_from ?? 0,
     salary_to: values.salary_to ?? 0,
     salary_gross: values.salary_gross,
+  };
+}
+
+export function needToVacancyValues(need: Need): NeedFormValues {
+  // Вакансия из потребности: требования те же, описание собирается из задач команды
+  // и исходного текста — работодатель допишет условия.
+  return {
+    ...needToValues(need),
+    team_description: [need.team_description, need.raw_text].filter(Boolean).join('\n\n'),
+  };
+}
+
+export function vacancyToValues(vacancy: Vacancy): NeedFormValues {
+  return {
+    title: vacancy.title,
+    raw_text: '',
+    team_description: vacancy.description,
+    specialization_id: String(vacancy.specialization.id),
+    grade_ids: vacancy.grades.map((grade) => String(grade.id)),
+    skills: vacancy.skills.map((item) => ({ skill: item.skill, importance: item.importance })),
+    work_formats: vacancy.work_formats,
+    city: vacancy.city ?? '',
+    salary_from: vacancy.salary_from,
+    salary_to: vacancy.salary_to,
+    salary_gross: vacancy.salary_gross,
+  };
+}
+
+export function valuesToVacancyPayload(
+  values: NeedFormValues,
+  needId: string | null = null,
+): VacancyCreate {
+  // У вакансии описание хранится отдельным полем: в форме оно живёт в team_description.
+  const base = valuesToPayload(values);
+  return {
+    title: base.title,
+    description: values.team_description.trim(),
+    specialization_id: base.specialization_id,
+    grade_ids: base.grade_ids,
+    skills: base.skills,
+    work_formats: values.work_formats,
+    city: base.city,
+    salary_from: base.salary_from,
+    salary_to: base.salary_to,
+    salary_gross: base.salary_gross,
+    need_id: needId,
   };
 }

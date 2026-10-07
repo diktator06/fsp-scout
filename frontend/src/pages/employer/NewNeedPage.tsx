@@ -7,7 +7,11 @@ import { errorMessage } from '@/api/errors';
 import type { NeedDraft } from '@/api/types';
 import { CompanyGate } from '@/features/employer/CompanyGate';
 import { NeedForm } from '@/features/employer/NeedForm';
-import { draftToValues, type NeedFormValues } from '@/features/employer/needValues';
+import {
+  draftToValues,
+  type NeedFormValues,
+  valuesToPayload,
+} from '@/features/employer/needValues';
 import { PageHeader } from '@/shared/ui';
 
 const EXAMPLE = `Python-разработчик (Middle) в команду платежей
@@ -100,8 +104,10 @@ export function NewNeedPage() {
             initial={draft ? draftToValues(draft) : { ...EMPTY, raw_text: text }}
             evidence={draft?.evidence}
             submitLabel="Сохранить и подобрать кандидатов"
-            onSubmit={(payload) => save.mutateAsync(payload)}
-            onSaved={(need) => navigate(`/e/needs/${need.id}`)}
+            onSubmit={async (values) => {
+              const need = await save.mutateAsync(valuesToPayload(values));
+              navigate(`/e/needs/${need.id}`);
+            }}
           />
         )}
       </CompanyGate>

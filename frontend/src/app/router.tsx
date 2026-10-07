@@ -129,6 +129,27 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: 'vacancies',
+        lazy: page(
+          () => import('@/pages/candidate/VacanciesPage'),
+          (module) => module.VacanciesPage,
+        ),
+      },
+      {
+        path: 'vacancies/:vacancyId',
+        lazy: page(
+          () => import('@/pages/candidate/VacancyPage'),
+          (module) => module.VacancyPage,
+        ),
+      },
+      {
+        path: 'applications',
+        lazy: page(
+          () => import('@/pages/candidate/ApplicationsPage'),
+          (module) => module.ApplicationsPage,
+        ),
+      },
+      {
         path: 'invitations',
         lazy: page(
           () => import('@/pages/candidate/InvitationsPage'),
@@ -208,6 +229,34 @@ export const router = createBrowserRouter([
         lazy: page(
           () => import('@/pages/employer/CandidatePage'),
           (module) => module.CandidatePage,
+        ),
+      },
+      {
+        path: 'vacancies',
+        lazy: page(
+          () => import('@/pages/employer/VacanciesPage'),
+          (module) => module.EmployerVacanciesPage,
+        ),
+      },
+      {
+        path: 'vacancies/new',
+        lazy: page(
+          () => import('@/pages/employer/VacancyFormPage'),
+          (module) => module.VacancyFormPage,
+        ),
+      },
+      {
+        path: 'vacancies/:vacancyId',
+        lazy: page(
+          () => import('@/pages/employer/VacancyPage'),
+          (module) => module.EmployerVacancyPage,
+        ),
+      },
+      {
+        path: 'vacancies/:vacancyId/edit',
+        lazy: page(
+          () => import('@/pages/employer/VacancyFormPage'),
+          (module) => module.VacancyFormPage,
         ),
       },
       {

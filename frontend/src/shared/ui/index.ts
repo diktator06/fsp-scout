@@ -1,4 +1,5 @@
 export { AnonymousAvatar } from './AnonymousAvatar';
+export { ApplicationStatusBadge } from './ApplicationStatusBadge';
 export { CategoryBadge, GradeMeter } from './CategoryBadge';
 export { ConstellationBackdrop } from './ConstellationBackdrop';
 export { CountdownRing } from './CountdownRing';

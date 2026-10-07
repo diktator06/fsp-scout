@@ -93,3 +93,14 @@ export type FspAchievement = Schemas['FspAchievementRead'];
 export type FspAuthorization = Schemas['FspAuthorizationRead'];
 export type FspResultStatus = FspAchievement['result_status'];
 export type FspEventLevel = FspAchievement['event_level'];
+
+export type Vacancy = Schemas['VacancyRead'];
+export type VacancyCreate = Schemas['VacancyCreate'];
+export type VacancyPublic = Schemas['VacancyPublicRead'];
+export type VacancyBoardPage = Schemas['VacancyBoardPage'];
+export type VacancyStatus = Vacancy['status'];
+export type ApplicationStatus = Schemas['ApplicationStatus'];
+export type RejectReason = Schemas['RejectReason'];
+export type CandidateApplication = Schemas['CandidateApplicationRead'];
+export type EmployerApplication = Schemas['EmployerApplicationRead'];
+export type ApplicationDecision = Schemas['ApplicationDecision'];

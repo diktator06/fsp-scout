@@ -1,6 +1,6 @@
 import { Badge, Button, Card, Drawer, Group, Select, Stack, Tabs, Text } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import { IconAdjustments, IconChartBar, IconPencil } from '@tabler/icons-react';
+import { IconAdjustments, IconBriefcase, IconChartBar, IconPencil } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router';
 import {
@@ -124,6 +124,14 @@ export function NeedPage() {
               leftSection={<IconPencil size={16} />}
             >
               Изменить
+            </Button>
+            <Button
+              variant="light"
+              component={Link}
+              to={`/e/vacancies/new?need=${needId}`}
+              leftSection={<IconBriefcase size={16} />}
+            >
+              Опубликовать как вакансию
             </Button>
             <Button
               variant="subtle"
