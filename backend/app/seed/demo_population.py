@@ -123,7 +123,8 @@ def _profile_payload(
     full_name = f"{first} {last_pair[1] if female else last_pair[0]}"
     low_years, high_years = data["experience_years"][grade]
     years = round(rng.uniform(low_years, high_years) * 2) / 2
-    stack = rng.choice(data["stacks"][specialization])
+    stacks = data["stacks"][specialization]
+    stack = rng.choices(stacks, weights=[item.get("weight", 1) for item in stacks])[0]
     optional = rng.sample(stack["optional"], k=rng.randint(1, min(4, len(stack["optional"]))))
     slugs = list(dict.fromkeys([*stack["core"], *optional]))
     unknown = [slug for slug in slugs if slug not in context.skills]

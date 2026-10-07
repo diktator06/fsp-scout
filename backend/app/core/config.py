@@ -59,7 +59,7 @@ class Settings(BaseSettings):
 
     seed_demo_users: bool = True
     seed_demo_population: bool = True
-    demo_population_per_specialization: int = Field(default=14, ge=0, le=200)
+    demo_population_per_specialization: int = Field(default=16, ge=0, le=200)
     demo_password: str = "ScoutDemo2026"
 
     swagger_assets_dir: Path = BACKEND_ROOT / "static" / "swagger"

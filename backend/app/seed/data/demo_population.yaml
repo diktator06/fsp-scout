@@ -73,16 +73,16 @@ positions:
   devops: [DevOps-инженер, SRE-инженер, Инженер инфраструктуры]
   mobile: [iOS-разработчик, Android-разработчик, Мобильный разработчик]
 
-# Стек: core берётся целиком, из optional — случайная часть.
+# Стек: core берётся целиком, из optional — случайная часть; weight — насколько стек частый.
 stacks:
   backend:
-    - {core: [python, django, postgresql, sql, git], optional: [redis, celery, docker, rest-api, linux, pytest, rabbitmq, asyncio]}
-    - {core: [python, fastapi, postgresql, sql, git], optional: [asyncio, redis, docker, kafka, sqlalchemy, kubernetes, pytest, grpc]}
-    - {core: [java, spring, postgresql, sql, git], optional: [hibernate, kafka, docker, microservices, redis, junit, kubernetes]}
+    - {weight: 3, core: [python, django, postgresql, sql, git], optional: [redis, celery, docker, rest-api, linux, pytest, rabbitmq, asyncio]}
+    - {weight: 4, core: [python, fastapi, postgresql, sql, git], optional: [asyncio, redis, docker, kafka, sqlalchemy, kubernetes, pytest, grpc]}
+    - {weight: 2, core: [java, spring, postgresql, sql, git], optional: [hibernate, kafka, docker, microservices, redis, junit, kubernetes]}
     - {core: [go, postgresql, sql, git], optional: [grpc, kafka, docker, kubernetes, redis, microservices, clickhouse]}
     - {core: [typescript, nodejs, nestjs, postgresql], optional: [mongodb, redis, docker, graphql, rest-api, rabbitmq]}
   frontend:
-    - {core: [javascript, typescript, react, html, css], optional: [redux, nextjs, webpack, vite, jest, storybook, tailwind, figma, accessibility]}
+    - {weight: 3, core: [javascript, typescript, react, html, css], optional: [redux, nextjs, webpack, vite, jest, storybook, tailwind, figma, accessibility]}
     - {core: [javascript, typescript, vue, html, css], optional: [nuxt, vite, sass, jest, figma, web-performance]}
     - {core: [javascript, typescript, angular, html, css], optional: [webpack, sass, jest, rest-api, figma]}
   data_analytics:

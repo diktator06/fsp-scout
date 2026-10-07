@@ -125,7 +125,7 @@ class TestNeedParser:
         assert parsed.grade_codes == ["middle"]
         assert parsed.experience_years_min == 3
         assert importance == {1: "must", 2: "must", 3: "must", 4: "nice"}
-        assert set(parsed.work_formats) == {"remote", "hybrid", "office"}
+        assert set(parsed.work_formats) == {"remote", "hybrid"}
         assert parsed.city == "Москва"
         assert (parsed.salary_from, parsed.salary_to, parsed.salary_gross) == (
             230_000,
@@ -149,6 +149,12 @@ class TestNeedParser:
             s.skill_id for s in parse_need_text("Пишем на Go и Postgres", CATALOG, GRADES).skills
         } == {7, 3}
         assert parse_need_text("We go live every week, удалённо", CATALOG, GRADES).skills == []
+
+    def test_office_location_is_not_a_format_for_hybrid(self) -> None:
+        """«Гибрид, офис в Казани» — один формат и город, а не офис плюс гибрид."""
+        parsed = parse_need_text("Гибрид, офис в Казани. Python.", CATALOG, GRADES)
+        assert parsed.work_formats == ["hybrid"]
+        assert parsed.city == "Казань"
 
     def test_salary_formats(self) -> None:
         """Разные записи вилки сводятся к рублям."""

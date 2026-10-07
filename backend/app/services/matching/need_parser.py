@@ -119,6 +119,8 @@ _FORMATS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("office", re.compile(r"\bофис\w*|office|on-?site", re.IGNORECASE)),
 )
 
+_OFFICE_LOCATION = re.compile(r"офис\w*\s+в\s+[А-ЯЁ]")
+
 _CITIES: tuple[tuple[str, re.Pattern[str]], ...] = tuple(
     (name, re.compile(pattern, re.IGNORECASE))
     for name, pattern in (
@@ -349,7 +351,8 @@ def parse_need_text(
 
     Разбор работает на правилах и справочнике навыков, без внешних моделей: результат
     воспроизводим и объясним. Это черновик для работодателя, а не окончательное
-    решение, — он проверяет и правит поля перед сохранением.
+    решение, — он проверяет и правит поля перед сохранением. «Гибрид, офис в Казани»
+    — это гибрид с офисом в Казани, а не два формата сразу.
     """
     parsed = ParsedNeed(title=_title(text))
     clauses = _clauses(text)
@@ -373,6 +376,8 @@ def parse_need_text(
         if match:
             parsed.work_formats.append(code_format)
             parsed.evidence.setdefault("work_formats", match.group(0))
+    if "hybrid" in parsed.work_formats and _OFFICE_LOCATION.search(text):
+        parsed.work_formats.remove("office")
 
     for city, pattern in _CITIES:
         match = pattern.search(text)
