@@ -34,6 +34,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import type { UserRole } from '@/api/types';
 import { ROLE_HOME, ROLE_TITLES } from '@/features/auth/roles';
 import { useAuth } from '@/features/auth/useAuth';
+import { NotificationBell } from '@/features/notifications/NotificationBell';
 import { ScoutLogo } from '@/shared/ui';
 import classes from './CabinetLayout.module.css';
 
@@ -49,17 +50,17 @@ const NAVIGATION: Record<UserRole, NavItem[]> = {
     { to: '/c', label: 'Главная', icon: IconHome },
     { to: '/c/profile', label: 'Профиль', icon: IconUserCircle },
     { to: '/c/assessment', label: 'Категория и тест', icon: IconTargetArrow },
-    { to: '/c/invitations', label: 'Приглашения', icon: IconMailOpened, soon: true },
+    { to: '/c/invitations', label: 'Приглашения', icon: IconMailOpened },
     { to: '/c/vacancies', label: 'Вакансии', icon: IconBriefcase, soon: true },
     { to: '/c/settings', label: 'Приватность', icon: IconShieldCheck },
   ],
   employer: [
     { to: '/e', label: 'Главная', icon: IconHome },
-    { to: '/e/needs', label: 'Подборки', icon: IconRadar, soon: true },
-    { to: '/e/bank', label: 'Банк кандидатов', icon: IconUsersGroup, soon: true },
-    { to: '/e/invitations', label: 'Приглашения', icon: IconMailOpened, soon: true },
+    { to: '/e/needs', label: 'Подборки', icon: IconRadar },
+    { to: '/e/bank', label: 'Банк кандидатов', icon: IconUsersGroup },
+    { to: '/e/invitations', label: 'Приглашения', icon: IconMailOpened },
     { to: '/e/vacancies', label: 'Вакансии', icon: IconBriefcase, soon: true },
-    { to: '/e/company', label: 'Компания', icon: IconBuildingSkyscraper, soon: true },
+    { to: '/e/company', label: 'Компания', icon: IconBuildingSkyscraper },
   ],
   methodist: [
     { to: '/m', label: 'Справочники', icon: IconBook2 },
@@ -130,7 +131,10 @@ export function CabinetLayout({ role }: { role: UserRole }) {
               {ROLE_TITLES[role]}
             </Badge>
           </Group>
-          <UserMenu />
+          <Group gap="xs" wrap="nowrap">
+            {role !== 'methodist' && <NotificationBell />}
+            <UserMenu />
+          </Group>
         </Group>
       </AppShell.Header>
 

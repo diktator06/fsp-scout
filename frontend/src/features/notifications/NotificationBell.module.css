@@ -1,0 +1,19 @@
+.head {
+  border-bottom: 1px solid var(--scout-line);
+}
+
+.item {
+  display: block;
+  width: 100%;
+  padding: rem(10px) rem(16px);
+  border-bottom: 1px solid var(--scout-line);
+}
+
+.item:hover {
+  background: var(--scout-surface-muted);
+}
+
+.item[data-unread] {
+  box-shadow: inset 3px 0 0 #ff0053;
+  background: #fff8fb;
+}
