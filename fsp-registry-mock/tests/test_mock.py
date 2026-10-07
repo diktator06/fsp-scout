@@ -108,6 +108,7 @@ async def test_authorization_code_flow_with_pkce(client: httpx.AsyncClient) -> N
         str(tokens["id_token"]), public_key, algorithms=["RS256"], audience=SETTINGS.client_id
     )
     assert claims["sub"].startswith("fsp-") and claims["nonce"] == "n0nce"
+    assert "name" not in claims
 
     headers = {"Authorization": f"Bearer {tokens['access_token']}"}
     own = await client.get(f"/participants/{claims['sub']}/achievements", headers=headers)

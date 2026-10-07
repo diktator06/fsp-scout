@@ -83,7 +83,7 @@ def discovery(settings: SettingsDep) -> dict[str, Any]:
         "scopes_supported": ["openid", "profile", "achievements", SERVICE_SCOPE],
         "token_endpoint_auth_methods_supported": ["client_secret_basic", "client_secret_post"],
         "code_challenge_methods_supported": ["S256"],
-        "claims_supported": ["sub", "name", "preferred_username", "region", "sport_rank"],
+        "claims_supported": ["sub", "preferred_username", "region", "sport_rank"],
     }
 
 
@@ -249,7 +249,6 @@ def token(
             "aud": settings.client_id,
             "auth_time": now,
             "nonce": issued.nonce,
-            "name": participant["full_name"],
             "preferred_username": participant["login"],
             "region": participant["region"],
         }
@@ -286,13 +285,16 @@ ClaimsDep = Annotated[dict[str, Any], Depends(bearer_claims)]
 
 @router.get("/userinfo")
 def userinfo(claims: ClaimsDep, registry: RegistryDep) -> dict[str, Any]:
-    """Сведения об участнике по его access-токену."""
+    """Сведения об участнике по его access-токену.
+
+    Имя в ответ не входит, как и в id_token: платформе достаточно идентификатора,
+    региона и разряда (минимизация персональных данных).
+    """
     participant = registry.by_id(str(claims.get("sub")))
     if participant is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Участник не найден")
     return {
         "sub": participant["id"],
-        "name": participant["full_name"],
         "preferred_username": participant["login"],
         "region": participant["region"],
         "sport_rank": participant["sport_rank"],
