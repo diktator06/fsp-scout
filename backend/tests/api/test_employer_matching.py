@@ -283,7 +283,7 @@ async def test_categories_bank_and_card(
     assert card["contacts"] is None
     assert "ivan@mail.ru" not in card["card"]["about"] and "[скрыто]" in card["card"]["about"]
     assert card["card"]["test"]["competencies"]
-    assert card["card"]["fsp"]["linked"] is False
+    assert card["card"]["fsp"]["state"] == "not_linked"
     assert card["match"]["score"] > 0
     assert card["card"]["experiences"][0]["company_name"] is None
 

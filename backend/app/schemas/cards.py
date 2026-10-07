@@ -7,7 +7,9 @@ from pydantic import BaseModel, Field
 from app.models.assessment import AssessmentMode
 from app.models.candidate import SearchStatus
 from app.models.dictionary import SkillKind
+from app.models.fsp import FspEventLevel, FspParticipationFormat, FspResultStatus, FspState
 from app.models.invitation import DisclosureReason, InvitationStatus
+from app.schemas.common import ORMModel
 from app.schemas.dictionary import CategoryRead
 
 GradeStatusLiteral = Literal["confirmed", "unconfirmed"]
@@ -70,11 +72,40 @@ class CardExperience(BaseModel):
     description: str
 
 
-class FspSummary(BaseModel):
-    """Блок ФСП. Пока ФСП ID не привязан, это нейтральное пустое состояние, а не минус."""
+class FspAchievementRead(ORMModel):
+    """Участие в соревновании из реестра ФСП."""
 
-    linked: bool
+    external_event_id: str
+    event_name: str
+    event_level: FspEventLevel
+    discipline: str
+    event_date: date
+    participation_format: FspParticipationFormat
+    team_name: str | None
+    team_role: str | None
+    place: int | None
+    participants_total: int | None
+    result_status: FspResultStatus
+    is_online: bool
+    rating_points: float | None
+    protocol_url: str | None
+
+
+class FspSummary(BaseModel):
+    """Блок ФСП в карточке.
+
+    Без привязки, без истории или со скрытыми достижениями это нейтральное состояние
+    с пояснением, а не минус: F = 0 означает отсутствие бонуса, а не штраф.
+    """
+
+    state: FspState
     message: str
+    summary: str | None = None
+    best_result: str | None = None
+    score: float = Field(default=0.0, ge=0, le=1, description="Балл ФСП F")
+    sport_rank: str | None = None
+    synced_at: datetime | None = None
+    achievements: list[FspAchievementRead] = Field(default_factory=list)
 
 
 class CandidateAnonymousCard(BaseModel):

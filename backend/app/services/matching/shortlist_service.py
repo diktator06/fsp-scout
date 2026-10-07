@@ -17,6 +17,7 @@ from app.crud import (
 )
 from app.crud.candidate_search import PoolQuery
 from app.models.employer import Recruiter
+from app.models.fsp import FspState
 from app.models.matching import HiringNeed, Shortlist, ShortlistMarkKind
 from app.models.user import User
 from app.schemas.cards import InvitationBrief
@@ -62,6 +63,8 @@ def passes_filters(filters: ShortlistFilters, item: ScoredMember) -> bool:
         and facts.city
         and facts.city.strip().lower() == filters.city.strip().lower()
     ):
+        return False
+    if filters.fsp_only and facts.fsp_state is not FspState.LINKED:
         return False
     if filters.within_budget:
         salary = next(check for check in item.result.conditions if check.key == "salary")

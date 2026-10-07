@@ -5,12 +5,15 @@ from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud import candidate_pool_crud, category_crud
+from app.crud import candidate_pool_crud, category_crud, fsp_achievement_crud, fsp_link_crud
 from app.crud.candidate_search import PoolQuery, PoolRow
 from app.models.assessment import AssessmentMode, AssessmentSession
 from app.models.candidate import CandidateSkill, PrivacySettings, WorkExperience
 from app.models.dictionary import Category, Skill
+from app.models.fsp import FspResultStatus
 from app.services.candidate.profile_service import profile_completeness
+from app.services.fsp.achievements_scoring import describe_result, summarize
+from app.services.fsp.standing import NOT_LINKED, FspStanding, fsp_standing
 from app.services.matching.facts import AssessmentFact, CandidateFacts, SkillFact
 from app.services.matching.verified_score import VerifiedScore, compute_verified_score
 
@@ -32,6 +35,7 @@ class PoolMember:
     privacy: PrivacySettings | None = None
     experiences: list[WorkExperience] = field(default_factory=list)
     session: AssessmentSession | None = None
+    fsp: FspStanding = NOT_LINKED
 
     @property
     def candidate_id(self) -> uuid.UUID:
@@ -79,9 +83,10 @@ class CandidatePoolService:
         if not rows:
             return []
         categories = await self.categories()
-        extras = await candidate_pool_crud.load_extras(
-            self._session, [row.profile.id for row in rows]
-        )
+        ids = [row.profile.id for row in rows]
+        extras = await candidate_pool_crud.load_extras(self._session, ids)
+        fsp_links = await fsp_link_crud.for_candidates(self._session, ids)
+        fsp_achievements = await fsp_achievement_crud.for_candidates(self._session, fsp_links)
         confirmed_categories = {
             row.profile.current_category_id
             for row in rows
@@ -111,12 +116,19 @@ class CandidatePoolService:
                 experiences=extras.experiences.get(row.profile.id, []),
                 session=extras.sessions.get(row.profile.id),
             )
+            member.fsp = fsp_standing(
+                fsp_links.get(row.profile.id),
+                fsp_achievements.get(row.profile.id, []),
+                visible=bool(member.privacy and member.privacy.show_fsp_achievements),
+                today=now.date(),
+            )
             self._fill_facts(member)
             member.score = compute_verified_score(
                 member.facts,
                 peers.get(category.id, []) if member.facts.confirmed else [],
                 await self.band(category),
                 now,
+                fsp=member.facts.fsp_score,
             )
             members.append(member)
         return members
@@ -173,6 +185,13 @@ class CandidatePoolService:
         facts.text = " ".join(
             [profile.about] + [f"{job.position}. {job.description}" for job in member.experiences]
         )
+        fsp = member.fsp
+        facts.fsp_state = fsp.state
+        facts.fsp_score = fsp.score.value
+        best = fsp.score.best
+        if best is not None and best.result_status is not FspResultStatus.PARTICIPANT:
+            facts.fsp_best = describe_result(best)
+        facts.fsp_summary = summarize(fsp.score) if fsp.score.events else None
 
 
 def members_by_id(members: Sequence[PoolMember]) -> dict[uuid.UUID, PoolMember]:

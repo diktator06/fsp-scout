@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 from app.models.candidate import SearchStatus, SkillSource
+from app.models.fsp import FspState
 
 
 @dataclass(frozen=True, slots=True)
@@ -57,6 +58,10 @@ class CandidateFacts:
     text: str = ""
     completeness: int = 0
     email_verified: bool = False
+    fsp_state: FspState = FspState.NOT_LINKED
+    fsp_score: float = 0.0
+    fsp_best: str | None = None
+    fsp_summary: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

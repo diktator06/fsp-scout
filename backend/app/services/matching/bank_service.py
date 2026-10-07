@@ -76,6 +76,7 @@ class BankService:
                 confirmed_only=filters.confirmed_only,
                 work_formats=[filters.work_format.value] if filters.work_format else (),
                 city=filters.city,
+                fsp_only=filters.has_fsp,
             )
         )
         members.sort(key=_sort_key(filters.sort))

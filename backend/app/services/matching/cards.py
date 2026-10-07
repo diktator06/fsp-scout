@@ -2,17 +2,21 @@ import re
 from collections.abc import Sequence
 
 from app.crud.candidate_search import CompetencyOutcome
+from app.models.fsp import FspState
 from app.schemas.cards import (
     CandidateAnonymousCard,
     CardCompetency,
     CardExperience,
     CardSkill,
     CardTest,
+    FspAchievementRead,
     FspSummary,
     ScoreComponentRead,
     VerifiedScoreRead,
 )
 from app.schemas.dictionary import CategoryRead
+from app.services.fsp.achievements_scoring import summarize
+from app.services.fsp.standing import FspStanding
 from app.services.matching.candidate_pool import PoolMember
 from app.services.matching.verified_score import VerifiedScore
 
@@ -24,8 +28,6 @@ _PII_PATTERNS = (
     re.compile(r"(?:\+7|8)[\s\-(]*\d{3}[\s\-)]*\d{3}[\s-]*\d{2}[\s-]*\d{2}"),
     re.compile(r"\b\d[\d\s\-()]{9,}\d\b"),
 )
-
-FSP_NOT_LINKED = "Профиль ФСП не привязан — оценка основана на тесте и профиле"
 
 
 def mask_pii(text: str) -> str:
@@ -57,6 +59,22 @@ def verified_score_read(score: VerifiedScore) -> VerifiedScoreRead:
         test_percentile=round(score.test_percentile * 100)
         if score.test_percentile is not None
         else None,
+    )
+
+
+def fsp_summary(standing: FspStanding, best_result: str | None) -> FspSummary:
+    """Блок ФСП карточки. Скрытые кандидатом достижения не попадают в него вовсе."""
+    if standing.state in {FspState.NOT_LINKED, FspState.HIDDEN} or standing.link is None:
+        return FspSummary(state=standing.state, message=standing.message)
+    return FspSummary(
+        state=standing.state,
+        message=standing.message,
+        summary=summarize(standing.score) if standing.score.events else None,
+        best_result=best_result,
+        score=standing.score.value,
+        sport_rank=standing.link.sport_rank,
+        synced_at=standing.link.synced_at,
+        achievements=[FspAchievementRead.model_validate(item) for item in standing.achievements],
     )
 
 
@@ -123,6 +141,6 @@ def build_card(
             for job in member.experiences
         ],
         test=test,
-        fsp=FspSummary(linked=False, message=FSP_NOT_LINKED),
+        fsp=fsp_summary(member.fsp, facts.fsp_best),
         updated_at=profile.updated_at,
     )

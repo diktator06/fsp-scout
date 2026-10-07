@@ -176,6 +176,7 @@ class ShortlistFilters(BaseModel):
     work_formats: list[WorkFormat] = Field(default_factory=list, max_length=3)
     city: str | None = Field(default=None, max_length=120)
     within_budget: bool = Field(default=False, description="Только с ожиданиями в вилке")
+    fsp_only: bool = Field(default=False, description="Только с подтверждёнными участиями в ФСП")
     min_score: float = Field(default=0.0, ge=0, le=1)
     limit: int = Field(default=50, ge=5, le=200)
 
@@ -285,6 +286,7 @@ class BankFilters(BaseModel):
     confirmed_only: bool = False
     work_format: WorkFormat | None = None
     city: str | None = Field(default=None, max_length=120)
+    has_fsp: bool = False
     sort: BankSort = BankSort.SCORE
 
 

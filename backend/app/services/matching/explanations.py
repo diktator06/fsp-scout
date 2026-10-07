@@ -1,11 +1,17 @@
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 
+from app.models.fsp import FspState
 from app.services.matching.facts import CandidateFacts
 from app.services.matching.match_scoring import MatchResult, SkillMatch
 from app.services.matching.verified_score import VerifiedScore
 
 FORMAT_NAMES = {"office": "офис", "hybrid": "гибрид", "remote": "удалённо"}
+FSP_NEUTRAL = {
+    FspState.NOT_LINKED: "Профиль ФСП не привязан — оценка по тесту и профилю",
+    FspState.LINKED_EMPTY: "ФСП ID привязан, участий пока нет — оценка по тесту и профилю",
+    FspState.HIDDEN: "Достижения ФСП скрыты кандидатом — оценка по тесту и профилю",
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,6 +32,15 @@ def _ordinal_percentile(value: float) -> str:
     return f"{round(value * 100)}-й перцентиль"
 
 
+def explain_fsp(candidate: CandidateFacts) -> ExplanationItem:
+    """Причина про ФСП: лучший результат, сводка участий или нейтральная справка."""
+    if candidate.fsp_state is not FspState.LINKED:
+        return ExplanationItem("info", FSP_NEUTRAL[candidate.fsp_state])
+    if candidate.fsp_best:
+        return ExplanationItem("plus", f"ФСП: {candidate.fsp_best}")
+    return ExplanationItem("info", f"ФСП: {candidate.fsp_summary}")
+
+
 def explain_match(
     result: MatchResult,
     candidate: CandidateFacts,
@@ -35,7 +50,6 @@ def explain_match(
     category_title: str,
     grade_name: str,
     shared_terms: Sequence[str] = (),
-    fsp_linked: bool = False,
 ) -> list[ExplanationItem]:
     """Человекочитаемые причины места кандидата в подборке.
 
@@ -117,6 +131,5 @@ def explain_match(
         items.append(
             ExplanationItem("plus", f"Опыт перекликается с задачами: {', '.join(shared_terms)}")
         )
-    if not fsp_linked:
-        items.append(ExplanationItem("info", "Профиль ФСП не привязан — оценка по тесту и профилю"))
+    items.append(explain_fsp(candidate))
     return items

@@ -26,6 +26,7 @@ async def search_candidates(
     confirmed_only: Annotated[bool, Query(description="Только с подтверждённым грейдом")] = False,
     work_format: Annotated[WorkFormat | None, Query()] = None,
     city: Annotated[str | None, Query(max_length=120)] = None,
+    has_fsp: Annotated[bool, Query(description="Есть подтверждённые участия в ФСП")] = False,
     sort: Annotated[BankSort, Query()] = BankSort.SCORE,
 ) -> BankPage:
     """Обезличенные карточки кандидатов, давших согласие на публикацию.
@@ -42,6 +43,7 @@ async def search_candidates(
         confirmed_only=confirmed_only,
         work_format=work_format,
         city=city,
+        has_fsp=has_fsp,
         sort=sort,
     )
     return await service.search(user, filters, limit=pagination.limit, offset=pagination.offset)

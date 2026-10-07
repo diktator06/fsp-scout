@@ -24,6 +24,7 @@ from app.models.candidate import (
 )
 from app.models.consent import Consent, ConsentType
 from app.models.dictionary import Category, Skill, SkillRelation, SpecializationSkill
+from app.models.fsp import FspAchievement
 from app.models.user import User
 
 
@@ -40,6 +41,7 @@ class PoolQuery:
     confirmed_only: bool = False
     work_formats: Sequence[str] = ()
     city: str | None = None
+    fsp_only: bool = False
     published_only: bool = True
 
 
@@ -175,6 +177,18 @@ class CandidatePoolCRUD:
                 .where(
                     PrivacySettings.candidate_id == CandidateProfile.id,
                     PrivacySettings.show_city.is_(True),
+                )
+                .correlate(CandidateProfile),
+            )
+        if query.fsp_only:
+            statement = statement.where(
+                exists()
+                .where(FspAchievement.candidate_id == CandidateProfile.id)
+                .correlate(CandidateProfile),
+                exists()
+                .where(
+                    PrivacySettings.candidate_id == CandidateProfile.id,
+                    PrivacySettings.show_fsp_achievements.is_(True),
                 )
                 .correlate(CandidateProfile),
             )
