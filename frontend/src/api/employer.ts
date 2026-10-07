@@ -24,6 +24,7 @@ export interface BankQuery {
   confirmedOnly?: boolean;
   workFormat?: 'office' | 'hybrid' | 'remote' | null;
   city?: string;
+  hasFsp?: boolean;
   sort?: BankSort;
   limit?: number;
   offset?: number;
@@ -208,6 +209,7 @@ export function useBank(params: BankQuery) {
               confirmed_only: params.confirmedOnly || undefined,
               work_format: params.workFormat ?? undefined,
               city: params.city?.trim() || undefined,
+              has_fsp: params.hasFsp || undefined,
               sort: params.sort,
               limit: params.limit ?? 20,
               offset: params.offset ?? 0,

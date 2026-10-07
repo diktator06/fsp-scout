@@ -1,6 +1,7 @@
-import { Alert, Badge, Button, Card, Group, SimpleGrid, Stack, Text, Title } from '@mantine/core';
-import { IconLock, IconLockOpen, IconMail, IconTrophy } from '@tabler/icons-react';
-import type { CandidateCardView } from '@/api/types';
+import { Badge, Button, Card, Group, SimpleGrid, Stack, Text, Title } from '@mantine/core';
+import { IconLock, IconLockOpen, IconMail } from '@tabler/icons-react';
+import type { CandidateCardView, FspState } from '@/api/types';
+import { FspCardBlock } from '@/features/fsp/FspCardBlock';
 import { competencyShare } from '@/shared/lib/assessment';
 import { formatDateTime } from '@/shared/lib/format';
 import { MatchScore, SkillMatchChips, VerifiedScoreBar, WhyInShortlist } from '@/shared/ui';
@@ -11,6 +12,13 @@ interface CandidateProfileViewProps {
   view: CandidateCardView;
   onInvite: () => void;
 }
+
+const FSP_HINTS: Record<FspState, string | undefined> = {
+  not_linked: 'ФСП ID не привязан',
+  linked_empty: 'Привязан, участий пока нет',
+  hidden: 'Скрыто кандидатом',
+  linked: undefined,
+};
 
 function monthYear(value: string | null | undefined): string {
   // «сен 2024» для периодов работы.
@@ -120,8 +128,8 @@ export function CandidateProfileView({ view, onInvite }: CandidateProfileViewPro
                 value: item.value,
                 weight: item.weight,
                 hint:
-                  item.key === 'fsp' && !card.fsp.linked
-                    ? 'ФСП ID не привязан'
+                  item.key === 'fsp'
+                    ? FSP_HINTS[card.fsp.state]
                     : item.key === 'micro_tasks' && item.value === 0
                       ? 'Микрозадач пока не было'
                       : undefined,
@@ -223,9 +231,7 @@ export function CandidateProfileView({ view, onInvite }: CandidateProfileViewPro
         </Card>
       </SimpleGrid>
 
-      <Alert color="gray" variant="light" icon={<IconTrophy size={18} />} title="Достижения ФСП">
-        {card.fsp.message}
-      </Alert>
+      <FspCardBlock fsp={card.fsp} />
     </Stack>
   );
 }

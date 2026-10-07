@@ -1,5 +1,5 @@
 import { Badge, Group, Stack, Text } from '@mantine/core';
-import { IconLockOpen, IconMapPin } from '@tabler/icons-react';
+import { IconLockOpen, IconMapPin, IconTrophy } from '@tabler/icons-react';
 import type { CandidateCard, InvitationBrief } from '@/api/types';
 import { WORK_FORMAT_LABELS } from '@/shared/lib/candidate';
 import { formatRub, pluralizeRu } from '@/shared/lib/format';
@@ -10,6 +10,13 @@ interface CandidateSummaryProps {
   card: CandidateCard;
   invitation?: InvitationBrief | null;
   contactsDisclosed?: boolean;
+}
+
+function fspBadge(card: CandidateCard): string | null {
+  // Короткая метка ФСП в шапке: «ФСП · призёр». Подробности — в блоке карточки.
+  if (card.fsp.state !== 'linked') return null;
+  const result = card.fsp.best_result?.split(/[\s:(]/)[0];
+  return result ? `ФСП · ${result}` : 'ФСП';
 }
 
 function years(value: number | null | undefined): string | null {
@@ -39,6 +46,17 @@ export function CandidateSummary({ card, invitation, contactsDisclosed }: Candid
             </Badge>
           )}
           {invitation && <InvitationStatusBadge status={invitation.status} />}
+          {fspBadge(card) && (
+            <Badge
+              color="fsp"
+              variant="light"
+              tt="none"
+              leftSection={<IconTrophy size={12} />}
+              title={card.fsp.summary ?? undefined}
+            >
+              {fspBadge(card)}
+            </Badge>
+          )}
         </Group>
         <CategoryBadge
           specialization={card.category.specialization.name}

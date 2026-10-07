@@ -43,6 +43,7 @@ export function BankPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
   const [confirmedOnly, setConfirmedOnly] = useState(false);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [hasFsp, setHasFsp] = useState(false);
   const [workFormat, setWorkFormat] = useState<WorkFormat | null>(null);
   const [city, setCity] = useState('');
   const [debouncedCity] = useDebouncedValue(city, 300);
@@ -58,6 +59,7 @@ export function BankPage() {
     verifiedSkillsOnly: verifiedOnly,
     workFormat,
     city: debouncedCity,
+    hasFsp,
     sort,
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
@@ -135,6 +137,11 @@ export function BankPage() {
                 checked={verifiedOnly}
                 onChange={(event) => reset(setVerifiedOnly)(event.currentTarget.checked)}
                 disabled={skills.length === 0}
+              />
+              <Checkbox
+                label="Есть подтверждённые участия в ФСП"
+                checked={hasFsp}
+                onChange={(event) => reset(setHasFsp)(event.currentTarget.checked)}
               />
             </Stack>
           </SimpleGrid>

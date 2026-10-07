@@ -46,6 +46,12 @@ export function RefinePanel({ need, current, loading, onApply }: RefinePanelProp
         onChange={(event) => set('expand_grades', event.currentTarget.checked)}
       />
       <Checkbox
+        label="Есть подтверждённые участия в ФСП"
+        description="Кандидаты без ФСП не хуже — они просто без бонуса"
+        checked={filters.fsp_only ?? false}
+        onChange={(event) => set('fsp_only', event.currentTarget.checked)}
+      />
+      <Checkbox
         label="Ожидания в моей вилке"
         checked={filters.within_budget ?? false}
         onChange={(event) => set('within_budget', event.currentTarget.checked)}

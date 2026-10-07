@@ -84,3 +84,12 @@ export type InvitationStatusCode = EmployerInvitation['status'];
 
 export type NotificationItem = Schemas['NotificationRead'];
 export type NotificationList = Schemas['NotificationListRead'];
+
+export type FspProfile = Schemas['FspProfileRead'];
+export type FspState = FspProfile['state'];
+export type FspScore = Schemas['FspScoreRead'];
+export type FspSummary = Schemas['FspSummary'];
+export type FspAchievement = Schemas['FspAchievementRead'];
+export type FspAuthorization = Schemas['FspAuthorizationRead'];
+export type FspResultStatus = FspAchievement['result_status'];
+export type FspEventLevel = FspAchievement['event_level'];

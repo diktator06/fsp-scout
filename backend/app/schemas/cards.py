@@ -100,12 +100,12 @@ class FspSummary(BaseModel):
 
     state: FspState
     message: str
-    summary: str | None = None
-    best_result: str | None = None
-    score: float = Field(default=0.0, ge=0, le=1, description="Балл ФСП F")
-    sport_rank: str | None = None
-    synced_at: datetime | None = None
-    achievements: list[FspAchievementRead] = Field(default_factory=list)
+    summary: str | None
+    best_result: str | None
+    score: float = Field(ge=0, le=1, description="Балл ФСП F")
+    sport_rank: str | None
+    synced_at: datetime | None
+    achievements: list[FspAchievementRead]
 
 
 class CandidateAnonymousCard(BaseModel):

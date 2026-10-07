@@ -2353,24 +2353,571 @@
         "title": "ExplanationItemRead",
         "type": "object"
       },
-      "FspSummary": {
-        "description": "Блок ФСП. Пока ФСП ID не привязан, это нейтральное пустое состояние, а не минус.",
+      "FspAchievementRead": {
+        "description": "Участие в соревновании из реестра ФСП.",
         "properties": {
-          "linked": {
-            "title": "Linked",
+          "discipline": {
+            "title": "Discipline",
+            "type": "string"
+          },
+          "event_date": {
+            "format": "date",
+            "title": "Event Date",
+            "type": "string"
+          },
+          "event_level": {
+            "$ref": "#/components/schemas/FspEventLevel"
+          },
+          "event_name": {
+            "title": "Event Name",
+            "type": "string"
+          },
+          "external_event_id": {
+            "title": "External Event Id",
+            "type": "string"
+          },
+          "is_online": {
+            "title": "Is Online",
             "type": "boolean"
           },
-          "message": {
-            "title": "Message",
+          "participants_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Participants Total"
+          },
+          "participation_format": {
+            "$ref": "#/components/schemas/FspParticipationFormat"
+          },
+          "place": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Place"
+          },
+          "protocol_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Protocol Url"
+          },
+          "rating_points": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating Points"
+          },
+          "result_status": {
+            "$ref": "#/components/schemas/FspResultStatus"
+          },
+          "team_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team Name"
+          },
+          "team_role": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team Role"
+          }
+        },
+        "required": [
+          "external_event_id",
+          "event_name",
+          "event_level",
+          "discipline",
+          "event_date",
+          "participation_format",
+          "team_name",
+          "team_role",
+          "place",
+          "participants_total",
+          "result_status",
+          "is_online",
+          "rating_points",
+          "protocol_url"
+        ],
+        "title": "FspAchievementRead",
+        "type": "object"
+      },
+      "FspAuthorizationRead": {
+        "description": "Адрес страницы входа ФСП ID, на который фронтенд переводит браузер.",
+        "properties": {
+          "authorization_url": {
+            "title": "Authorization Url",
+            "type": "string"
+          },
+          "expires_in": {
+            "description": "Сколько секунд действует начатый вход",
+            "title": "Expires In",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "authorization_url",
+          "expires_in"
+        ],
+        "title": "FspAuthorizationRead",
+        "type": "object"
+      },
+      "FspCallback": {
+        "description": "Ответ ФСП ID, пришедший на адрес возврата фронтенда.",
+        "properties": {
+          "code": {
+            "maxLength": 512,
+            "minLength": 1,
+            "title": "Code",
+            "type": "string"
+          },
+          "state": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "State",
             "type": "string"
           }
         },
         "required": [
+          "code",
+          "state"
+        ],
+        "title": "FspCallback",
+        "type": "object"
+      },
+      "FspEventLevel": {
+        "description": "Уровень соревнования. Показывается как справка и на балл не влияет (просьба менторов).",
+        "enum": [
+          "international",
+          "national",
+          "interregional",
+          "regional",
+          "local"
+        ],
+        "title": "FspEventLevel",
+        "type": "string"
+      },
+      "FspLinkStart": {
+        "description": "Начало привязки ФСП ID. Согласие на получение данных из реестра обязательно (152-ФЗ).",
+        "properties": {
+          "consent": {
+            "description": "Согласие на получение данных из реестра ФСП",
+            "title": "Consent",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "consent"
+        ],
+        "title": "FspLinkStart",
+        "type": "object"
+      },
+      "FspParticipationFormat": {
+        "description": "Личное или командное участие.",
+        "enum": [
+          "individual",
+          "team"
+        ],
+        "title": "FspParticipationFormat",
+        "type": "string"
+      },
+      "FspProfileRead": {
+        "description": "ФСП в кабинете кандидата: состояние привязки, участия, балл и вклад в индекс.",
+        "properties": {
+          "achievements": {
+            "items": {
+              "$ref": "#/components/schemas/FspAchievementRead"
+            },
+            "title": "Achievements",
+            "type": "array"
+          },
+          "consent_active": {
+            "title": "Consent Active",
+            "type": "boolean"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "last_sync": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/FspSyncRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "linked_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Linked At"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "participant_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Participant Id"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region"
+          },
+          "score": {
+            "$ref": "#/components/schemas/FspScoreRead"
+          },
+          "sport_rank": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sport Rank"
+          },
+          "state": {
+            "$ref": "#/components/schemas/FspState"
+          },
+          "synced_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Synced At"
+          },
+          "verified_score": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/VerifiedScoreRead"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Индекс подтверждённого профиля кандидата, если у него есть категория"
+          },
+          "visible_to_employers": {
+            "title": "Visible To Employers",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled",
+          "state",
+          "message",
+          "participant_id",
+          "linked_at",
+          "synced_at",
+          "region",
+          "sport_rank",
+          "consent_active",
+          "visible_to_employers",
+          "last_sync",
+          "score",
+          "achievements",
+          "verified_score"
+        ],
+        "title": "FspProfileRead",
+        "type": "object"
+      },
+      "FspResultStatus": {
+        "description": "Результат участия по протоколу соревнования.",
+        "enum": [
+          "winner",
+          "prize",
+          "finalist",
+          "participant"
+        ],
+        "title": "FspResultStatus",
+        "type": "string"
+      },
+      "FspScoreRead": {
+        "description": "Балл ФСП F = min(1; 0,6·R + 0,4·N) с составляющими.",
+        "properties": {
+          "activity": {
+            "description": "N — активность",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Activity",
+            "type": "number"
+          },
+          "best_result": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Result"
+          },
+          "effective_events": {
+            "description": "M — взвешенное по давности число участий",
+            "title": "Effective Events",
+            "type": "number"
+          },
+          "events": {
+            "title": "Events",
+            "type": "integer"
+          },
+          "finals": {
+            "title": "Finals",
+            "type": "integer"
+          },
+          "online_attendance": {
+            "description": "Онлайн-участия без результата",
+            "title": "Online Attendance",
+            "type": "integer"
+          },
+          "prizes": {
+            "title": "Prizes",
+            "type": "integer"
+          },
+          "results": {
+            "description": "R — результативность",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Results",
+            "type": "number"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "value": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Value",
+            "type": "number"
+          },
+          "vps_points": {
+            "description": "Вклад ФСП в индекс подтверждённого профиля, баллов",
+            "title": "Vps Points",
+            "type": "number"
+          },
+          "wins": {
+            "title": "Wins",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "value",
+          "results",
+          "activity",
+          "effective_events",
+          "events",
+          "wins",
+          "prizes",
+          "finals",
+          "online_attendance",
+          "best_result",
+          "summary",
+          "vps_points"
+        ],
+        "title": "FspScoreRead",
+        "type": "object"
+      },
+      "FspState": {
+        "description": "Что известно о ФСП кандидата. Хранится не в базе, а выводится из привязки и приватности.\n\nКаждое состояние штатное: отсутствие привязки или истории не штрафуется.",
+        "enum": [
+          "not_linked",
+          "linked_empty",
           "linked",
-          "message"
+          "hidden"
+        ],
+        "title": "FspState",
+        "type": "string"
+      },
+      "FspSummary": {
+        "description": "Блок ФСП в карточке.\n\nБез привязки, без истории или со скрытыми достижениями это нейтральное состояние\nс пояснением, а не минус: F = 0 означает отсутствие бонуса, а не штраф.",
+        "properties": {
+          "achievements": {
+            "items": {
+              "$ref": "#/components/schemas/FspAchievementRead"
+            },
+            "title": "Achievements",
+            "type": "array"
+          },
+          "best_result": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Best Result"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "score": {
+            "description": "Балл ФСП F",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score",
+            "type": "number"
+          },
+          "sport_rank": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sport Rank"
+          },
+          "state": {
+            "$ref": "#/components/schemas/FspState"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "synced_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Synced At"
+          }
+        },
+        "required": [
+          "state",
+          "message",
+          "summary",
+          "best_result",
+          "score",
+          "sport_rank",
+          "synced_at",
+          "achievements"
         ],
         "title": "FspSummary",
         "type": "object"
+      },
+      "FspSyncRead": {
+        "description": "Последняя синхронизация с реестром.",
+        "properties": {
+          "achievements_count": {
+            "title": "Achievements Count",
+            "type": "integer"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FspSyncStatus"
+          },
+          "synced_at": {
+            "format": "date-time",
+            "title": "Synced At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "achievements_count",
+          "error",
+          "synced_at"
+        ],
+        "title": "FspSyncRead",
+        "type": "object"
+      },
+      "FspSyncStatus": {
+        "description": "Итог синхронизации с реестром ФСП.",
+        "enum": [
+          "ok",
+          "empty",
+          "error"
+        ],
+        "title": "FspSyncStatus",
+        "type": "string"
       },
       "GradeBrief": {
         "description": "Краткие сведения о грейде.",
@@ -4305,6 +4852,12 @@
             "title": "Expand Grades",
             "type": "boolean"
           },
+          "fsp_only": {
+            "default": false,
+            "description": "Только с подтверждёнными участиями в ФСП",
+            "title": "Fsp Only",
+            "type": "boolean"
+          },
           "limit": {
             "default": 50,
             "maximum": 200.0,
@@ -6187,6 +6740,150 @@
         ]
       }
     },
+    "/api/v1/auth/fsp/callback": {
+      "post": {
+        "description": "Проверяет ответ ФСП ID и открывает сессию так же, как вход по паролю.",
+        "operationId": "fsp_login_callback_api_v1_auth_fsp_callback_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FspCallback"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Некорректный запрос"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внешний сервис недоступен"
+          }
+        },
+        "summary": "Вход через ФСП ID: завершение",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/auth/fsp/start": {
+      "post": {
+        "description": "Адрес страницы входа ФСП ID. Работает для аккаунтов, к которым ФСП ID уже привязан.",
+        "operationId": "fsp_login_start_api_v1_auth_fsp_start_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FspAuthorizationRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внешний сервис недоступен"
+          }
+        },
+        "summary": "Вход через ФСП ID: начало",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/api/v1/auth/login": {
       "post": {
         "description": "Возвращает access-токен в теле и ставит refresh-токен в httpOnly-cookie.",
@@ -6660,6 +7357,452 @@
         "summary": "Согласие на публикацию в банке кандидатов",
         "tags": [
           "candidate"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/fsp": {
+      "delete": {
+        "description": "Удаляет участия и привязку и отзывает согласие на получение данных ФСП.",
+        "operationId": "unlink_api_v1_candidates_me_fsp_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внешний сервис недоступен"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Отвязать ФСП ID",
+        "tags": [
+          "candidate: fsp"
+        ]
+      },
+      "get": {
+        "description": "Состояние привязки, участия из реестра, балл ФСП и его вклад в индекс профиля.\n\nВсе три случая штатные: не привязан, привязан без истории, привязан с участиями.",
+        "operationId": "fsp_profile_api_v1_candidates_me_fsp_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FspProfileRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внешний сервис недоступен"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Мой профиль ФСП",
+        "tags": [
+          "candidate: fsp"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/fsp/link": {
+      "post": {
+        "description": "Возвращает адрес страницы входа ФСП ID (код авторизации с PKCE).\n\nСогласие на получение данных из реестра ФСП обязательно и записывается в журнал\nсогласий при завершении привязки.",
+        "operationId": "start_link_api_v1_candidates_me_fsp_link_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FspLinkStart"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FspAuthorizationRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внешний сервис недоступен"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Начать привязку ФСП ID",
+        "tags": [
+          "candidate: fsp"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/fsp/link/callback": {
+      "post": {
+        "description": "Принимает code и state, которые ФСП ID вернул на адрес фронтенда, и загружает участия.",
+        "operationId": "complete_link_api_v1_candidates_me_fsp_link_callback_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FspCallback"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FspProfileRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Некорректный запрос"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внешний сервис недоступен"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Завершить привязку ФСП ID",
+        "tags": [
+          "candidate: fsp"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/fsp/sync": {
+      "post": {
+        "description": "Перечитывает реестр. Если он недоступен, остаются прошлые данные, а в ответе — ошибка.",
+        "operationId": "sync_api_v1_candidates_me_fsp_sync_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FspProfileRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внешний сервис недоступен"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Обновить участия из реестра ФСП",
+        "tags": [
+          "candidate: fsp"
         ]
       }
     },
@@ -8296,6 +9439,18 @@
                 }
               ],
               "title": "City"
+            }
+          },
+          {
+            "description": "Есть подтверждённые участия в ФСП",
+            "in": "query",
+            "name": "has_fsp",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Есть подтверждённые участия в ФСП",
+              "title": "Has Fsp",
+              "type": "boolean"
             }
           },
           {

@@ -231,6 +231,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/fsp/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Вход через ФСП ID: завершение
+         * @description Проверяет ответ ФСП ID и открывает сессию так же, как вход по паролю.
+         */
+        post: operations["fsp_login_callback_api_v1_auth_fsp_callback_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/fsp/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Вход через ФСП ID: начало
+         * @description Адрес страницы входа ФСП ID. Работает для аккаунтов, к которым ФСП ID уже привязан.
+         */
+        post: operations["fsp_login_start_api_v1_auth_fsp_start_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/login": {
         parameters: {
             query?: never;
@@ -414,6 +454,95 @@ export interface paths {
          */
         put: operations["set_bank_publication_api_v1_candidates_me_consents_bank_publication_put"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/fsp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Мой профиль ФСП
+         * @description Состояние привязки, участия из реестра, балл ФСП и его вклад в индекс профиля.
+         *
+         *     Все три случая штатные: не привязан, привязан без истории, привязан с участиями.
+         */
+        get: operations["fsp_profile_api_v1_candidates_me_fsp_get"];
+        put?: never;
+        post?: never;
+        /**
+         * Отвязать ФСП ID
+         * @description Удаляет участия и привязку и отзывает согласие на получение данных ФСП.
+         */
+        delete: operations["unlink_api_v1_candidates_me_fsp_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/fsp/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Начать привязку ФСП ID
+         * @description Возвращает адрес страницы входа ФСП ID (код авторизации с PKCE).
+         *
+         *     Согласие на получение данных из реестра ФСП обязательно и записывается в журнал
+         *     согласий при завершении привязки.
+         */
+        post: operations["start_link_api_v1_candidates_me_fsp_link_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/fsp/link/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Завершить привязку ФСП ID
+         * @description Принимает code и state, которые ФСП ID вернул на адрес фронтенда, и загружает участия.
+         */
+        post: operations["complete_link_api_v1_candidates_me_fsp_link_callback_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/fsp/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Обновить участия из реестра ФСП
+         * @description Перечитывает реестр. Если он недоступен, остаются прошлые данные, а в ответе — ошибка.
+         */
+        post: operations["sync_api_v1_candidates_me_fsp_sync_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2020,15 +2149,224 @@ export interface components {
             text: string;
         };
         /**
-         * FspSummary
-         * @description Блок ФСП. Пока ФСП ID не привязан, это нейтральное пустое состояние, а не минус.
+         * FspAchievementRead
+         * @description Участие в соревновании из реестра ФСП.
          */
-        FspSummary: {
-            /** Linked */
-            linked: boolean;
+        FspAchievementRead: {
+            /** Discipline */
+            discipline: string;
+            /**
+             * Event Date
+             * Format: date
+             */
+            event_date: string;
+            event_level: components["schemas"]["FspEventLevel"];
+            /** Event Name */
+            event_name: string;
+            /** External Event Id */
+            external_event_id: string;
+            /** Is Online */
+            is_online: boolean;
+            /** Participants Total */
+            participants_total: number | null;
+            participation_format: components["schemas"]["FspParticipationFormat"];
+            /** Place */
+            place: number | null;
+            /** Protocol Url */
+            protocol_url: string | null;
+            /** Rating Points */
+            rating_points: number | null;
+            result_status: components["schemas"]["FspResultStatus"];
+            /** Team Name */
+            team_name: string | null;
+            /** Team Role */
+            team_role: string | null;
+        };
+        /**
+         * FspAuthorizationRead
+         * @description Адрес страницы входа ФСП ID, на который фронтенд переводит браузер.
+         */
+        FspAuthorizationRead: {
+            /** Authorization Url */
+            authorization_url: string;
+            /**
+             * Expires In
+             * @description Сколько секунд действует начатый вход
+             */
+            expires_in: number;
+        };
+        /**
+         * FspCallback
+         * @description Ответ ФСП ID, пришедший на адрес возврата фронтенда.
+         */
+        FspCallback: {
+            /** Code */
+            code: string;
+            /** State */
+            state: string;
+        };
+        /**
+         * FspEventLevel
+         * @description Уровень соревнования. Показывается как справка и на балл не влияет (просьба менторов).
+         * @enum {string}
+         */
+        FspEventLevel: "international" | "national" | "interregional" | "regional" | "local";
+        /**
+         * FspLinkStart
+         * @description Начало привязки ФСП ID. Согласие на получение данных из реестра обязательно (152-ФЗ).
+         */
+        FspLinkStart: {
+            /**
+             * Consent
+             * @description Согласие на получение данных из реестра ФСП
+             */
+            consent: boolean;
+        };
+        /**
+         * FspParticipationFormat
+         * @description Личное или командное участие.
+         * @enum {string}
+         */
+        FspParticipationFormat: "individual" | "team";
+        /**
+         * FspProfileRead
+         * @description ФСП в кабинете кандидата: состояние привязки, участия, балл и вклад в индекс.
+         */
+        FspProfileRead: {
+            /** Achievements */
+            achievements: components["schemas"]["FspAchievementRead"][];
+            /** Consent Active */
+            consent_active: boolean;
+            /** Enabled */
+            enabled: boolean;
+            last_sync: components["schemas"]["FspSyncRead"] | null;
+            /** Linked At */
+            linked_at: string | null;
             /** Message */
             message: string;
+            /** Participant Id */
+            participant_id: string | null;
+            /** Region */
+            region: string | null;
+            score: components["schemas"]["FspScoreRead"];
+            /** Sport Rank */
+            sport_rank: string | null;
+            state: components["schemas"]["FspState"];
+            /** Synced At */
+            synced_at: string | null;
+            /** @description Индекс подтверждённого профиля кандидата, если у него есть категория */
+            verified_score: components["schemas"]["VerifiedScoreRead"] | null;
+            /** Visible To Employers */
+            visible_to_employers: boolean;
         };
+        /**
+         * FspResultStatus
+         * @description Результат участия по протоколу соревнования.
+         * @enum {string}
+         */
+        FspResultStatus: "winner" | "prize" | "finalist" | "participant";
+        /**
+         * FspScoreRead
+         * @description Балл ФСП F = min(1; 0,6·R + 0,4·N) с составляющими.
+         */
+        FspScoreRead: {
+            /**
+             * Activity
+             * @description N — активность
+             */
+            activity: number;
+            /** Best Result */
+            best_result: string | null;
+            /**
+             * Effective Events
+             * @description M — взвешенное по давности число участий
+             */
+            effective_events: number;
+            /** Events */
+            events: number;
+            /** Finals */
+            finals: number;
+            /**
+             * Online Attendance
+             * @description Онлайн-участия без результата
+             */
+            online_attendance: number;
+            /** Prizes */
+            prizes: number;
+            /**
+             * Results
+             * @description R — результативность
+             */
+            results: number;
+            /** Summary */
+            summary: string;
+            /** Value */
+            value: number;
+            /**
+             * Vps Points
+             * @description Вклад ФСП в индекс подтверждённого профиля, баллов
+             */
+            vps_points: number;
+            /** Wins */
+            wins: number;
+        };
+        /**
+         * FspState
+         * @description Что известно о ФСП кандидата. Хранится не в базе, а выводится из привязки и приватности.
+         *
+         *     Каждое состояние штатное: отсутствие привязки или истории не штрафуется.
+         * @enum {string}
+         */
+        FspState: "not_linked" | "linked_empty" | "linked" | "hidden";
+        /**
+         * FspSummary
+         * @description Блок ФСП в карточке.
+         *
+         *     Без привязки, без истории или со скрытыми достижениями это нейтральное состояние
+         *     с пояснением, а не минус: F = 0 означает отсутствие бонуса, а не штраф.
+         */
+        FspSummary: {
+            /** Achievements */
+            achievements: components["schemas"]["FspAchievementRead"][];
+            /** Best Result */
+            best_result: string | null;
+            /** Message */
+            message: string;
+            /**
+             * Score
+             * @description Балл ФСП F
+             */
+            score: number;
+            /** Sport Rank */
+            sport_rank: string | null;
+            state: components["schemas"]["FspState"];
+            /** Summary */
+            summary: string | null;
+            /** Synced At */
+            synced_at: string | null;
+        };
+        /**
+         * FspSyncRead
+         * @description Последняя синхронизация с реестром.
+         */
+        FspSyncRead: {
+            /** Achievements Count */
+            achievements_count: number;
+            /** Error */
+            error: string | null;
+            status: components["schemas"]["FspSyncStatus"];
+            /**
+             * Synced At
+             * Format: date-time
+             */
+            synced_at: string;
+        };
+        /**
+         * FspSyncStatus
+         * @description Итог синхронизации с реестром ФСП.
+         * @enum {string}
+         */
+        FspSyncStatus: "ok" | "empty" | "error";
         /**
          * GradeBrief
          * @description Краткие сведения о грейде.
@@ -2867,6 +3205,12 @@ export interface components {
              * @default false
              */
             expand_grades: boolean;
+            /**
+             * Fsp Only
+             * @description Только с подтверждёнными участиями в ФСП
+             * @default false
+             */
+            fsp_only: boolean;
             /**
              * Limit
              * @default 50
@@ -4033,6 +4377,131 @@ export interface operations {
             };
         };
     };
+    fsp_login_callback_api_v1_auth_fsp_callback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FspCallback"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TokenResponse"];
+                };
+            };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внешний сервис недоступен */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    fsp_login_start_api_v1_auth_fsp_start_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FspAuthorizationRead"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внешний сервис недоступен */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     login_api_v1_auth_login_post: {
         parameters: {
             query?: never;
@@ -4420,6 +4889,382 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    fsp_profile_api_v1_candidates_me_fsp_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FspProfileRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внешний сервис недоступен */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    unlink_api_v1_candidates_me_fsp_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внешний сервис недоступен */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    start_link_api_v1_candidates_me_fsp_link_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FspLinkStart"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FspAuthorizationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внешний сервис недоступен */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    complete_link_api_v1_candidates_me_fsp_link_callback_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FspCallback"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FspProfileRead"];
+                };
+            };
+            /** @description Некорректный запрос */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внешний сервис недоступен */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    sync_api_v1_candidates_me_fsp_sync_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FspProfileRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внешний сервис недоступен */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5547,6 +6392,8 @@ export interface operations {
                 confirmed_only?: boolean;
                 work_format?: components["schemas"]["WorkFormat"] | null;
                 city?: string | null;
+                /** @description Есть подтверждённые участия в ФСП */
+                has_fsp?: boolean;
                 sort?: components["schemas"]["BankSort"];
                 /** @description Размер страницы */
                 limit?: number;

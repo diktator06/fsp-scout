@@ -65,7 +65,16 @@ def verified_score_read(score: VerifiedScore) -> VerifiedScoreRead:
 def fsp_summary(standing: FspStanding, best_result: str | None) -> FspSummary:
     """Блок ФСП карточки. Скрытые кандидатом достижения не попадают в него вовсе."""
     if standing.state in {FspState.NOT_LINKED, FspState.HIDDEN} or standing.link is None:
-        return FspSummary(state=standing.state, message=standing.message)
+        return FspSummary(
+            state=standing.state,
+            message=standing.message,
+            summary=None,
+            best_result=None,
+            score=0.0,
+            sport_rank=None,
+            synced_at=None,
+            achievements=[],
+        )
     return FspSummary(
         state=standing.state,
         message=standing.message,

@@ -1,0 +1,39 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: rem(12px);
+}
+
+.cell {
+  padding: rem(12px) rem(14px);
+  border-radius: var(--mantine-radius-md);
+  background: var(--scout-surface-muted);
+  border: 1px solid var(--mantine-color-default-border);
+}
+
+.value {
+  font-size: rem(26px);
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--mantine-color-fsp-9);
+}
+
+.label {
+  font-size: rem(12px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mantine-color-dimmed);
+}
+
+.formula {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: rem(13px);
+}
+
+@media (max-width: 30em) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
