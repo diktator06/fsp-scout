@@ -1,6 +1,6 @@
 import { Anchor, Box, Burger, Button, Container, Drawer, Group, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Link, Outlet, useLocation } from 'react-router';
+import { Link, Outlet, ScrollRestoration, useLocation } from 'react-router';
 import { ROLE_HOME } from '@/features/auth/roles';
 import { useAuth } from '@/features/auth/useAuth';
 import { env } from '@/shared/config/env';
@@ -90,6 +90,7 @@ export function PublicLayout() {
 
       <main className={classes.main}>
         <Outlet />
+        <ScrollRestoration />
       </main>
 
       <footer className={classes.footer}>

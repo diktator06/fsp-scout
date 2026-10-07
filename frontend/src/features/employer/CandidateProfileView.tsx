@@ -119,7 +119,6 @@ export function CandidateProfileView({ view, onInvite }: CandidateProfileViewPro
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
         <Card>
           <Stack gap="md">
-            <Title order={4}>Индекс подтверждённого профиля</Title>
             <VerifiedScoreBar
               score={Math.round(card.verified_score.total)}
               factors={card.verified_score.components.map((item) => ({

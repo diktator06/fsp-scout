@@ -71,6 +71,17 @@ export function BankPage() {
       setPage(1);
     };
   const total = bank.data?.total ?? 0;
+  const resetFilters = () => {
+    setSpecializationId(null);
+    setGradeId(null);
+    setSkills([]);
+    setConfirmedOnly(false);
+    setVerifiedOnly(false);
+    setHasFsp(false);
+    setWorkFormat(null);
+    setCity('');
+    setPage(1);
+  };
 
   return (
     <>
@@ -166,6 +177,20 @@ export function BankPage() {
           <LoadingState blocks={3} height={120} />
         ) : bank.isError ? (
           <ErrorState message={errorMessage(bank.error)} onRetry={() => void bank.refetch()} />
+        ) : bank.data.items.length === 0 ? (
+          <Card>
+            <Stack gap="sm" align="flex-start">
+              <Text fw={700}>Под эти фильтры никого нет</Text>
+              <Text size="sm" c="dimmed" lh={1.6}>
+                Уберите часть навыков, снимите «Только с подтверждённым грейдом» или «Есть
+                подтверждённые участия в ФСП». Кандидаты без ФСП и с заявленным грейдом тоже бывают
+                сильными — они просто ниже в выдаче.
+              </Text>
+              <Button variant="light" onClick={resetFilters}>
+                Сбросить фильтры
+              </Button>
+            </Stack>
+          </Card>
         ) : (
           <Stack gap="md">
             {bank.data.items.map((item) => (

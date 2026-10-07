@@ -30,7 +30,7 @@ function Dashboard() {
         ))}
         <Card padding="lg" className={classes.stat} data-accent>
           <Text size="xs" fw={700} tt="uppercase">
-            Приглашений сегодня
+            Осталось приглашений сегодня
           </Text>
           <Text className={classes.value}>
             {dashboard.data.quota.remaining}

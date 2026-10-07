@@ -1,5 +1,5 @@
 import { Anchor, Box, Stack, Text, Title } from '@mantine/core';
-import { Link, Outlet } from 'react-router';
+import { Link, Outlet, ScrollRestoration } from 'react-router';
 import { CategoryBadge, ConstellationBackdrop, FspLogo, Kicker, ScoutLogo } from '@/shared/ui';
 import classes from './AuthLayout.module.css';
 
@@ -32,6 +32,7 @@ export function AuthLayout() {
       <main className={classes.content}>
         <div className={classes.formColumn}>
           <Outlet />
+          <ScrollRestoration />
         </div>
       </main>
     </Box>

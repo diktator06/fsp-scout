@@ -31,7 +31,7 @@ import {
   IconUsersGroup,
   type Icon,
 } from '@tabler/icons-react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router';
+import { Link, Outlet, ScrollRestoration, useLocation, useNavigate } from 'react-router';
 import type { UserRole } from '@/api/types';
 import { ROLE_HOME, ROLE_TITLES } from '@/features/auth/roles';
 import { useAuth } from '@/features/auth/useAuth';
@@ -182,6 +182,7 @@ export function CabinetLayout({ role }: { role: UserRole }) {
       <AppShell.Main className={classes.main}>
         <div className={classes.content}>
           <Outlet />
+          <ScrollRestoration />
         </div>
       </AppShell.Main>
     </AppShell>

@@ -31,6 +31,7 @@ import { useFspProfile, useStartFspLink, useSyncFsp, useUnlinkFsp } from '@/api/
 import type { FspProfile } from '@/api/types';
 import { FspAchievementList } from '@/features/fsp/FspAchievementList';
 import { FspScoreBreakdown } from '@/features/fsp/FspScoreBreakdown';
+import { rememberIndexBefore } from '@/features/fsp/indexMemo';
 import { FSP_STATE_LABELS } from '@/shared/lib/fsp';
 import { formatDateTime } from '@/shared/lib/format';
 import { ErrorState, LoadingState, PageHeader, VerifiedScoreBar } from '@/shared/ui';
@@ -41,12 +42,13 @@ const SHARED_DATA = [
   'результат: место, число участников, статус и ссылка на протокол',
 ];
 
-function LinkCard({ enabled }: { enabled: boolean }) {
+function LinkCard({ enabled, indexBefore }: { enabled: boolean; indexBefore: number | null }) {
   // Привязка начинается с отдельного согласия (152-ФЗ): без него кнопка недоступна.
   // Дальше браузер уходит на страницу ФСП ID и возвращается с кодом авторизации.
   const [consent, setConsent] = useState(false);
   const start = useStartFspLink();
   const handleLink = () => {
+    rememberIndexBefore(indexBefore);
     start.mutate(consent, {
       onSuccess: (authorization) => window.location.assign(authorization.authorization_url),
     });
@@ -253,10 +255,13 @@ export function FspPage() {
         </Alert>
       )}
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg" mb="lg">
-        {linked ? <LinkedCard profile={data} /> : <LinkCard enabled={data.enabled} />}
+        {linked ? (
+          <LinkedCard profile={data} />
+        ) : (
+          <LinkCard enabled={data.enabled} indexBefore={data.verified_score?.total ?? null} />
+        )}
         <Card>
           <Stack gap="md">
-            <Title order={4}>Индекс подтверждённого профиля</Title>
             {data.verified_score ? (
               <VerifiedScoreBar
                 score={Math.round(data.verified_score.total)}
@@ -272,10 +277,13 @@ export function FspPage() {
                 }))}
               />
             ) : (
-              <Text size="sm" c="dimmed" lh={1.6}>
-                Индекс появится, когда у вас будет категория: пройдите опрос и выберите уровень
-                теста.
-              </Text>
+              <>
+                <Title order={4}>Индекс подтверждённого профиля</Title>
+                <Text size="sm" c="dimmed" lh={1.6}>
+                  Индекс появится, когда у вас будет категория: пройдите опрос и выберите уровень
+                  теста.
+                </Text>
+              </>
             )}
           </Stack>
         </Card>

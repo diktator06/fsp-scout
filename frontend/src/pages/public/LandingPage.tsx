@@ -25,7 +25,7 @@ import classes from './LandingPage.module.css';
 
 const PREVIEW_FACTORS: ScoreFactor[] = [
   { key: 'test', label: 'Адаптивный тест', value: 0.86, weight: 0.55 },
-  { key: 'tasks', label: 'Микрозадачи', value: 0.7, weight: 0.2 },
+  { key: 'tasks', label: 'Микрозадачи', value: 0, weight: 0.2 },
   { key: 'fsp', label: 'Достижения ФСП', value: 0.8, weight: 0.15 },
   { key: 'profile', label: 'Подтверждённость профиля', value: 0.9, weight: 0.1 },
 ];
