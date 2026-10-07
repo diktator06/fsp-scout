@@ -7,6 +7,7 @@ from app.core.logging import configure_logging
 from app.db.session import SessionFactory, engine
 from app.seed.demo_fsp import seed_demo_fsp_links
 from app.seed.demo_population import seed_demo_population
+from app.seed.demo_vacancies import seed_demo_vacancies
 
 logger = logging.getLogger("app.seed")
 
@@ -28,8 +29,10 @@ async def main() -> None:
     logger.info("Демо-популяция: %s за %.0f с", summary, time.monotonic() - started)
     started = time.monotonic()
     fsp_summary = await seed_demo_fsp_links(SessionFactory, settings)
-    await engine.dispose()
     logger.info("ФСП в демо-данных: %s за %.0f с", fsp_summary, time.monotonic() - started)
+    vacancies_summary = await seed_demo_vacancies(SessionFactory, settings)
+    await engine.dispose()
+    logger.info("Вакансии в демо-данных: %s", vacancies_summary)
 
 
 if __name__ == "__main__":

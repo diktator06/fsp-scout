@@ -45,8 +45,17 @@ from app.crud.matching import (
 )
 from app.crud.notification import notification_crud
 from app.crud.user import user_crud
+from app.crud.vacancy import (
+    application_crud,
+    application_event_crud,
+    company_lookup_crud,
+    vacancy_crud,
+    vacancy_skill_crud,
+)
 
 __all__ = [
+    "application_crud",
+    "application_event_crud",
     "assessment_item_crud",
     "assessment_session_crud",
     "audit_log_crud",
@@ -55,6 +64,7 @@ __all__ = [
     "candidate_skill_crud",
     "category_crud",
     "company_crud",
+    "company_lookup_crud",
     "competency_crud",
     "consent_crud",
     "contact_disclosure_crud",
@@ -87,5 +97,7 @@ __all__ = [
     "specialization_skill_crud",
     "survey_crud",
     "user_crud",
+    "vacancy_crud",
+    "vacancy_skill_crud",
     "work_experience_crud",
 ]

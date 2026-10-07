@@ -19,6 +19,8 @@ class NotificationKind(StrEnum):
     INVITATION_DECLINED = "invitation_declined"
     INVITATION_WITHDRAWN = "invitation_withdrawn"
     INVITATION_EXPIRED = "invitation_expired"
+    APPLICATION_RECEIVED = "application_received"
+    APPLICATION_UPDATED = "application_updated"
 
 
 class Notification(UUIDPrimaryKeyMixin, CreatedAtMixin, Base):

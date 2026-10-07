@@ -4,8 +4,10 @@ from app.api.v1 import assessment, auth, dictionaries, notifications, system
 from app.api.v1.candidates import fsp as candidate_fsp
 from app.api.v1.candidates import invitations as candidate_invitations
 from app.api.v1.candidates import profile
+from app.api.v1.candidates import vacancies as candidate_vacancies
 from app.api.v1.employer import candidates, company, needs
 from app.api.v1.employer import invitations as employer_invitations
+from app.api.v1.employer import vacancies as employer_vacancies
 
 api_router = APIRouter()
 api_router.include_router(system.router)
@@ -19,4 +21,6 @@ api_router.include_router(company.router)
 api_router.include_router(needs.router)
 api_router.include_router(candidates.router)
 api_router.include_router(employer_invitations.router)
+api_router.include_router(employer_vacancies.router)
+api_router.include_router(candidate_vacancies.router)
 api_router.include_router(notifications.router)

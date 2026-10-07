@@ -143,3 +143,17 @@ demo_company:
         Frontend-разработчик в личный кабинет продавца
         Ищем: React, TypeScript, CSS. Желательно: Redux, Jest, Storybook.
       skills: {must: [react, typescript, css], nice: [redux, jest, storybook]}
+  vacancies:
+    - title: Аналитик данных (Junior) в сервис аналитики продаж
+      specialization: data_analytics
+      grades: [junior]
+      salary: [120000, 180000]
+      work_formats: [remote, hybrid]
+      city: Москва
+      description: "Считаем выручку и конверсию продавцов, строим дашборды и проверяем гипотезы A/B-тестами. Данные в ClickHouse, отчёты в Superset. Наставник в команде, понятный план роста до Middle."
+      skills: {must: [sql, python, pandas], nice: [ab-testing, clickhouse, superset]}
+  applications:
+    - {vacancy: 0, specialization: backend, count: 3, statuses: [interview, viewed, submitted]}
+    - {vacancy: 1, specialization: frontend, count: 2, statuses: [rejected, submitted]}
+    - {vacancy: 2, specialization: data_analytics, count: 2, statuses: [viewed, submitted]}
+

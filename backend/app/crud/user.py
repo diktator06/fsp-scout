@@ -1,3 +1,5 @@
+import uuid
+from collections.abc import Iterable
 from datetime import datetime
 
 from sqlalchemy import select
@@ -42,6 +44,16 @@ class UserCRUD(CRUDBase[User]):
         return await self.update(
             session, user, {"is_email_verified": True, "email_verified_at": at}
         )
+
+    async def emails_by_ids(
+        self, session: AsyncSession, user_ids: Iterable[uuid.UUID]
+    ) -> dict[uuid.UUID, str]:
+        """Email пачки пользователей по идентификаторам."""
+        ids = list(set(user_ids))
+        if not ids:
+            return {}
+        result = await session.execute(select(User.id, User.email).where(User.id.in_(ids)))
+        return {row[0]: row[1] for row in result.all()}
 
     async def register_login(
         self, session: AsyncSession, user: User, at: datetime, new_password_hash: str | None = None

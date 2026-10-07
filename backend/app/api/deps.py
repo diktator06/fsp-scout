@@ -28,6 +28,8 @@ from app.services.matching.bank_service import BankService
 from app.services.matching.need_service import NeedService
 from app.services.matching.shortlist_service import ShortlistService
 from app.services.notifications import NotificationService
+from app.services.vacancies.board_service import VacancyBoardService
+from app.services.vacancies.vacancy_service import VacancyService
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 SettingsDep = Annotated[Settings, Depends(get_settings)]
@@ -154,6 +156,16 @@ def get_fsp_login_service(
     return FspLoginService(session, settings, gateway)
 
 
+def get_vacancy_service(session: SessionDep) -> VacancyService:
+    """Сервис вакансий работодателя на время запроса."""
+    return VacancyService(session)
+
+
+def get_vacancy_board_service(session: SessionDep) -> VacancyBoardService:
+    """Сервис вакансий для кандидата на время запроса."""
+    return VacancyBoardService(session)
+
+
 def get_notification_service(session: SessionDep) -> NotificationService:
     """Сервис уведомлений на время запроса."""
     return NotificationService(session)
@@ -167,6 +179,8 @@ BankServiceDep = Annotated[BankService, Depends(get_bank_service)]
 InvitationServiceDep = Annotated[InvitationService, Depends(get_invitation_service)]
 NotificationServiceDep = Annotated[NotificationService, Depends(get_notification_service)]
 FspServiceDep = Annotated[FspService, Depends(get_fsp_service)]
+VacancyServiceDep = Annotated[VacancyService, Depends(get_vacancy_service)]
+VacancyBoardServiceDep = Annotated[VacancyBoardService, Depends(get_vacancy_board_service)]
 FspLoginServiceDep = Annotated[FspLoginService, Depends(get_fsp_login_service)]
 ProfileServiceDep = Annotated[CandidateProfileService, Depends(get_profile_service)]
 AssessmentServiceDep = Annotated[AssessmentService, Depends(get_assessment_service)]

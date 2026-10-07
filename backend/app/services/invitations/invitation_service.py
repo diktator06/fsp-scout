@@ -35,9 +35,7 @@ from app.schemas.cards import DisclosedContacts
 from app.schemas.dictionary import CategoryRead
 from app.schemas.invitation import (
     CandidateInvitationRead,
-    CompanyBrief,
     DeclineRequest,
-    EmployerContacts,
     EmployerInvitationRead,
     EventActor,
     InvitationCandidateRead,
@@ -47,6 +45,8 @@ from app.schemas.invitation import (
 from app.services.candidate.profile_service import CandidateProfileService
 from app.services.contact_access import ContactAccessPolicy
 from app.services.employer.company_service import CompanyService
+from app.services.employer.company_views import company_brief
+from app.services.employer.company_views import employer_contacts as build_employer_contacts
 from app.services.invitations.state_machine import Actor, ensure_transition
 from app.services.matching.candidate_pool import CandidatePoolService, members_by_id
 from app.services.notifications import NotificationService
@@ -534,26 +534,12 @@ class InvitationService:
             )
             employer_contacts = None
             if invitation.status is InvitationStatus.ACCEPTED:
-                employer_contacts = EmployerContacts(
-                    recruiter_name=recruiter.full_name if recruiter else None,
-                    recruiter_position=recruiter.position if recruiter else None,
-                    email=company.contact_email,
-                    phone=company.contact_phone,
-                    telegram=company.contact_telegram,
-                )
+                employer_contacts = build_employer_contacts(company, recruiter)
             result.append(
                 CandidateInvitationRead(
                     **self._base_fields(invitation),
                     events=self._events(events.get(invitation.id, []), profile.user_id),
-                    company=CompanyBrief(
-                        name=company.name,
-                        industry=company.industry.name if company.industry else None,
-                        city=company.city,
-                        website=company.website,
-                        size=company.size,
-                        description=company.description,
-                        trust_level=company.trust_level,
-                    ),
+                    company=company_brief(company),
                     recruiter_name=recruiter.full_name if recruiter else None,
                     employer_contacts=employer_contacts,
                 )

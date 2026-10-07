@@ -71,8 +71,20 @@ from app.models.matching import (
 )
 from app.models.notification import Notification, NotificationKind
 from app.models.user import AuthProvider, User, UserRole
+from app.models.vacancy import (
+    Application,
+    ApplicationEvent,
+    ApplicationStatus,
+    RejectReason,
+    Vacancy,
+    VacancySkill,
+    VacancyStatus,
+)
 
 __all__ = [
+    "Application",
+    "ApplicationEvent",
+    "ApplicationStatus",
     "AssessmentItem",
     "AssessmentMode",
     "AssessmentSession",
@@ -120,6 +132,7 @@ __all__ = [
     "PrivacySettings",
     "Recruiter",
     "RefreshSession",
+    "RejectReason",
     "ResponseFormat",
     "SearchStatus",
     "SessionOutcome",
@@ -141,6 +154,9 @@ __all__ = [
     "TrustLevel",
     "User",
     "UserRole",
+    "Vacancy",
+    "VacancySkill",
+    "VacancyStatus",
     "WorkExperience",
     "WorkFormat",
 ]

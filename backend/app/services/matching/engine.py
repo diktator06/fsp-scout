@@ -48,9 +48,8 @@ class SkillCatalog:
 
 @dataclass(slots=True)
 class MatchingContext:
-    """Потребность, подготовленная к подбору."""
+    """Потребность или вакансия, подготовленная к подбору."""
 
-    need: HiringNeed
     facts: NeedFacts
     text: str
 
@@ -114,29 +113,48 @@ class MatchingEngine:
 
     async def context(self, need: HiringNeed) -> MatchingContext:
         """Потребность в форме для подбора: навыки по важности, допустимые грейды, текст."""
-        catalog = await self.catalog()
         need_skills = await need_skill_crud.list_with_skills(self._session, [need.id])
-        must = frozenset(
-            item.skill_id for item, _ in need_skills if item.importance is SkillImportance.MUST
+        return await self.build_context(
+            specialization_id=need.specialization_id,
+            grade_ids=need.grade_ids,
+            skills=[(item.skill_id, item.importance) for item, _ in need_skills],
+            salary_from=need.salary_from,
+            salary_to=need.salary_to,
+            salary_gross=need.salary_gross,
+            work_formats=need.work_formats,
+            city=need.city,
+            texts=(need.title, need.team_description, need.raw_text),
         )
-        nice = frozenset(
-            item.skill_id for item, _ in need_skills if item.importance is SkillImportance.NICE
-        )
+
+    async def build_context(
+        self,
+        *,
+        specialization_id: int,
+        grade_ids: Sequence[int],
+        skills: Sequence[tuple[int, SkillImportance]],
+        salary_from: int,
+        salary_to: int,
+        salary_gross: bool,
+        work_formats: Sequence[str],
+        city: str | None,
+        texts: Sequence[str],
+    ) -> MatchingContext:
+        """Контекст подбора из полей потребности или вакансии: правила у них общие."""
+        catalog = await self.catalog()
         ranks = {grade.id: grade.rank for grade in catalog.grades}
-        wanted = {ranks[grade_id] for grade_id in need.grade_ids if grade_id in ranks}
-        text = " ".join(part for part in (need.title, need.team_description, need.raw_text) if part)
+        wanted = {ranks[grade_id] for grade_id in grade_ids if grade_id in ranks}
+        text = " ".join(part for part in texts if part)
         return MatchingContext(
-            need=need,
             facts=NeedFacts(
-                specialization_id=need.specialization_id,
+                specialization_id=specialization_id,
                 grade_ranks=frozenset(wanted),
-                must=must,
-                nice=nice,
-                salary_from=need.salary_from,
-                salary_to=need.salary_to,
-                salary_gross=need.salary_gross,
-                work_formats=frozenset(need.work_formats),
-                city=need.city,
+                must=frozenset(skill for skill, kind in skills if kind is SkillImportance.MUST),
+                nice=frozenset(skill for skill, kind in skills if kind is SkillImportance.NICE),
+                salary_from=salary_from,
+                salary_to=salary_to,
+                salary_gross=salary_gross,
+                work_formats=frozenset(work_formats),
+                city=city,
                 text=text,
             ),
             text=text,

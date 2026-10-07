@@ -178,3 +178,18 @@ class FspDisabledError(AppError):
     status_code = 404
     code = "fsp_disabled"
     default_message = "Интеграция с ФСП выключена"
+
+
+class ApplicationStateError(ConflictError):
+    """Переход отклика в этот статус невозможен из текущего."""
+
+    code = "application_state"
+    default_message = "Отклик уже в другом статусе, обновите страницу"
+
+
+class VacancyLimitExceededError(AppError):
+    """Компания исчерпала лимит одновременно опубликованных вакансий."""
+
+    status_code = 429
+    code = "vacancy_limit_exceeded"
+    default_message = "Достигнут лимит опубликованных вакансий для вашего уровня доверия"
