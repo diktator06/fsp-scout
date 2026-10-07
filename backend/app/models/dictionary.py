@@ -141,3 +141,26 @@ class SpecializationSkill(Base):
         ForeignKey("skills.id", ondelete="CASCADE"), primary_key=True, index=True
     )
     typical_weight: Mapped[float] = mapped_column(Float, default=0.5, server_default="0.5")
+
+
+class SkillRelation(Base):
+    """Родственные навыки и степень их взаимозаменяемости (0..1).
+
+    Подбор засчитывает родственный навык частично: Django не равен FastAPI, но
+    человек с Django освоит FastAPI быстрее того, кто не писал на Python вовсе.
+    Связь хранится в обе стороны, чтобы поиск шёл одним условием по `skill_id`.
+    """
+
+    __tablename__ = "skill_relations"
+    __table_args__ = (
+        CheckConstraint("similarity > 0 AND similarity <= 1", name="similarity_range"),
+        CheckConstraint("skill_id <> related_skill_id", name="not_self"),
+    )
+
+    skill_id: Mapped[int] = mapped_column(
+        ForeignKey("skills.id", ondelete="CASCADE"), primary_key=True
+    )
+    related_skill_id: Mapped[int] = mapped_column(
+        ForeignKey("skills.id", ondelete="CASCADE"), primary_key=True
+    )
+    similarity: Mapped[float] = mapped_column(Float)
