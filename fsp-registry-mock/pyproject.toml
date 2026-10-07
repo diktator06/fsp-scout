@@ -1,0 +1,50 @@
+[project]
+name = "fsp-registry-mock"
+version = "0.1.0"
+description = "Эмулятор ФСП ID (OIDC) и реестра достижений участников ФСП для стенда «Скаута»"
+requires-python = ">=3.13,<3.14"
+license = "MIT"
+dependencies = [
+    "fastapi>=0.142,<0.143",
+    "uvicorn[standard]>=0.54",
+    "pyjwt[crypto]>=2.15",
+    "jinja2>=3.1",
+    "python-multipart>=0.0.20",
+    "pydantic-settings>=2.15",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1",
+    "pytest-asyncio>=1.4",
+    "httpx>=0.28",
+    "ruff>=0.14",
+    "mypy>=2.4",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "C4", "RUF", "ASYNC", "PTH", "RET"]
+ignore = ["RUF001", "RUF002", "RUF003", "B008"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "scripts", "tests"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+files = ["app", "scripts"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_default_test_loop_scope = "function"
+filterwarnings = ["error::DeprecationWarning:app.*"]

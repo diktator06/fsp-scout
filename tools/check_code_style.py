@@ -7,7 +7,7 @@ from collections.abc import Iterator
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PYTHON_ROOTS = ("backend", "tools")
+PYTHON_ROOTS = ("backend", "fsp-registry-mock", "tools")
 TYPESCRIPT_ROOTS = ("frontend/src",)
 SKIPPED_PARTS = frozenset({".venv", "node_modules", "__pycache__", "dist", "build", ".mypy_cache"})
 GENERATED_FILES = frozenset({"schema.gen.ts"})
