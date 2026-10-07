@@ -2,6 +2,7 @@ import { Badge, Button, Card, Group, SimpleGrid, Stack, Text, Title } from '@man
 import { IconLock, IconLockOpen, IconMail } from '@tabler/icons-react';
 import type { CandidateCardView, FspState } from '@/api/types';
 import { FspCardBlock } from '@/features/fsp/FspCardBlock';
+import { MicroTasksCard } from '@/features/tasks/MicroTasksCard';
 import { competencyShare } from '@/shared/lib/assessment';
 import { formatDateTime } from '@/shared/lib/format';
 import { MatchScore, SkillMatchChips, VerifiedScoreBar, WhyInShortlist } from '@/shared/ui';
@@ -230,7 +231,10 @@ export function CandidateProfileView({ view, onInvite }: CandidateProfileViewPro
         </Card>
       </SimpleGrid>
 
-      <FspCardBlock fsp={card.fsp} />
+      <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
+        <FspCardBlock fsp={card.fsp} />
+        <MicroTasksCard summary={card.micro_tasks} />
+      </SimpleGrid>
     </Stack>
   );
 }

@@ -114,7 +114,7 @@ class CandidateTaskService:
             await self._offer(profile.id, specialization_id, [task.id for _, task in rows])
             rows = await microtask_assignment_crud.list_for_candidate(self._session, profile.id)
         await self._session.commit()
-        return await self._overview(profile.id, rows, specialization_id is not None)
+        return await self._overview(profile.id, rows, specialization_id)
 
     async def request(self, user: User) -> TasksOverviewRead:
         """Задача по просьбе кандидата — в пределах недельного лимита."""
@@ -134,7 +134,7 @@ class CandidateTaskService:
             raise ConflictError("Новых задач по вашей специализации пока нет")
         await self._session.commit()
         rows = await microtask_assignment_crud.list_for_candidate(self._session, profile.id)
-        return await self._overview(profile.id, rows, True)
+        return await self._overview(profile.id, rows, specialization_id)
 
     async def submit(self, user: User, assignment_id: uuid.UUID, answer: str) -> AssignmentRead:
         """Ответ на задачу. «Решить» проверяется сразу, «подход» уходит работодателю."""
@@ -245,7 +245,7 @@ class CandidateTaskService:
         self,
         candidate_id: uuid.UUID,
         rows: Sequence[tuple[MicroTaskAssignment, MicroTask]],
-        available: bool,
+        specialization_id: int | None,
     ) -> TasksOverviewRead:
         """Сводка раздела задач."""
         now = self._clock()
@@ -264,7 +264,18 @@ class CandidateTaskService:
         ]
         fresh = freshness(graded, now)
         left = await self._requests_left(candidate_id, now)
+        available = specialization_id is not None
+        has_new = specialization_id is not None and bool(
+            await microtask_crud.offerable(
+                self._session, specialization_id, [task.id for _, task in rows]
+            )
+        )
         last_assigned = max((item.assigned_at for item, _ in rows), default=None)
+        next_offer = (
+            last_assigned + timedelta(days=self._settings.microtask_interval_days)
+            if last_assigned and current is None and has_new
+            else None
+        )
         return TasksOverviewRead(
             available=available,
             current=current,
@@ -276,9 +287,7 @@ class CandidateTaskService:
                 last_graded_at=fresh.last.graded_at if fresh.last else None,
                 half_life_days=int(HALF_LIFE_DAYS),
             ),
-            can_request=available and current is None and left > 0,
+            can_request=has_new and current is None and left > 0,
             requests_left=left,
-            next_offer_at=last_assigned + timedelta(days=self._settings.microtask_interval_days)
-            if last_assigned and current is None
-            else None,
+            next_offer_at=next_offer if next_offer and next_offer > now else None,
         )

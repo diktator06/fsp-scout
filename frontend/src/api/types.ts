@@ -104,3 +104,11 @@ export type RejectReason = Schemas['RejectReason'];
 export type CandidateApplication = Schemas['CandidateApplicationRead'];
 export type EmployerApplication = Schemas['EmployerApplicationRead'];
 export type ApplicationDecision = Schemas['ApplicationDecision'];
+
+export type TasksOverview = Schemas['TasksOverviewRead'];
+export type TaskAssignment = Schemas['AssignmentRead'];
+export type AssignmentStatus = TaskAssignment['status'];
+export type MicroTask = Schemas['MicroTaskRead'];
+export type MicroTaskCreate = Schemas['MicroTaskCreate'];
+export type MicroTaskKind = MicroTask['kind'];
+export type TaskSubmission = Schemas['SubmissionRead'];

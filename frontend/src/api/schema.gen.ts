@@ -759,6 +759,89 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/candidates/me/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Мои микрозадачи
+         * @description Текущая задача, история и фактор актуальности профиля.
+         *
+         *     Если активной задачи нет и с прошлой прошла неделя, система предлагает новую
+         *     задачу по специализации кандидата — это и есть «регулярные задания» из ТЗ.
+         */
+        get: operations["overview_api_v1_candidates_me_tasks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/tasks/request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Попросить задачу
+         * @description Задача раньше срока — в пределах недельного лимита.
+         */
+        post: operations["request_task_api_v1_candidates_me_tasks_request_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/tasks/{assignment_id}/skip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Пропустить задачу
+         * @description На индекс не влияет, но расходует недельный лимит.
+         */
+        post: operations["skip_api_v1_candidates_me_tasks__assignment_id__skip_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/tasks/{assignment_id}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ответить на задачу
+         * @description «Решить» проверяется сразу по эталону, «подход» оценивает работодатель.
+         */
+        post: operations["submit_api_v1_candidates_me_tasks__assignment_id__submit_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dictionaries/categories": {
         parameters: {
             query?: never;
@@ -1304,6 +1387,90 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/employer/task-submissions/{assignment_id}/grade": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Оценить подход
+         * @description Оценка 1–5 по рубрике; кандидат получает уведомление и балл в индекс.
+         */
+        post: operations["grade_submission_api_v1_employer_task_submissions__assignment_id__grade_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Микрозадачи компании
+         * @description Задачи с эталоном и статистикой ответов.
+         */
+        get: operations["list_tasks_api_v1_employer_tasks_get"];
+        put?: never;
+        /**
+         * Создать микрозадачу
+         * @description «Решить» — с эталоном для автопроверки, «предложить подход» — с рубрикой оценки.
+         */
+        post: operations["create_task_api_v1_employer_tasks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/tasks/{task_id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Убрать задачу из выдачи
+         * @description Уже выданные кандидаты дорешивают задачу.
+         */
+        post: operations["archive_task_api_v1_employer_tasks__task_id__archive_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/tasks/{task_id}/submissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ответы кандидатов
+         * @description Ответы обезличены, как карточки в банке: автора можно пригласить по псевдониму.
+         */
+        get: operations["task_submissions_api_v1_employer_tasks__task_id__submissions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/employer/vacancies": {
         parameters: {
             query?: never;
@@ -1560,19 +1727,6 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /**
-         * AnswerSubmit
-         * @description Ответ на текущее задание: ключ варианта (a–d) или число строкой.
-         */
-        AnswerSubmit: {
-            /** Answer */
-            answer: string;
-            /**
-             * Item Id
-             * Format: uuid
-             */
-            item_id: string;
-        };
-        /**
          * ApplicationBrief
          * @description Отклик кандидата на вакансию — для метки в списке.
          */
@@ -1661,6 +1815,76 @@ export interface components {
          * @enum {string}
          */
         AssessmentMode: "full" | "express";
+        /**
+         * AssignedTaskRead
+         * @description Задача глазами кандидата: эталона здесь нет физически.
+         */
+        AssignedTaskRead: {
+            /**
+             * Answer Format
+             * @enum {string}
+             */
+            answer_format: "number" | "choice" | "text";
+            /** Company Name */
+            company_name: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            kind: components["schemas"]["MicroTaskKind"];
+            /** Options */
+            options: string[];
+            /** Rubric */
+            rubric: string;
+            /** Statement */
+            statement: string;
+            /** Time Limit Minutes */
+            time_limit_minutes: number;
+            /** Title */
+            title: string;
+        };
+        /**
+         * AssignmentRead
+         * @description Выданная кандидату задача и результат по ней.
+         */
+        AssignmentRead: {
+            /** Answer */
+            answer: string;
+            /**
+             * Assigned At
+             * Format: date-time
+             */
+            assigned_at: string;
+            /**
+             * Due At
+             * Format: date-time
+             */
+            due_at: string;
+            /** Feedback */
+            feedback: string;
+            /** Graded At */
+            graded_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Rating */
+            rating: number | null;
+            /** Score */
+            score: number | null;
+            status: components["schemas"]["AssignmentStatus"];
+            /** Submitted At */
+            submitted_at: string | null;
+            task: components["schemas"]["AssignedTaskRead"];
+        };
+        /**
+         * AssignmentStatus
+         * @description Статус задачи у конкретного кандидата.
+         * @enum {string}
+         */
+        AssignmentStatus: "assigned" | "submitted" | "graded" | "expired" | "skipped";
         /**
          * BankCandidateRead
          * @description Кандидат в выдаче банка.
@@ -1768,6 +1992,7 @@ export interface components {
              * @enum {string}
              */
             grade_status: "confirmed" | "unconfirmed";
+            micro_tasks: components["schemas"]["MicroTasksSummary"];
             /** Relocation Ready */
             relocation_ready: boolean;
             /** Salary Expectation */
@@ -2540,6 +2765,25 @@ export interface components {
             text: string;
         };
         /**
+         * FreshnessRead
+         * @description Фактор M: актуальность профиля по свежим микрозадачам.
+         */
+        FreshnessRead: {
+            /** Count */
+            count: number;
+            /** Half Life Days */
+            half_life_days: number;
+            /** Last Graded At */
+            last_graded_at: string | null;
+            /** Value */
+            value: number;
+            /**
+             * Vps Points
+             * @description Вклад в индекс подтверждённого профиля, баллов
+             */
+            vps_points: number;
+        };
+        /**
          * FspAchievementRead
          * @description Участие в соревновании из реестра ФСП.
          */
@@ -2827,6 +3071,19 @@ export interface components {
             rank: number;
         };
         /**
+         * GradeRequest
+         * @description Оценка подхода работодателем по рубрике задачи.
+         */
+        GradeRequest: {
+            /**
+             * Feedback
+             * @default
+             */
+            feedback: string;
+            /** Rating */
+            rating: number;
+        };
+        /**
          * GradeScalePoint
          * @description Порог грейда на шкале способностей.
          */
@@ -3106,6 +3363,134 @@ export interface components {
             message: string;
         };
         /**
+         * MicroTaskCreate
+         * @description Микрозадача работодателя.
+         *
+         *     «Решить» требует эталон: число с допуском или номер верного варианта — его
+         *     проверяет система. «Предложить подход» требует рубрику: по ней оценивает
+         *     работодатель, и кандидат видит её заранее.
+         */
+        MicroTaskCreate: {
+            /**
+             * Answer Tolerance
+             * @default 0
+             */
+            answer_tolerance: number;
+            /**
+             * Answer Value
+             * @description Эталонное число для «решить»
+             */
+            answer_value?: number | null;
+            /**
+             * Correct Option
+             * @description Номер верного варианта
+             */
+            correct_option?: number | null;
+            kind: components["schemas"]["MicroTaskKind"];
+            /** Options */
+            options?: string[];
+            /**
+             * Rubric
+             * @default
+             */
+            rubric: string;
+            /** Specialization Id */
+            specialization_id: number;
+            /** Statement */
+            statement: string;
+            /**
+             * Time Limit Minutes
+             * @default 20
+             */
+            time_limit_minutes: number;
+            /** Title */
+            title: string;
+        };
+        /**
+         * MicroTaskKind
+         * @description Вид микрозадачи (ТЗ §2): решить её или предложить подход к решению.
+         * @enum {string}
+         */
+        MicroTaskKind: "solve" | "approach";
+        /**
+         * MicroTaskRead
+         * @description Задача глазами работодателя — вместе с эталоном и статистикой.
+         */
+        MicroTaskRead: {
+            /** Answer Tolerance */
+            answer_tolerance: number;
+            /** Answer Value */
+            answer_value: number | null;
+            /** Correct Option */
+            correct_option: number | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            kind: components["schemas"]["MicroTaskKind"];
+            /** Options */
+            options: string[];
+            /** Rubric */
+            rubric: string;
+            /** Specialization Id */
+            specialization_id: number;
+            /** Specialization Name */
+            specialization_name: string;
+            /** Statement */
+            statement: string;
+            stats: components["schemas"]["TaskStatsRead"];
+            status: components["schemas"]["MicroTaskStatus"];
+            /** Time Limit Minutes */
+            time_limit_minutes: number;
+            /** Title */
+            title: string;
+        };
+        /**
+         * MicroTaskResultRead
+         * @description Результат микрозадачи в карточке: свежий сигнал о кандидате.
+         */
+        MicroTaskResultRead: {
+            /**
+             * Graded At
+             * Format: date-time
+             */
+            graded_at: string;
+            kind: components["schemas"]["MicroTaskKind"];
+            /** Rating */
+            rating: number | null;
+            /** Score */
+            score: number;
+            /** Title */
+            title: string;
+        };
+        /**
+         * MicroTaskStatus
+         * @description Статус задачи у работодателя: архивную больше не предлагают кандидатам.
+         * @enum {string}
+         */
+        MicroTaskStatus: "active" | "archived";
+        /**
+         * MicroTasksSummary
+         * @description Фактор M и последние результаты микрозадач. Без задач — нейтральное «пока не было».
+         */
+        MicroTasksSummary: {
+            /** Count */
+            count: number;
+            /** Recent */
+            recent: components["schemas"]["MicroTaskResultRead"][];
+            /**
+             * Score
+             * @description Фактор M индекса профиля
+             */
+            score: number;
+        };
+        /**
          * NeedCreate
          * @description Потребность работодателя. Вилка обязательна.
          */
@@ -3272,7 +3657,7 @@ export interface components {
          * @description Виды уведомлений в кабинете.
          * @enum {string}
          */
-        NotificationKind: "invitation_received" | "invitation_accepted" | "invitation_declined" | "invitation_withdrawn" | "invitation_expired" | "application_received" | "application_updated";
+        NotificationKind: "invitation_received" | "invitation_accepted" | "invitation_declined" | "invitation_withdrawn" | "invitation_expired" | "application_received" | "application_updated" | "microtask_submitted" | "microtask_graded";
         /**
          * NotificationListRead
          * @description Последние уведомления и число непрочитанных.
@@ -3846,6 +4231,48 @@ export interface components {
             sort_order?: number | null;
         };
         /**
+         * SubmissionCandidateRead
+         * @description Автор ответа для работодателя — обезличенно, как в банке.
+         */
+        SubmissionCandidateRead: {
+            /** Alias */
+            alias: string;
+            /**
+             * Candidate Id
+             * Format: uuid
+             */
+            candidate_id: string;
+            /** Category Title */
+            category_title: string | null;
+            /** Grade Status */
+            grade_status: ("confirmed" | "unconfirmed") | null;
+        };
+        /**
+         * SubmissionRead
+         * @description Ответ кандидата на задачу компании.
+         */
+        SubmissionRead: {
+            /** Answer */
+            answer: string;
+            candidate: components["schemas"]["SubmissionCandidateRead"];
+            /** Feedback */
+            feedback: string;
+            /** Graded At */
+            graded_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Rating */
+            rating: number | null;
+            /** Score */
+            score: number | null;
+            status: components["schemas"]["AssignmentStatus"];
+            /** Submitted At */
+            submitted_at: string | null;
+        };
+        /**
          * SurveyCreate
          * @description Ответы опроса: отрасль, специализация, стек, опыт и заявленный грейд.
          */
@@ -3890,6 +4317,43 @@ export interface components {
             specialization: components["schemas"]["SpecializationBrief"];
             /** Team Roles */
             team_roles: string[];
+        };
+        /**
+         * TaskStatsRead
+         * @description Статистика задачи у работодателя.
+         */
+        TaskStatsRead: {
+            /** Answered */
+            answered: number;
+            /** Assigned */
+            assigned: number;
+            /** Average Score */
+            average_score: number | null;
+            /** Awaiting Review */
+            awaiting_review: number;
+            /** Graded */
+            graded: number;
+        };
+        /**
+         * TasksOverviewRead
+         * @description Раздел «Задачи» кандидата.
+         */
+        TasksOverviewRead: {
+            /**
+             * Available
+             * @description Есть ли специализация: без опроса задач не подобрать
+             */
+            available: boolean;
+            /** Can Request */
+            can_request: boolean;
+            current: components["schemas"]["AssignmentRead"] | null;
+            freshness: components["schemas"]["FreshnessRead"];
+            /** History */
+            history: components["schemas"]["AssignmentRead"][];
+            /** Next Offer At */
+            next_offer_at: string | null;
+            /** Requests Left */
+            requests_left: number;
         };
         /**
          * TokenResponse
@@ -4188,6 +4652,27 @@ export interface components {
          * @enum {string}
          */
         WorkFormat: "office" | "hybrid" | "remote";
+        /**
+         * AnswerSubmit
+         * @description Ответ на текущее задание: ключ варианта (a–d) или число строкой.
+         */
+        app__schemas__assessment__AnswerSubmit: {
+            /** Answer */
+            answer: string;
+            /**
+             * Item Id
+             * Format: uuid
+             */
+            item_id: string;
+        };
+        /**
+         * AnswerSubmit
+         * @description Ответ кандидата: число, номер варианта или описание подхода.
+         */
+        app__schemas__microtask__AnswerSubmit: {
+            /** Answer */
+            answer: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -4678,7 +5163,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["AnswerSubmit"];
+                "application/json": components["schemas"]["app__schemas__assessment__AnswerSubmit"];
             };
         };
         responses: {
@@ -6512,6 +6997,274 @@ export interface operations {
             };
             /** @description Недостаточно прав */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    overview_api_v1_candidates_me_tasks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TasksOverviewRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    request_task_api_v1_candidates_me_tasks_request_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TasksOverviewRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    skip_api_v1_candidates_me_tasks__assignment_id__skip_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assignment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    submit_api_v1_candidates_me_tasks__assignment_id__submit_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assignment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["app__schemas__microtask__AnswerSubmit"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8633,6 +9386,345 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ShortlistRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    grade_submission_api_v1_employer_task_submissions__assignment_id__grade_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assignment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GradeRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmissionRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_tasks_api_v1_employer_tasks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MicroTaskRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_task_api_v1_employer_tasks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MicroTaskCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MicroTaskRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    archive_task_api_v1_employer_tasks__task_id__archive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MicroTaskRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    task_submissions_api_v1_employer_tasks__task_id__submissions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmissionRead"][];
                 };
             };
             /** @description Требуется вход или токен недействителен */

@@ -22,6 +22,7 @@ import {
   IconHome,
   IconLogout,
   IconMailOpened,
+  IconPuzzle,
   IconRadar,
   IconSend,
   IconSettings,
@@ -53,6 +54,7 @@ const NAVIGATION: Record<UserRole, NavItem[]> = {
     { to: '/c/profile', label: 'Профиль', icon: IconUserCircle },
     { to: '/c/assessment', label: 'Категория и тест', icon: IconTargetArrow },
     { to: '/c/fsp', label: 'Достижения ФСП', icon: IconTrophy },
+    { to: '/c/tasks', label: 'Микрозадачи', icon: IconPuzzle },
     { to: '/c/invitations', label: 'Приглашения', icon: IconMailOpened },
     { to: '/c/vacancies', label: 'Вакансии', icon: IconBriefcase },
     { to: '/c/applications', label: 'Мои отклики', icon: IconSend },
@@ -64,6 +66,7 @@ const NAVIGATION: Record<UserRole, NavItem[]> = {
     { to: '/e/bank', label: 'Банк кандидатов', icon: IconUsersGroup },
     { to: '/e/invitations', label: 'Приглашения', icon: IconMailOpened },
     { to: '/e/vacancies', label: 'Вакансии', icon: IconBriefcase },
+    { to: '/e/tasks', label: 'Микрозадачи', icon: IconPuzzle },
     { to: '/e/company', label: 'Компания', icon: IconBuildingSkyscraper },
   ],
   methodist: [

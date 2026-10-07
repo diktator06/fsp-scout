@@ -1,28 +1,6 @@
 {
   "components": {
     "schemas": {
-      "AnswerSubmit": {
-        "description": "Ответ на текущее задание: ключ варианта (a–d) или число строкой.",
-        "properties": {
-          "answer": {
-            "maxLength": 64,
-            "minLength": 1,
-            "title": "Answer",
-            "type": "string"
-          },
-          "item_id": {
-            "format": "uuid",
-            "title": "Item Id",
-            "type": "string"
-          }
-        },
-        "required": [
-          "item_id",
-          "answer"
-        ],
-        "title": "AnswerSubmit",
-        "type": "object"
-      },
       "ApplicationBrief": {
         "description": "Отклик кандидата на вакансию — для метки в списке.",
         "properties": {
@@ -175,6 +153,175 @@
           "express"
         ],
         "title": "AssessmentMode",
+        "type": "string"
+      },
+      "AssignedTaskRead": {
+        "description": "Задача глазами кандидата: эталона здесь нет физически.",
+        "properties": {
+          "answer_format": {
+            "enum": [
+              "number",
+              "choice",
+              "text"
+            ],
+            "title": "Answer Format",
+            "type": "string"
+          },
+          "company_name": {
+            "title": "Company Name",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/MicroTaskKind"
+          },
+          "options": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "rubric": {
+            "title": "Rubric",
+            "type": "string"
+          },
+          "statement": {
+            "title": "Statement",
+            "type": "string"
+          },
+          "time_limit_minutes": {
+            "title": "Time Limit Minutes",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "statement",
+          "options",
+          "rubric",
+          "answer_format",
+          "time_limit_minutes",
+          "company_name"
+        ],
+        "title": "AssignedTaskRead",
+        "type": "object"
+      },
+      "AssignmentRead": {
+        "description": "Выданная кандидату задача и результат по ней.",
+        "properties": {
+          "answer": {
+            "title": "Answer",
+            "type": "string"
+          },
+          "assigned_at": {
+            "format": "date-time",
+            "title": "Assigned At",
+            "type": "string"
+          },
+          "due_at": {
+            "format": "date-time",
+            "title": "Due At",
+            "type": "string"
+          },
+          "feedback": {
+            "title": "Feedback",
+            "type": "string"
+          },
+          "graded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graded At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AssignmentStatus"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          },
+          "task": {
+            "$ref": "#/components/schemas/AssignedTaskRead"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "assigned_at",
+          "due_at",
+          "submitted_at",
+          "answer",
+          "score",
+          "rating",
+          "feedback",
+          "graded_at",
+          "task"
+        ],
+        "title": "AssignmentRead",
+        "type": "object"
+      },
+      "AssignmentStatus": {
+        "description": "Статус задачи у конкретного кандидата.",
+        "enum": [
+          "assigned",
+          "submitted",
+          "graded",
+          "expired",
+          "skipped"
+        ],
+        "title": "AssignmentStatus",
         "type": "string"
       },
       "BankCandidateRead": {
@@ -402,6 +549,9 @@
             "title": "Grade Status",
             "type": "string"
           },
+          "micro_tasks": {
+            "$ref": "#/components/schemas/MicroTasksSummary"
+          },
           "relocation_ready": {
             "title": "Relocation Ready",
             "type": "boolean"
@@ -475,6 +625,7 @@
           "experiences",
           "test",
           "fsp",
+          "micro_tasks",
           "updated_at"
         ],
         "title": "CandidateAnonymousCard",
@@ -2688,6 +2839,51 @@
         "title": "ExplanationItemRead",
         "type": "object"
       },
+      "FreshnessRead": {
+        "description": "Фактор M: актуальность профиля по свежим микрозадачам.",
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "half_life_days": {
+            "title": "Half Life Days",
+            "type": "integer"
+          },
+          "last_graded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Graded At"
+          },
+          "value": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Value",
+            "type": "number"
+          },
+          "vps_points": {
+            "description": "Вклад в индекс подтверждённого профиля, баллов",
+            "title": "Vps Points",
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "vps_points",
+          "count",
+          "last_graded_at",
+          "half_life_days"
+        ],
+        "title": "FreshnessRead",
+        "type": "object"
+      },
       "FspAchievementRead": {
         "description": "Участие в соревновании из реестра ФСП.",
         "properties": {
@@ -3410,6 +3606,28 @@
         "title": "GradeRead",
         "type": "object"
       },
+      "GradeRequest": {
+        "description": "Оценка подхода работодателем по рубрике задачи.",
+        "properties": {
+          "feedback": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Feedback",
+            "type": "string"
+          },
+          "rating": {
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Rating",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rating"
+        ],
+        "title": "GradeRequest",
+        "type": "object"
+      },
       "GradeScalePoint": {
         "description": "Порог грейда на шкале способностей.",
         "properties": {
@@ -4000,6 +4218,281 @@
         "title": "MessageResponse",
         "type": "object"
       },
+      "MicroTaskCreate": {
+        "description": "Микрозадача работодателя.\n\n«Решить» требует эталон: число с допуском или номер верного варианта — его\nпроверяет система. «Предложить подход» требует рубрику: по ней оценивает\nработодатель, и кандидат видит её заранее.",
+        "properties": {
+          "answer_tolerance": {
+            "default": 0.0,
+            "minimum": 0.0,
+            "title": "Answer Tolerance",
+            "type": "number"
+          },
+          "answer_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Эталонное число для «решить»",
+            "title": "Answer Value"
+          },
+          "correct_option": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Номер верного варианта",
+            "title": "Correct Option"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/MicroTaskKind"
+          },
+          "options": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 6,
+            "title": "Options",
+            "type": "array"
+          },
+          "rubric": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Rubric",
+            "type": "string"
+          },
+          "specialization_id": {
+            "title": "Specialization Id",
+            "type": "integer"
+          },
+          "statement": {
+            "maxLength": 5000,
+            "minLength": 20,
+            "title": "Statement",
+            "type": "string"
+          },
+          "time_limit_minutes": {
+            "default": 20,
+            "maximum": 240.0,
+            "minimum": 5.0,
+            "title": "Time Limit Minutes",
+            "type": "integer"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "title",
+          "statement",
+          "specialization_id"
+        ],
+        "title": "MicroTaskCreate",
+        "type": "object"
+      },
+      "MicroTaskKind": {
+        "description": "Вид микрозадачи (ТЗ §2): решить её или предложить подход к решению.",
+        "enum": [
+          "solve",
+          "approach"
+        ],
+        "title": "MicroTaskKind",
+        "type": "string"
+      },
+      "MicroTaskRead": {
+        "description": "Задача глазами работодателя — вместе с эталоном и статистикой.",
+        "properties": {
+          "answer_tolerance": {
+            "title": "Answer Tolerance",
+            "type": "number"
+          },
+          "answer_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer Value"
+          },
+          "correct_option": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correct Option"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/MicroTaskKind"
+          },
+          "options": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "rubric": {
+            "title": "Rubric",
+            "type": "string"
+          },
+          "specialization_id": {
+            "title": "Specialization Id",
+            "type": "integer"
+          },
+          "specialization_name": {
+            "title": "Specialization Name",
+            "type": "string"
+          },
+          "statement": {
+            "title": "Statement",
+            "type": "string"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/TaskStatsRead"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MicroTaskStatus"
+          },
+          "time_limit_minutes": {
+            "title": "Time Limit Minutes",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "statement",
+          "specialization_id",
+          "specialization_name",
+          "options",
+          "answer_value",
+          "answer_tolerance",
+          "correct_option",
+          "rubric",
+          "time_limit_minutes",
+          "status",
+          "created_at",
+          "stats"
+        ],
+        "title": "MicroTaskRead",
+        "type": "object"
+      },
+      "MicroTaskResultRead": {
+        "description": "Результат микрозадачи в карточке: свежий сигнал о кандидате.",
+        "properties": {
+          "graded_at": {
+            "format": "date-time",
+            "title": "Graded At",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/MicroTaskKind"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "score": {
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score",
+            "type": "number"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "kind",
+          "score",
+          "rating",
+          "graded_at"
+        ],
+        "title": "MicroTaskResultRead",
+        "type": "object"
+      },
+      "MicroTaskStatus": {
+        "description": "Статус задачи у работодателя: архивную больше не предлагают кандидатам.",
+        "enum": [
+          "active",
+          "archived"
+        ],
+        "title": "MicroTaskStatus",
+        "type": "string"
+      },
+      "MicroTasksSummary": {
+        "description": "Фактор M и последние результаты микрозадач. Без задач — нейтральное «пока не было».",
+        "properties": {
+          "count": {
+            "title": "Count",
+            "type": "integer"
+          },
+          "recent": {
+            "items": {
+              "$ref": "#/components/schemas/MicroTaskResultRead"
+            },
+            "title": "Recent",
+            "type": "array"
+          },
+          "score": {
+            "description": "Фактор M индекса профиля",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Score",
+            "type": "number"
+          }
+        },
+        "required": [
+          "score",
+          "count",
+          "recent"
+        ],
+        "title": "MicroTasksSummary",
+        "type": "object"
+      },
       "NeedCreate": {
         "description": "Потребность работодателя. Вилка обязательна.",
         "properties": {
@@ -4436,7 +4929,9 @@
           "invitation_withdrawn",
           "invitation_expired",
           "application_received",
-          "application_updated"
+          "application_updated",
+          "microtask_submitted",
+          "microtask_graded"
         ],
         "title": "NotificationKind",
         "type": "string"
@@ -5721,6 +6216,137 @@
         "title": "SpecializationUpdate",
         "type": "object"
       },
+      "SubmissionCandidateRead": {
+        "description": "Автор ответа для работодателя — обезличенно, как в банке.",
+        "properties": {
+          "alias": {
+            "title": "Alias",
+            "type": "string"
+          },
+          "candidate_id": {
+            "format": "uuid",
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "category_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category Title"
+          },
+          "grade_status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "confirmed",
+                  "unconfirmed"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grade Status"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "alias",
+          "category_title",
+          "grade_status"
+        ],
+        "title": "SubmissionCandidateRead",
+        "type": "object"
+      },
+      "SubmissionRead": {
+        "description": "Ответ кандидата на задачу компании.",
+        "properties": {
+          "answer": {
+            "title": "Answer",
+            "type": "string"
+          },
+          "candidate": {
+            "$ref": "#/components/schemas/SubmissionCandidateRead"
+          },
+          "feedback": {
+            "title": "Feedback",
+            "type": "string"
+          },
+          "graded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graded At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "rating": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AssignmentStatus"
+          },
+          "submitted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Submitted At"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "submitted_at",
+          "answer",
+          "score",
+          "rating",
+          "feedback",
+          "graded_at",
+          "candidate"
+        ],
+        "title": "SubmissionRead",
+        "type": "object"
+      },
       "SurveyCreate": {
         "description": "Ответы опроса: отрасль, специализация, стек, опыт и заявленный грейд.",
         "properties": {
@@ -5845,6 +6471,108 @@
           "created_at"
         ],
         "title": "SurveyRead",
+        "type": "object"
+      },
+      "TaskStatsRead": {
+        "description": "Статистика задачи у работодателя.",
+        "properties": {
+          "answered": {
+            "title": "Answered",
+            "type": "integer"
+          },
+          "assigned": {
+            "title": "Assigned",
+            "type": "integer"
+          },
+          "average_score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Average Score"
+          },
+          "awaiting_review": {
+            "title": "Awaiting Review",
+            "type": "integer"
+          },
+          "graded": {
+            "title": "Graded",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "assigned",
+          "answered",
+          "graded",
+          "awaiting_review",
+          "average_score"
+        ],
+        "title": "TaskStatsRead",
+        "type": "object"
+      },
+      "TasksOverviewRead": {
+        "description": "Раздел «Задачи» кандидата.",
+        "properties": {
+          "available": {
+            "description": "Есть ли специализация: без опроса задач не подобрать",
+            "title": "Available",
+            "type": "boolean"
+          },
+          "can_request": {
+            "title": "Can Request",
+            "type": "boolean"
+          },
+          "current": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AssignmentRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "freshness": {
+            "$ref": "#/components/schemas/FreshnessRead"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/AssignmentRead"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "next_offer_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Offer At"
+          },
+          "requests_left": {
+            "title": "Requests Left",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "available",
+          "current",
+          "history",
+          "freshness",
+          "can_request",
+          "requests_left",
+          "next_offer_at"
+        ],
+        "title": "TasksOverviewRead",
         "type": "object"
       },
       "TokenResponse": {
@@ -6549,6 +7277,44 @@
         ],
         "title": "WorkFormat",
         "type": "string"
+      },
+      "app__schemas__assessment__AnswerSubmit": {
+        "description": "Ответ на текущее задание: ключ варианта (a–d) или число строкой.",
+        "properties": {
+          "answer": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Answer",
+            "type": "string"
+          },
+          "item_id": {
+            "format": "uuid",
+            "title": "Item Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "item_id",
+          "answer"
+        ],
+        "title": "AnswerSubmit",
+        "type": "object"
+      },
+      "app__schemas__microtask__AnswerSubmit": {
+        "description": "Ответ кандидата: число, номер варианта или описание подхода.",
+        "properties": {
+          "answer": {
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Answer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "answer"
+        ],
+        "title": "AnswerSubmit",
+        "type": "object"
       }
     },
     "securitySchemes": {
@@ -7205,7 +7971,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AnswerSubmit"
+                "$ref": "#/components/schemas/app__schemas__assessment__AnswerSubmit"
               }
             }
           },
@@ -9493,6 +10259,348 @@
         "summary": "Статус онбординга",
         "tags": [
           "candidate"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/tasks": {
+      "get": {
+        "description": "Текущая задача, история и фактор актуальности профиля.\n\nЕсли активной задачи нет и с прошлой прошла неделя, система предлагает новую\nзадачу по специализации кандидата — это и есть «регулярные задания» из ТЗ.",
+        "operationId": "overview_api_v1_candidates_me_tasks_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TasksOverviewRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Мои микрозадачи",
+        "tags": [
+          "candidate: tasks"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/tasks/request": {
+      "post": {
+        "description": "Задача раньше срока — в пределах недельного лимита.",
+        "operationId": "request_task_api_v1_candidates_me_tasks_request_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TasksOverviewRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Попросить задачу",
+        "tags": [
+          "candidate: tasks"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/tasks/{assignment_id}/skip": {
+      "post": {
+        "description": "На индекс не влияет, но расходует недельный лимит.",
+        "operationId": "skip_api_v1_candidates_me_tasks__assignment_id__skip_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Assignment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Пропустить задачу",
+        "tags": [
+          "candidate: tasks"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/tasks/{assignment_id}/submit": {
+      "post": {
+        "description": "«Решить» проверяется сразу по эталону, «подход» оценивает работодатель.",
+        "operationId": "submit_api_v1_candidates_me_tasks__assignment_id__submit_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Assignment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/app__schemas__microtask__AnswerSubmit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Ответить на задачу",
+        "tags": [
+          "candidate: tasks"
         ]
       }
     },
@@ -12594,6 +13702,453 @@
         "summary": "Уточнить подборку (новая версия)",
         "tags": [
           "employer: needs"
+        ]
+      }
+    },
+    "/api/v1/employer/task-submissions/{assignment_id}/grade": {
+      "post": {
+        "description": "Оценка 1–5 по рубрике; кандидат получает уведомление и балл в индекс.",
+        "operationId": "grade_submission_api_v1_employer_task_submissions__assignment_id__grade_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assignment_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Assignment Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GradeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubmissionRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Оценить подход",
+        "tags": [
+          "employer: tasks"
+        ]
+      }
+    },
+    "/api/v1/employer/tasks": {
+      "get": {
+        "description": "Задачи с эталоном и статистикой ответов.",
+        "operationId": "list_tasks_api_v1_employer_tasks_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MicroTaskRead"
+                  },
+                  "title": "Response List Tasks Api V1 Employer Tasks Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Микрозадачи компании",
+        "tags": [
+          "employer: tasks"
+        ]
+      },
+      "post": {
+        "description": "«Решить» — с эталоном для автопроверки, «предложить подход» — с рубрикой оценки.",
+        "operationId": "create_task_api_v1_employer_tasks_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MicroTaskCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicroTaskRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Создать микрозадачу",
+        "tags": [
+          "employer: tasks"
+        ]
+      }
+    },
+    "/api/v1/employer/tasks/{task_id}/archive": {
+      "post": {
+        "description": "Уже выданные кандидаты дорешивают задачу.",
+        "operationId": "archive_task_api_v1_employer_tasks__task_id__archive_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MicroTaskRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Убрать задачу из выдачи",
+        "tags": [
+          "employer: tasks"
+        ]
+      }
+    },
+    "/api/v1/employer/tasks/{task_id}/submissions": {
+      "get": {
+        "description": "Ответы обезличены, как карточки в банке: автора можно пригласить по псевдониму.",
+        "operationId": "task_submissions_api_v1_employer_tasks__task_id__submissions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Task Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SubmissionRead"
+                  },
+                  "title": "Response Task Submissions Api V1 Employer Tasks  Task Id  Submissions Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Ответы кандидатов",
+        "tags": [
+          "employer: tasks"
         ]
       }
     },

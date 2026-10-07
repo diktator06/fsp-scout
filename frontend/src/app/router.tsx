@@ -143,6 +143,13 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: 'tasks',
+        lazy: page(
+          () => import('@/pages/candidate/TasksPage'),
+          (module) => module.TasksPage,
+        ),
+      },
+      {
         path: 'applications',
         lazy: page(
           () => import('@/pages/candidate/ApplicationsPage'),
@@ -229,6 +236,20 @@ export const router = createBrowserRouter([
         lazy: page(
           () => import('@/pages/employer/CandidatePage'),
           (module) => module.CandidatePage,
+        ),
+      },
+      {
+        path: 'tasks',
+        lazy: page(
+          () => import('@/pages/employer/TasksPage'),
+          (module) => module.EmployerTasksPage,
+        ),
+      },
+      {
+        path: 'tasks/:taskId',
+        lazy: page(
+          () => import('@/pages/employer/TaskPage'),
+          (module) => module.EmployerTaskPage,
         ),
       },
       {
