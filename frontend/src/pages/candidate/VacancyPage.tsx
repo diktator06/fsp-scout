@@ -206,7 +206,10 @@ export function VacancyPage() {
             </Group>
           </Stack>
         </Card>
-        <CompanyCard company={data.company} />
+        <CompanyCard
+          company={data.company}
+          complaint={{ targetType: 'vacancy', targetId: data.id }}
+        />
       </SimpleGrid>
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
         <MatchCard vacancy={data} />

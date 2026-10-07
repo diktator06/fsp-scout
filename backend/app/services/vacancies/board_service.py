@@ -44,6 +44,7 @@ from app.services.matching.candidate_pool import CandidatePoolService, PoolMembe
 from app.services.matching.engine import MatchingEngine
 from app.services.matching.views import match_read, match_snapshot
 from app.services.notifications import NotificationService
+from app.services.trust.reputation import company_reputations
 from app.services.vacancies.state_machine import ApplicationActor, ensure_transition
 from app.services.vacancies.views import application_events, for_candidate, vacancy_fields
 
@@ -263,6 +264,7 @@ class VacancyBoardService:
             self._session, [vacancy.company_id for vacancy in vacancies]
         )
         applied = await application_crud.applied_vacancy_ids(self._session, candidate_id)
+        reputations = await company_reputations(self._session, list(companies.values()))
         result = []
         for vacancy in vacancies:
             vacancy_skills = skills.get(vacancy.id, [])
@@ -270,7 +272,9 @@ class VacancyBoardService:
             result.append(
                 VacancyPublicRead(
                     **vacancy_fields(vacancy, vacancy_skills, specializations, grades),
-                    company=company_brief(companies[vacancy.company_id]),
+                    company=company_brief(
+                        companies[vacancy.company_id], reputations.get(vacancy.company_id)
+                    ),
                     match=await self._match(member, vacancy, vacancy_skills) if member else None,
                     application=ApplicationBrief(
                         id=application.id,
@@ -298,6 +302,7 @@ class VacancyBoardService:
         events = await application_event_crud.list_for_applications(
             self._session, [item.id for item in applications]
         )
+        reputations = await company_reputations(self._session, list(companies.values()))
         result = []
         for application in applications:
             vacancy = vacancies[application.vacancy_id]
@@ -325,7 +330,7 @@ class VacancyBoardService:
                         salary_from=vacancy.salary_from,
                         salary_to=vacancy.salary_to,
                         salary_gross=vacancy.salary_gross,
-                        company=company_brief(company),
+                        company=company_brief(company, reputations.get(company.id)),
                     ),
                     employer_contacts=employer_contacts(company, recruiter)
                     if application.status is ApplicationStatus.INTERVIEW

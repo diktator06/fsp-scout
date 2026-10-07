@@ -4,6 +4,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
+from app.core.inn import is_valid_inn
 from app.models.employer import CompanySize, TrustLevel
 from app.models.invitation import InvitationStatus
 from app.schemas.common import ORMModel
@@ -27,7 +28,7 @@ class CompanyUpdate(BaseModel):
     """Профиль компании и данные рекрутера, который его заполняет."""
 
     name: str = Field(min_length=2, max_length=200, examples=["Кедр Технологии"])
-    inn: str | None = Field(default=None, examples=["7701234567"])
+    inn: str | None = Field(default=None, examples=["7701234560"])
     website: str | None = Field(default=None, max_length=200, examples=["https://kedr.example"])
     industry_id: int | None = None
     description: str = Field(default="", max_length=3000)
@@ -48,10 +49,12 @@ class CompanyUpdate(BaseModel):
     @field_validator("inn")
     @classmethod
     def check_inn(cls, value: str | None) -> str | None:
-        """ИНН — 10 цифр у организации или 12 у ИП."""
+        """ИНН — 10 цифр у организации или 12 у ИП, с верными контрольными цифрами."""
         cleaned = _optional(value)
         if cleaned is not None and not _INN.match(cleaned):
             raise ValueError("ИНН состоит из 10 или 12 цифр")
+        if cleaned is not None and not is_valid_inn(cleaned):
+            raise ValueError("Контрольные цифры ИНН не сходятся — проверьте номер")
         return cleaned
 
     @field_validator("website")
@@ -101,6 +104,8 @@ class CompanyRead(ORMModel):
     contact_phone: str | None
     contact_telegram: str | None
     trust_level: TrustLevel
+    restricted_at: datetime | None
+    restriction_reason: str
     created_at: datetime
 
 

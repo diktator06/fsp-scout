@@ -31,6 +31,8 @@ from app.services.matching.shortlist_service import ShortlistService
 from app.services.microtasks.candidate_service import CandidateTaskService
 from app.services.microtasks.employer_service import EmployerTaskService
 from app.services.notifications import NotificationService
+from app.services.trust.complaint_service import ComplaintService
+from app.services.trust.moderation_service import ModerationService
 from app.services.vacancies.board_service import VacancyBoardService
 from app.services.vacancies.vacancy_service import VacancyService
 
@@ -184,6 +186,16 @@ def get_employer_task_service(session: SessionDep) -> EmployerTaskService:
     return EmployerTaskService(session)
 
 
+def get_complaint_service(session: SessionDep) -> ComplaintService:
+    """Сервис жалоб на время запроса."""
+    return ComplaintService(session)
+
+
+def get_moderation_service(session: SessionDep) -> ModerationService:
+    """Сервис модерации на время запроса."""
+    return ModerationService(session)
+
+
 def get_notification_service(session: SessionDep) -> NotificationService:
     """Сервис уведомлений на время запроса."""
     return NotificationService(session)
@@ -198,6 +210,8 @@ InvitationServiceDep = Annotated[InvitationService, Depends(get_invitation_servi
 NotificationServiceDep = Annotated[NotificationService, Depends(get_notification_service)]
 FspServiceDep = Annotated[FspService, Depends(get_fsp_service)]
 VacancyServiceDep = Annotated[VacancyService, Depends(get_vacancy_service)]
+ComplaintServiceDep = Annotated[ComplaintService, Depends(get_complaint_service)]
+ModerationServiceDep = Annotated[ModerationService, Depends(get_moderation_service)]
 CandidateTaskServiceDep = Annotated[CandidateTaskService, Depends(get_candidate_task_service)]
 EmployerTaskServiceDep = Annotated[EmployerTaskService, Depends(get_employer_task_service)]
 VacancyBoardServiceDep = Annotated[VacancyBoardService, Depends(get_vacancy_board_service)]

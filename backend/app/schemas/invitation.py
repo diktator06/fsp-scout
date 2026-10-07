@@ -10,6 +10,7 @@ from app.models.invitation import DeclineReason, InvitationStatus
 from app.schemas.cards import DisclosedContacts
 from app.schemas.dictionary import CategoryRead
 from app.schemas.matching import check_salary_range
+from app.schemas.trust import CompanyReputationRead
 
 EventActor = Literal["employer", "candidate", "system"]
 
@@ -60,6 +61,7 @@ class InvitationEventRead(BaseModel):
 class CompanyBrief(BaseModel):
     """Компания глазами кандидата: видна сразу, ещё до ответа на приглашение."""
 
+    id: uuid.UUID
     name: str
     industry: str | None
     city: str | None
@@ -67,6 +69,8 @@ class CompanyBrief(BaseModel):
     size: CompanySize | None
     description: str
     trust_level: TrustLevel
+    under_review: bool = Field(description="Компания на проверке модератора после жалоб")
+    reputation: CompanyReputationRead | None
 
 
 class EmployerContacts(BaseModel):

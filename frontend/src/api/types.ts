@@ -114,3 +114,14 @@ export type MicroTaskKind = MicroTask['kind'];
 export type TaskSubmission = Schemas['SubmissionRead'];
 
 export type ResumeDraft = Schemas['ResumeDraftRead'];
+
+export type ComplaintCreate = Schemas['ComplaintCreate'];
+export type ComplaintTarget = ComplaintCreate['target_type'];
+export type ComplaintReason = ComplaintCreate['reason'];
+export type Complaint = Schemas['ComplaintRead'];
+export type ComplaintStatus = Complaint['status'];
+export type CompanyReputation = Schemas['CompanyReputationRead'];
+export type SalaryCheck = Schemas['SalaryCheckRead'];
+export type ModerationComplaint = Schemas['ModerationComplaintRead'];
+export type ModerationCompany = Schemas['ModerationCompanyRead'];
+export type TrustLevel = ModerationCompany['trust_level'];

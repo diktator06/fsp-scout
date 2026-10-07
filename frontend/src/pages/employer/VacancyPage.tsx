@@ -3,6 +3,7 @@ import { IconEdit, IconEyeOff, IconSend } from '@tabler/icons-react';
 import { Link, useParams } from 'react-router';
 import { errorMessage } from '@/api/errors';
 import { useEmployerVacancy, useVacancyApplications, useVacancyPublication } from '@/api/vacancies';
+import { MarketCheckAlert } from '@/features/trust/MarketCheckAlert';
 import { ApplicationsSection } from '@/features/vacancies/ApplicationReview';
 import { VACANCY_STATUS_COPY } from '@/shared/lib/applicationStatus';
 import { WORK_FORMAT_LABELS } from '@/shared/lib/candidate';
@@ -61,6 +62,7 @@ export function EmployerVacancyPage() {
           </Group>
         }
       />
+      <MarketCheckAlert check={data.market_check} />
       {publication.isError && (
         <Text c="signal.8" size="sm" mb="md">
           {errorMessage(publication.error)}

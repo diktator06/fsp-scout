@@ -11,6 +11,7 @@ from app.schemas.cards import CandidateAnonymousCard, DisclosedContacts
 from app.schemas.dictionary import GradeBrief, SpecializationBrief
 from app.schemas.invitation import CompanyBrief, EmployerContacts
 from app.schemas.matching import MatchRead, NeedSkillInput, NeedSkillRead, check_salary_range
+from app.schemas.trust import SalaryCheckRead
 
 ApplicationActor = Literal["candidate", "employer"]
 
@@ -94,6 +95,7 @@ class VacancyRead(VacancyBase):
     applications_total: int
     applications_new: int
     applications_by_status: dict[ApplicationStatus, int]
+    market_check: SalaryCheckRead
 
 
 class ApplicationBrief(BaseModel):

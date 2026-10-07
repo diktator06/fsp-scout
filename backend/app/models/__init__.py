@@ -77,6 +77,7 @@ from app.models.microtask import (
     MicroTaskStatus,
 )
 from app.models.notification import Notification, NotificationKind
+from app.models.trust import Complaint, ComplaintReason, ComplaintStatus, ComplaintTarget
 from app.models.user import AuthProvider, User, UserRole
 from app.models.vacancy import (
     Application,
@@ -104,6 +105,10 @@ __all__ = [
     "Company",
     "CompanySize",
     "Competency",
+    "Complaint",
+    "ComplaintReason",
+    "ComplaintStatus",
+    "ComplaintTarget",
     "Consent",
     "ConsentType",
     "ContactChannel",

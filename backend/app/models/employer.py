@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 from enum import StrEnum
 
 from sqlalchemy import CheckConstraint, ForeignKey, String, Text
@@ -56,6 +57,8 @@ class Company(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         default=TrustLevel.NEW,
         server_default=TrustLevel.NEW.value,
     )
+    restricted_at: Mapped[datetime | None]
+    restriction_reason: Mapped[str] = mapped_column(String(300), default="", server_default="")
 
     industry: Mapped[Industry | None] = relationship(lazy="raise")
 

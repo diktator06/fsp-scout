@@ -865,6 +865,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/complaints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Пожаловаться на работодателя
+         * @description Жалоба на приглашение, вакансию или компанию.
+         *
+         *     Три жалобы разных кандидатов за 30 дней автоматически ставят компанию на проверку:
+         *     приглашения, вакансии и задачи приостанавливаются до решения модератора.
+         */
+        post: operations["file_complaint_api_v1_complaints_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dictionaries/categories": {
         parameters: {
             query?: never;
@@ -1616,6 +1639,126 @@ export interface paths {
         get: operations["health_api_v1_health_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moderation/companies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Компании с сигналами
+         * @description Ограниченные, с жалобами и с подозрительными вилками — выше.
+         */
+        get: operations["companies_api_v1_moderation_companies_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moderation/companies/{company_id}/lift": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Снять ограничение
+         * @description Компания снова может приглашать и публиковать вакансии.
+         */
+        post: operations["lift_api_v1_moderation_companies__company_id__lift_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moderation/companies/{company_id}/restrict": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ограничить компанию
+         * @description Приглашения, вакансии и задачи компании приостанавливаются.
+         */
+        post: operations["restrict_api_v1_moderation_companies__company_id__restrict_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moderation/companies/{company_id}/trust": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Уровень доверия компании
+         * @description От уровня доверия зависят дневная квота приглашений и лимит вакансий.
+         */
+        put: operations["set_trust_api_v1_moderation_companies__company_id__trust_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moderation/complaints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Жалобы кандидатов
+         * @description Очередь жалоб: открытые выше.
+         */
+        get: operations["complaints_api_v1_moderation_complaints_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moderation/complaints/{complaint_id}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Решение по жалобе
+         * @description Подтверждённая жалоба попадает в репутацию компании, отклонённая — нет.
+         */
+        post: operations["resolve_api_v1_moderation_complaints__complaint_id__resolve_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2409,12 +2552,23 @@ export interface components {
             city: string | null;
             /** Description */
             description: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
             /** Industry */
             industry: string | null;
             /** Name */
             name: string;
+            reputation: components["schemas"]["CompanyReputationRead"] | null;
             size: components["schemas"]["CompanySize"] | null;
             trust_level: components["schemas"]["TrustLevel"];
+            /**
+             * Under Review
+             * @description Компания на проверке модератора после жалоб
+             */
+            under_review: boolean;
             /** Website */
             website: string | null;
         };
@@ -2448,10 +2602,39 @@ export interface components {
             inn: string | null;
             /** Name */
             name: string;
+            /** Restricted At */
+            restricted_at: string | null;
+            /** Restriction Reason */
+            restriction_reason: string;
             size: components["schemas"]["CompanySize"] | null;
             trust_level: components["schemas"]["TrustLevel"];
             /** Website */
             website: string | null;
+        };
+        /**
+         * CompanyReputationRead
+         * @description Репутация компании для кандидата: факты, а не непрозрачный балл.
+         */
+        CompanyReputationRead: {
+            /**
+             * Acceptance Rate
+             * @description Доля принятых приглашений из отвеченных
+             */
+            acceptance_rate: number | null;
+            /** Complaints Confirmed */
+            complaints_confirmed: number;
+            /**
+             * On Platform Since
+             * Format: date-time
+             */
+            on_platform_since: string;
+            /**
+             * Response Rate
+             * @description Доля откликов, на которые компания ответила
+             */
+            response_rate: number | null;
+            /** Summary */
+            summary: string;
         };
         /**
          * CompanySize
@@ -2481,7 +2664,7 @@ export interface components {
             industry_id?: number | null;
             /**
              * Inn
-             * @example 7701234567
+             * @example 7701234560
              */
             inn?: string | null;
             /**
@@ -2521,6 +2704,86 @@ export interface components {
             /** Name */
             name: string;
         };
+        /**
+         * ComplaintCreate
+         * @description Жалоба кандидата на приглашение, вакансию или компанию.
+         */
+        ComplaintCreate: {
+            /**
+             * Comment
+             * @default
+             */
+            comment: string;
+            reason: components["schemas"]["ComplaintReason"];
+            /**
+             * Target Id
+             * Format: uuid
+             */
+            target_id: string;
+            target_type: components["schemas"]["ComplaintTarget"];
+        };
+        /**
+         * ComplaintRead
+         * @description Жалоба глазами автора.
+         */
+        ComplaintRead: {
+            /** Comment */
+            comment: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            reason: components["schemas"]["ComplaintReason"];
+            /** Resolution Note */
+            resolution_note: string;
+            status: components["schemas"]["ComplaintStatus"];
+            /**
+             * Target Id
+             * Format: uuid
+             */
+            target_id: string;
+            target_type: components["schemas"]["ComplaintTarget"];
+        };
+        /**
+         * ComplaintReason
+         * @description Причина жалобы — типичные признаки фиктивной вакансии или недобросовестного работодателя.
+         * @enum {string}
+         */
+        ComplaintReason: "fake_offer" | "salary_mismatch" | "payment_request" | "spam" | "rude" | "other";
+        /**
+         * ComplaintResolve
+         * @description Решение модератора по жалобе.
+         */
+        ComplaintResolve: {
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "confirmed" | "rejected";
+        };
+        /**
+         * ComplaintStatus
+         * @description Решение модератора по жалобе.
+         * @enum {string}
+         */
+        ComplaintStatus: "open" | "confirmed" | "rejected";
+        /**
+         * ComplaintTarget
+         * @description На что жалуется кандидат.
+         * @enum {string}
+         */
+        ComplaintTarget: "invitation" | "vacancy" | "company";
         /**
          * ConsentsRead
          * @description Состояние согласий кандидата.
@@ -3522,6 +3785,94 @@ export interface components {
             score: number;
         };
         /**
+         * ModerationCompanyBrief
+         * @description Компания в очереди модерации.
+         */
+        ModerationCompanyBrief: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Inn */
+            inn: string | null;
+            /** Name */
+            name: string;
+            /** Restricted At */
+            restricted_at: string | null;
+            /** Restriction Reason */
+            restriction_reason: string;
+            trust_level: components["schemas"]["TrustLevel"];
+        };
+        /**
+         * ModerationCompanyRead
+         * @description Компания с сигналами для модератора.
+         */
+        ModerationCompanyRead: {
+            /** Complaints Confirmed */
+            complaints_confirmed: number;
+            /** Complaints Open */
+            complaints_open: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Inn */
+            inn: string | null;
+            /** Name */
+            name: string;
+            reputation: components["schemas"]["CompanyReputationRead"];
+            /** Restricted At */
+            restricted_at: string | null;
+            /** Restriction Reason */
+            restriction_reason: string;
+            /**
+             * Suspicious Vacancies
+             * @description Вакансии с вилкой в разы выше рынка
+             */
+            suspicious_vacancies: string[];
+            trust_level: components["schemas"]["TrustLevel"];
+        };
+        /**
+         * ModerationComplaintRead
+         * @description Жалоба для модератора: с компанией, объектом и автором под псевдонимом.
+         */
+        ModerationComplaintRead: {
+            /** Author Alias */
+            author_alias: string | null;
+            /** Comment */
+            comment: string;
+            company: components["schemas"]["ModerationCompanyBrief"];
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            reason: components["schemas"]["ComplaintReason"];
+            /** Resolution Note */
+            resolution_note: string;
+            status: components["schemas"]["ComplaintStatus"];
+            /**
+             * Target Id
+             * Format: uuid
+             */
+            target_id: string;
+            /** Target Title */
+            target_title: string;
+            target_type: components["schemas"]["ComplaintTarget"];
+        };
+        /**
          * NeedCreate
          * @description Потребность работодателя. Вилка обязательна.
          */
@@ -3688,7 +4039,7 @@ export interface components {
          * @description Виды уведомлений в кабинете.
          * @enum {string}
          */
-        NotificationKind: "invitation_received" | "invitation_accepted" | "invitation_declined" | "invitation_withdrawn" | "invitation_expired" | "application_received" | "application_updated" | "microtask_submitted" | "microtask_graded";
+        NotificationKind: "invitation_received" | "invitation_accepted" | "invitation_declined" | "invitation_withdrawn" | "invitation_expired" | "application_received" | "application_updated" | "microtask_submitted" | "microtask_graded" | "company_restricted";
         /**
          * NotificationListRead
          * @description Последние уведомления и число непрочитанных.
@@ -3848,6 +4199,14 @@ export interface components {
          */
         ResponseFormat: "single_choice" | "numeric";
         /**
+         * RestrictRequest
+         * @description Ограничение компании на время проверки.
+         */
+        RestrictRequest: {
+            /** Reason */
+            reason: string;
+        };
+        /**
          * ResumeDraftRead
          * @description Результат автораспознавания резюме. Ничего не сохраняется, пока кандидат не подтвердит.
          */
@@ -3905,6 +4264,24 @@ export interface components {
             /** Evidence */
             evidence: string;
             skill: components["schemas"]["SkillRead"];
+        };
+        /**
+         * SalaryCheckRead
+         * @description Вилка относительно открытых ожиданий кандидатов той же категории.
+         */
+        SalaryCheckRead: {
+            /**
+             * Median
+             * @description Медиана ожиданий до вычета НДФЛ
+             */
+            median: number | null;
+            /** Message */
+            message: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "ok" | "below_market" | "suspicious" | "unknown";
         };
         /**
          * ScoreComponentRead
@@ -4472,6 +4849,13 @@ export interface components {
          */
         TrustLevel: "new" | "basic" | "verified";
         /**
+         * TrustLevelUpdate
+         * @description Смена уровня доверия: от него зависят квоты приглашений и вакансий.
+         */
+        TrustLevelUpdate: {
+            trust_level: components["schemas"]["TrustLevel"];
+        };
+        /**
          * UserRead
          * @description Публичные сведения о текущем пользователе.
          */
@@ -4637,6 +5021,7 @@ export interface components {
              * Format: uuid
              */
             id: string;
+            market_check: components["schemas"]["SalaryCheckRead"];
             /** Need Id */
             need_id: string | null;
             /** Published At */
@@ -7424,6 +7809,84 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    file_complaint_api_v1_complaints_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ComplaintCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ComplaintRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10488,6 +10951,418 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+        };
+    };
+    companies_api_v1_moderation_companies_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationCompanyRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    lift_api_v1_moderation_companies__company_id__lift_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                company_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationCompanyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    restrict_api_v1_moderation_companies__company_id__restrict_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                company_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RestrictRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationCompanyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    set_trust_api_v1_moderation_companies__company_id__trust_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                company_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TrustLevelUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationCompanyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    complaints_api_v1_moderation_complaints_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["ComplaintStatus"] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationComplaintRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    resolve_api_v1_moderation_complaints__complaint_id__resolve_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                complaint_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ComplaintResolve"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModerationComplaintRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };

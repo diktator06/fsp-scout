@@ -23,6 +23,7 @@ class NotificationKind(StrEnum):
     APPLICATION_UPDATED = "application_updated"
     MICROTASK_SUBMITTED = "microtask_submitted"
     MICROTASK_GRADED = "microtask_graded"
+    COMPANY_RESTRICTED = "company_restricted"
 
 
 class Notification(UUIDPrimaryKeyMixin, CreatedAtMixin, Base):

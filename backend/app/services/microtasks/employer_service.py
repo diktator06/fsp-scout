@@ -29,6 +29,7 @@ from app.services.employer.company_service import CompanyService
 from app.services.matching.candidate_pool import CandidatePoolService, members_by_id
 from app.services.microtasks.grading import ANSWER_CHOICE, ANSWER_NUMBER, rating_to_score
 from app.services.notifications import NotificationService
+from app.services.trust.guard import ensure_company_active
 
 
 def _now() -> datetime:
@@ -73,6 +74,7 @@ class EmployerTaskService:
     async def create(self, user: User, payload: MicroTaskCreate) -> MicroTaskRead:
         """Создаёт задачу; она сразу попадает в выдачу кандидатам специализации."""
         recruiter = await self._companies.require_recruiter(user)
+        ensure_company_active(recruiter.company)
         await self._validate(payload)
         task = await microtask_crud.create(
             self._session,

@@ -130,7 +130,10 @@ function InvitationView({ invitation }: { invitation: CandidateInvitation }) {
             )}
           </Stack>
         </Card>
-        <CompanyCard company={invitation.company} />
+        <CompanyCard
+          company={invitation.company}
+          complaint={{ targetType: 'invitation', targetId: invitation.id }}
+        />
       </SimpleGrid>
 
       {invitation.employer_contacts && (

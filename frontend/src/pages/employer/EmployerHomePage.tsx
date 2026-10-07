@@ -3,6 +3,7 @@ import { IconPlus, IconUsersGroup } from '@tabler/icons-react';
 import { Link } from 'react-router';
 import { useEmployerDashboard, useEmployerProfile, useNeeds } from '@/api/employer';
 import { CompanyGate } from '@/features/employer/CompanyGate';
+import { RestrictionBanner } from '@/features/trust/RestrictionBanner';
 import { INVITATION_STATUS_LABELS } from '@/shared/lib/invitationStatus';
 import { LoadingState, PageHeader } from '@/shared/ui';
 import { NeedCard } from './NeedsPage';
@@ -82,6 +83,7 @@ export function EmployerHomePage() {
           </Button>
         }
       />
+      <RestrictionBanner />
       <CompanyGate>
         <Dashboard />
       </CompanyGate>

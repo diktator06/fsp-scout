@@ -1731,6 +1731,11 @@
             "title": "Description",
             "type": "string"
           },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
           "industry": {
             "anyOf": [
               {
@@ -1746,6 +1751,16 @@
             "title": "Name",
             "type": "string"
           },
+          "reputation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CompanyReputationRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "size": {
             "anyOf": [
               {
@@ -1758,6 +1773,11 @@
           },
           "trust_level": {
             "$ref": "#/components/schemas/TrustLevel"
+          },
+          "under_review": {
+            "description": "Компания на проверке модератора после жалоб",
+            "title": "Under Review",
+            "type": "boolean"
           },
           "website": {
             "anyOf": [
@@ -1772,13 +1792,16 @@
           }
         },
         "required": [
+          "id",
           "name",
           "industry",
           "city",
           "website",
           "size",
           "description",
-          "trust_level"
+          "trust_level",
+          "under_review",
+          "reputation"
         ],
         "title": "CompanyBrief",
         "type": "object"
@@ -1869,6 +1892,22 @@
             "title": "Name",
             "type": "string"
           },
+          "restricted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Restricted At"
+          },
+          "restriction_reason": {
+            "title": "Restriction Reason",
+            "type": "string"
+          },
           "size": {
             "anyOf": [
               {
@@ -1907,9 +1946,62 @@
           "contact_phone",
           "contact_telegram",
           "trust_level",
+          "restricted_at",
+          "restriction_reason",
           "created_at"
         ],
         "title": "CompanyRead",
+        "type": "object"
+      },
+      "CompanyReputationRead": {
+        "description": "Репутация компании для кандидата: факты, а не непрозрачный балл.",
+        "properties": {
+          "acceptance_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Доля принятых приглашений из отвеченных",
+            "title": "Acceptance Rate"
+          },
+          "complaints_confirmed": {
+            "title": "Complaints Confirmed",
+            "type": "integer"
+          },
+          "on_platform_since": {
+            "format": "date-time",
+            "title": "On Platform Since",
+            "type": "string"
+          },
+          "response_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Доля откликов, на которые компания ответила",
+            "title": "Response Rate"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "response_rate",
+          "acceptance_rate",
+          "complaints_confirmed",
+          "on_platform_since",
+          "summary"
+        ],
+        "title": "CompanyReputationRead",
         "type": "object"
       },
       "CompanySize": {
@@ -2002,7 +2094,7 @@
               }
             ],
             "examples": [
-              "7701234567"
+              "7701234560"
             ],
             "title": "Inn"
           },
@@ -2094,6 +2186,141 @@
         ],
         "title": "CompetencyResult",
         "type": "object"
+      },
+      "ComplaintCreate": {
+        "description": "Жалоба кандидата на приглашение, вакансию или компанию.",
+        "properties": {
+          "comment": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Comment",
+            "type": "string"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/ComplaintReason"
+          },
+          "target_id": {
+            "format": "uuid",
+            "title": "Target Id",
+            "type": "string"
+          },
+          "target_type": {
+            "$ref": "#/components/schemas/ComplaintTarget"
+          }
+        },
+        "required": [
+          "target_type",
+          "target_id",
+          "reason"
+        ],
+        "title": "ComplaintCreate",
+        "type": "object"
+      },
+      "ComplaintRead": {
+        "description": "Жалоба глазами автора.",
+        "properties": {
+          "comment": {
+            "title": "Comment",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/ComplaintReason"
+          },
+          "resolution_note": {
+            "title": "Resolution Note",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComplaintStatus"
+          },
+          "target_id": {
+            "format": "uuid",
+            "title": "Target Id",
+            "type": "string"
+          },
+          "target_type": {
+            "$ref": "#/components/schemas/ComplaintTarget"
+          }
+        },
+        "required": [
+          "id",
+          "target_type",
+          "target_id",
+          "reason",
+          "comment",
+          "status",
+          "resolution_note",
+          "created_at"
+        ],
+        "title": "ComplaintRead",
+        "type": "object"
+      },
+      "ComplaintReason": {
+        "description": "Причина жалобы — типичные признаки фиктивной вакансии или недобросовестного работодателя.",
+        "enum": [
+          "fake_offer",
+          "salary_mismatch",
+          "payment_request",
+          "spam",
+          "rude",
+          "other"
+        ],
+        "title": "ComplaintReason",
+        "type": "string"
+      },
+      "ComplaintResolve": {
+        "description": "Решение модератора по жалобе.",
+        "properties": {
+          "note": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Note",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "confirmed",
+              "rejected"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "ComplaintResolve",
+        "type": "object"
+      },
+      "ComplaintStatus": {
+        "description": "Решение модератора по жалобе.",
+        "enum": [
+          "open",
+          "confirmed",
+          "rejected"
+        ],
+        "title": "ComplaintStatus",
+        "type": "string"
+      },
+      "ComplaintTarget": {
+        "description": "На что жалуется кандидат.",
+        "enum": [
+          "invitation",
+          "vacancy",
+          "company"
+        ],
+        "title": "ComplaintTarget",
+        "type": "string"
       },
       "ConsentsRead": {
         "description": "Состояние согласий кандидата.",
@@ -4508,6 +4735,213 @@
         "title": "MicroTasksSummary",
         "type": "object"
       },
+      "ModerationCompanyBrief": {
+        "description": "Компания в очереди модерации.",
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "inn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inn"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "restricted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Restricted At"
+          },
+          "restriction_reason": {
+            "title": "Restriction Reason",
+            "type": "string"
+          },
+          "trust_level": {
+            "$ref": "#/components/schemas/TrustLevel"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "inn",
+          "trust_level",
+          "restricted_at",
+          "restriction_reason"
+        ],
+        "title": "ModerationCompanyBrief",
+        "type": "object"
+      },
+      "ModerationCompanyRead": {
+        "description": "Компания с сигналами для модератора.",
+        "properties": {
+          "complaints_confirmed": {
+            "title": "Complaints Confirmed",
+            "type": "integer"
+          },
+          "complaints_open": {
+            "title": "Complaints Open",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "inn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inn"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "reputation": {
+            "$ref": "#/components/schemas/CompanyReputationRead"
+          },
+          "restricted_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Restricted At"
+          },
+          "restriction_reason": {
+            "title": "Restriction Reason",
+            "type": "string"
+          },
+          "suspicious_vacancies": {
+            "description": "Вакансии с вилкой в разы выше рынка",
+            "items": {
+              "type": "string"
+            },
+            "title": "Suspicious Vacancies",
+            "type": "array"
+          },
+          "trust_level": {
+            "$ref": "#/components/schemas/TrustLevel"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "inn",
+          "trust_level",
+          "restricted_at",
+          "restriction_reason",
+          "complaints_open",
+          "complaints_confirmed",
+          "reputation",
+          "suspicious_vacancies",
+          "created_at"
+        ],
+        "title": "ModerationCompanyRead",
+        "type": "object"
+      },
+      "ModerationComplaintRead": {
+        "description": "Жалоба для модератора: с компанией, объектом и автором под псевдонимом.",
+        "properties": {
+          "author_alias": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Author Alias"
+          },
+          "comment": {
+            "title": "Comment",
+            "type": "string"
+          },
+          "company": {
+            "$ref": "#/components/schemas/ModerationCompanyBrief"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/ComplaintReason"
+          },
+          "resolution_note": {
+            "title": "Resolution Note",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ComplaintStatus"
+          },
+          "target_id": {
+            "format": "uuid",
+            "title": "Target Id",
+            "type": "string"
+          },
+          "target_title": {
+            "title": "Target Title",
+            "type": "string"
+          },
+          "target_type": {
+            "$ref": "#/components/schemas/ComplaintTarget"
+          }
+        },
+        "required": [
+          "id",
+          "target_type",
+          "target_id",
+          "reason",
+          "comment",
+          "status",
+          "resolution_note",
+          "created_at",
+          "company",
+          "target_title",
+          "author_alias"
+        ],
+        "title": "ModerationComplaintRead",
+        "type": "object"
+      },
       "NeedCreate": {
         "description": "Потребность работодателя. Вилка обязательна.",
         "properties": {
@@ -4946,7 +5380,8 @@
           "application_received",
           "application_updated",
           "microtask_submitted",
-          "microtask_graded"
+          "microtask_graded",
+          "company_restricted"
         ],
         "title": "NotificationKind",
         "type": "string"
@@ -5271,6 +5706,22 @@
         "title": "ResponseFormat",
         "type": "string"
       },
+      "RestrictRequest": {
+        "description": "Ограничение компании на время проверки.",
+        "properties": {
+          "reason": {
+            "maxLength": 300,
+            "minLength": 5,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "RestrictRequest",
+        "type": "object"
+      },
       "ResumeDraftRead": {
         "description": "Результат автораспознавания резюме. Ничего не сохраняется, пока кандидат не подтвердит.",
         "properties": {
@@ -5496,6 +5947,44 @@
           "evidence"
         ],
         "title": "ResumeSkillDraft",
+        "type": "object"
+      },
+      "SalaryCheckRead": {
+        "description": "Вилка относительно открытых ожиданий кандидатов той же категории.",
+        "properties": {
+          "median": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Медиана ожиданий до вычета НДФЛ",
+            "title": "Median"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "below_market",
+              "suspicious",
+              "unknown"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "median",
+          "message"
+        ],
+        "title": "SalaryCheckRead",
         "type": "object"
       },
       "ScoreComponentRead": {
@@ -6857,6 +7346,19 @@
         "title": "TrustLevel",
         "type": "string"
       },
+      "TrustLevelUpdate": {
+        "description": "Смена уровня доверия: от него зависят квоты приглашений и вакансий.",
+        "properties": {
+          "trust_level": {
+            "$ref": "#/components/schemas/TrustLevel"
+          }
+        },
+        "required": [
+          "trust_level"
+        ],
+        "title": "TrustLevelUpdate",
+        "type": "object"
+      },
       "UserRead": {
         "description": "Публичные сведения о текущем пользователе.",
         "properties": {
@@ -7260,6 +7762,9 @@
             "title": "Id",
             "type": "string"
           },
+          "market_check": {
+            "$ref": "#/components/schemas/SalaryCheckRead"
+          },
           "need_id": {
             "anyOf": [
               {
@@ -7346,7 +7851,8 @@
           "updated_at",
           "applications_total",
           "applications_new",
-          "applications_by_status"
+          "applications_by_status",
+          "market_check"
         ],
         "title": "VacancyRead",
         "type": "object"
@@ -10920,6 +11426,103 @@
         "summary": "Ответить на задачу",
         "tags": [
           "candidate: tasks"
+        ]
+      }
+    },
+    "/api/v1/complaints": {
+      "post": {
+        "description": "Жалоба на приглашение, вакансию или компанию.\n\nТри жалобы разных кандидатов за 30 дней автоматически ставят компанию на проверку:\nприглашения, вакансии и задачи приостанавливаются до решения модератора.",
+        "operationId": "file_complaint_api_v1_complaints_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComplaintCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComplaintRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Пожаловаться на работодателя",
+        "tags": [
+          "trust"
         ]
       }
     },
@@ -15207,6 +15810,572 @@
         "summary": "Проверка работоспособности",
         "tags": [
           "system"
+        ]
+      }
+    },
+    "/api/v1/moderation/companies": {
+      "get": {
+        "description": "Ограниченные, с жалобами и с подозрительными вилками — выше.",
+        "operationId": "companies_api_v1_moderation_companies_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModerationCompanyRead"
+                  },
+                  "title": "Response Companies Api V1 Moderation Companies Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Компании с сигналами",
+        "tags": [
+          "moderation"
+        ]
+      }
+    },
+    "/api/v1/moderation/companies/{company_id}/lift": {
+      "post": {
+        "description": "Компания снова может приглашать и публиковать вакансии.",
+        "operationId": "lift_api_v1_moderation_companies__company_id__lift_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Company Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationCompanyRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Снять ограничение",
+        "tags": [
+          "moderation"
+        ]
+      }
+    },
+    "/api/v1/moderation/companies/{company_id}/restrict": {
+      "post": {
+        "description": "Приглашения, вакансии и задачи компании приостанавливаются.",
+        "operationId": "restrict_api_v1_moderation_companies__company_id__restrict_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Company Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestrictRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationCompanyRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Ограничить компанию",
+        "tags": [
+          "moderation"
+        ]
+      }
+    },
+    "/api/v1/moderation/companies/{company_id}/trust": {
+      "put": {
+        "description": "От уровня доверия зависят дневная квота приглашений и лимит вакансий.",
+        "operationId": "set_trust_api_v1_moderation_companies__company_id__trust_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "company_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Company Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrustLevelUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationCompanyRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Уровень доверия компании",
+        "tags": [
+          "moderation"
+        ]
+      }
+    },
+    "/api/v1/moderation/complaints": {
+      "get": {
+        "description": "Очередь жалоб: открытые выше.",
+        "operationId": "complaints_api_v1_moderation_complaints_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ComplaintStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ModerationComplaintRead"
+                  },
+                  "title": "Response Complaints Api V1 Moderation Complaints Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Жалобы кандидатов",
+        "tags": [
+          "moderation"
+        ]
+      }
+    },
+    "/api/v1/moderation/complaints/{complaint_id}/resolve": {
+      "post": {
+        "description": "Подтверждённая жалоба попадает в репутацию компании, отклонённая — нет.",
+        "operationId": "resolve_api_v1_moderation_complaints__complaint_id__resolve_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "complaint_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Complaint Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ComplaintResolve"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModerationComplaintRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Решение по жалобе",
+        "tags": [
+          "moderation"
         ]
       }
     },

@@ -1,13 +1,19 @@
 from app.models.employer import Company, Recruiter
 from app.schemas.invitation import CompanyBrief, EmployerContacts
+from app.schemas.trust import CompanyReputationRead
 
 
-def company_brief(company: Company) -> CompanyBrief:
+def company_brief(
+    company: Company, reputation: CompanyReputationRead | None = None
+) -> CompanyBrief:
     """Компания глазами кандидата: видна сразу, ещё до ответа на приглашение или отклика.
 
     Отрасль должна быть подгружена заранее: в асинхронной сессии ленивая загрузка запрещена.
+    Репутация и отметка «на проверке» помогают кандидату отличить добросовестного
+    работодателя.
     """
     return CompanyBrief(
+        id=company.id,
         name=company.name,
         industry=company.industry.name if company.industry else None,
         city=company.city,
@@ -15,6 +21,8 @@ def company_brief(company: Company) -> CompanyBrief:
         size=company.size,
         description=company.description,
         trust_level=company.trust_level,
+        under_review=company.restricted_at is not None,
+        reputation=reputation,
     )
 
 

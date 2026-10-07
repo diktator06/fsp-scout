@@ -193,3 +193,13 @@ class VacancyLimitExceededError(AppError):
     status_code = 429
     code = "vacancy_limit_exceeded"
     default_message = "Достигнут лимит опубликованных вакансий для вашего уровня доверия"
+
+
+class CompanyRestrictedError(PermissionDeniedError):
+    """Компания ограничена на время проверки: приглашения и публикации приостановлены."""
+
+    code = "company_restricted"
+    default_message = (
+        "Компания на проверке модератора после жалоб кандидатов: приглашения, вакансии "
+        "и задачи временно недоступны"
+    )

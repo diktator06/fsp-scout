@@ -50,6 +50,8 @@ from app.services.employer.company_views import employer_contacts as build_emplo
 from app.services.invitations.state_machine import Actor, ensure_transition
 from app.services.matching.candidate_pool import CandidatePoolService, members_by_id
 from app.services.notifications import NotificationService
+from app.services.trust.guard import ensure_company_active
+from app.services.trust.reputation import company_reputations
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +109,7 @@ class InvitationService:
         индекс в базе.
         """
         recruiter = await self._companies.require_recruiter(user)
+        ensure_company_active(recruiter.company)
         company_id = recruiter.company_id
         await self._expire_overdue(company_id=company_id)
         rows = await candidate_pool_crud.search(
@@ -519,6 +522,7 @@ class InvitationService:
             company = await company_crud.get_with_industry(self._session, company_id)
             if company is not None:
                 companies[company_id] = company
+        reputations = await company_reputations(self._session, list(companies.values()))
         recruiters: dict[uuid.UUID, Recruiter] = {}
         for sender_id in {
             invitation.sender_user_id for invitation in invitations if invitation.sender_user_id
@@ -539,7 +543,7 @@ class InvitationService:
                 CandidateInvitationRead(
                     **self._base_fields(invitation),
                     events=self._events(events.get(invitation.id, []), profile.user_id),
-                    company=company_brief(company),
+                    company=company_brief(company, reputations.get(company.id)),
                     recruiter_name=recruiter.full_name if recruiter else None,
                     employer_contacts=employer_contacts,
                 )

@@ -13,7 +13,7 @@ from tests.helpers import auth_headers
 UserFactory = Callable[..., Awaitable[User]]
 COMPANY = {
     "name": "Кедр Технологии",
-    "inn": "7701234567",
+    "inn": "7701234560",
     "website": "kedr.example",
     "description": "Платёжный шлюз для малого бизнеса",
     "size": "medium",

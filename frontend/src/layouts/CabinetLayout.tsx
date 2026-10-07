@@ -71,6 +71,7 @@ const NAVIGATION: Record<UserRole, NavItem[]> = {
   ],
   methodist: [
     { to: '/m', label: 'Справочники', icon: IconBook2 },
+    { to: '/m/moderation', label: 'Модерация', icon: IconShieldCheck },
     { to: '/m/item-bank', label: 'Банк заданий', icon: IconChecklist, soon: true },
     { to: '/m/settings', label: 'Настройки оценки', icon: IconSettings, soon: true },
   ],

@@ -313,6 +313,13 @@ export const router = createBrowserRouter([
           (module) => module.MethodistHomePage,
         ),
       },
+      {
+        path: 'moderation',
+        lazy: page(
+          () => import('@/pages/methodist/ModerationPage'),
+          (module) => module.ModerationPage,
+        ),
+      },
     ],
   },
 ]);

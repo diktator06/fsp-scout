@@ -38,6 +38,8 @@ from app.services.matching.candidate_pool import CandidatePoolService, members_b
 from app.services.matching.cards import build_card
 from app.services.matching.engine import MatchingEngine
 from app.services.notifications import NotificationService
+from app.services.trust.guard import ensure_company_active
+from app.services.trust.market import MarketSalaryChecker
 from app.services.vacancies.limits import published_vacancy_limit
 from app.services.vacancies.state_machine import ApplicationActor, ensure_transition
 from app.services.vacancies.views import application_events, vacancy_fields
@@ -72,6 +74,7 @@ class VacancyService:
         self._pool = CandidatePoolService(session, clock)
         self._contacts = ContactAccessPolicy(session)
         self._notifications = NotificationService(session, clock)
+        self._market = MarketSalaryChecker(self._pool)
 
     async def list_for_company(self, user: User) -> list[VacancyRead]:
         """Вакансии компании с воронкой откликов."""
@@ -100,6 +103,7 @@ class VacancyService:
             self._session, vacancy.id, [(item.skill_id, item.importance) for item in payload.skills]
         )
         if publish:
+            ensure_company_active(recruiter.company)
             await self._publish(vacancy, recruiter.company.trust_level)
         await self._session.commit()
         return (await self._views([vacancy]))[0]
@@ -126,6 +130,7 @@ class VacancyService:
         vacancy = await self._own(user, vacancy_id, for_update=True)
         if vacancy.status is VacancyStatus.PUBLISHED:
             return (await self._views([vacancy]))[0]
+        ensure_company_active(recruiter.company)
         await self._publish(vacancy, recruiter.company.trust_level)
         await self._session.commit()
         return (await self._views([vacancy]))[0]
@@ -304,6 +309,7 @@ class VacancyService:
                     applications_total=sum(by_status.values()),
                     applications_new=by_status.get(ApplicationStatus.SUBMITTED, 0),
                     applications_by_status=by_status,
+                    market_check=await self._market.check(vacancy),
                 )
             )
         return result
