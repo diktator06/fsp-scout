@@ -23,7 +23,8 @@ x-backend-environment: &backend-environment
   DEMO_FSP_LINK_SHARE: ${DEMO_FSP_LINK_SHARE:-0.4}
   FSP_ENABLED: ${FSP_ENABLED:-true}
   FSP_OIDC_ISSUER: ${FSP_PUBLIC_URL:-http://localhost:8090}
-  FSP_INTERNAL_URL: ${FSP_INTERNAL_URL:-http://fsp-registry-mock:8090}
+  FSP_INTERNAL_URL: ${FSP_INTERNAL_URL-http://fsp-registry-mock:8090}
+  FSP_REGISTRY_URL: ${FSP_REGISTRY_URL:-}
   FSP_CLIENT_ID: ${FSP_CLIENT_ID:-fsp-scout}
   FSP_CLIENT_SECRET: ${FSP_CLIENT_SECRET:-dev-only-fsp-client-secret}
 
