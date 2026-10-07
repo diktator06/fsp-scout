@@ -1,0 +1,145 @@
+# Синтетическая популяция для демо-стенда. Все люди и компании вымышлены.
+# Кандидаты проходят тест настоящим сервисом оценки: ответы генерирует модель IRT
+# по «истинной» способности, поэтому категории и индексы получаются как у живых людей.
+
+grade_shares: {intern: 0.12, junior: 0.28, middle: 0.38, senior: 0.22}
+
+# Сколько кандидатов на специализацию относительно DEMO_POPULATION_PER_SPECIALIZATION.
+population_shares: {backend: 1.7, frontend: 1.4, data_analytics: 1.0, ml: 0.9, qa: 0.9, devops: 0.9, mobile: 0.7}
+
+experience_years:
+  intern: [0, 0.5]
+  junior: [0.5, 2]
+  middle: [2, 4.5]
+  senior: [4.5, 10]
+
+# Ожидания до вычета НДФЛ, тысячи рублей: [от, до] по грейдам.
+salary_bands:
+  intern: [50, 90]
+  junior: [100, 170]
+  middle: [190, 300]
+  senior: [320, 480]
+
+salary_premium:
+  ml: 1.15
+  devops: 1.1
+  backend: 1.05
+  mobile: 1.05
+  frontend: 1.0
+  data_analytics: 0.95
+  qa: 0.85
+
+cities: [[Москва, 0.34], [Санкт-Петербург, 0.16], [Казань, 0.1], [Новосибирск, 0.07], [Екатеринбург, 0.07], [Нижний Новгород, 0.06], [Иннополис, 0.05], [Томск, 0.05], [Краснодар, 0.05], [Самара, 0.05]]
+
+first_names:
+  male: [Алексей, Артём, Дмитрий, Иван, Кирилл, Максим, Никита, Павел, Роман, Сергей, Тимур, Егор, Глеб, Арсений, Марат]
+  female: [Анна, Алина, Валерия, Дарья, Екатерина, Елизавета, Ксения, Мария, Полина, София, Юлия, Вероника, Диана, Камила, Ольга]
+last_names:
+  - [Иванов, Иванова]
+  - [Смирнов, Смирнова]
+  - [Кузнецов, Кузнецова]
+  - [Попов, Попова]
+  - [Волков, Волкова]
+  - [Соколов, Соколова]
+  - [Лебедев, Лебедева]
+  - [Новиков, Новикова]
+  - [Морозов, Морозова]
+  - [Захаров, Захарова]
+  - [Гарипов, Гарипова]
+  - [Хабибуллин, Хабибуллина]
+  - [Ким, Ким]
+  - [Орлов, Орлова]
+  - [Белов, Белова]
+  - [Фролов, Фролова]
+
+companies: [Северный код, Облако Плюс, Ритейл Лаб, Гео Системы, Логистика 360, МедДата, Эдтех Студия, Телеком Сервис, Пиксель Геймс, Банк «Восход», Маркетплейс «Ярмарка», Агро Цифра, Город Онлайн, Энерго Софт]
+
+domains:
+  - {key: payments, text: платёжных сервисов и биллинга, words: "платежи, эквайринг, биллинг, транзакции"}
+  - {key: marketplace, text: маркетплейса, words: "каталог, корзина, заказы, рекомендации"}
+  - {key: logistics, text: логистической платформы, words: "доставка, маршруты, склады, геоданные"}
+  - {key: health, text: медицинской информационной системы, words: "электронная медкарта, запись к врачу, интеграции с клиниками"}
+  - {key: edtech, text: онлайн-школы, words: "курсы, проверка заданий, личный кабинет студента"}
+  - {key: games, text: игрового сервиса, words: "матчмейкинг, внутриигровые покупки, лидерборды"}
+  - {key: gov, text: государственных сервисов, words: "госуслуги, документооборот, высокая нагрузка"}
+  - {key: telecom, text: телеком-оператора, words: "абонентская база, тарифы, сетевой мониторинг"}
+
+positions:
+  backend: [Backend-разработчик, Python-разработчик, Java-разработчик, Go-разработчик]
+  frontend: [Frontend-разработчик, Веб-разработчик, React-разработчик]
+  data_analytics: [Аналитик данных, Продуктовый аналитик, BI-аналитик]
+  ml: [ML-инженер, Data Scientist, Исследователь данных]
+  qa: [QA-инженер, Тестировщик, Инженер по автоматизации тестирования]
+  devops: [DevOps-инженер, SRE-инженер, Инженер инфраструктуры]
+  mobile: [iOS-разработчик, Android-разработчик, Мобильный разработчик]
+
+# Стек: core берётся целиком, из optional — случайная часть.
+stacks:
+  backend:
+    - {core: [python, django, postgresql, sql, git], optional: [redis, celery, docker, rest-api, linux, pytest, rabbitmq, asyncio]}
+    - {core: [python, fastapi, postgresql, sql, git], optional: [asyncio, redis, docker, kafka, sqlalchemy, kubernetes, pytest, grpc]}
+    - {core: [java, spring, postgresql, sql, git], optional: [hibernate, kafka, docker, microservices, redis, junit, kubernetes]}
+    - {core: [go, postgresql, sql, git], optional: [grpc, kafka, docker, kubernetes, redis, microservices, clickhouse]}
+    - {core: [typescript, nodejs, nestjs, postgresql], optional: [mongodb, redis, docker, graphql, rest-api, rabbitmq]}
+  frontend:
+    - {core: [javascript, typescript, react, html, css], optional: [redux, nextjs, webpack, vite, jest, storybook, tailwind, figma, accessibility]}
+    - {core: [javascript, typescript, vue, html, css], optional: [nuxt, vite, sass, jest, figma, web-performance]}
+    - {core: [javascript, typescript, angular, html, css], optional: [webpack, sass, jest, rest-api, figma]}
+  data_analytics:
+    - {core: [sql, python, pandas, statistics], optional: [ab-testing, product-metrics, clickhouse, datalens, superset, tableau, excel, airflow, data-visualization]}
+    - {core: [sql, excel, power-bi, statistics], optional: [python, product-metrics, postgresql, data-visualization, tableau]}
+  ml:
+    - {core: [python, pandas, numpy, scikit-learn, machine-learning], optional: [pytorch, catboost, deep-learning, sql, mlops, airflow, docker, statistics]}
+    - {core: [python, pytorch, deep-learning, machine-learning], optional: [nlp, llm, computer-vision, mlops, docker, numpy, tensorflow]}
+  qa:
+    - {core: [manual-testing, test-design, api-testing, postman, sql], optional: [test-documentation, allure, jmeter, load-testing, python]}
+    - {core: [python, pytest, test-design, api-testing, sql], optional: [selenium, playwright, allure, docker, gitlab-ci, load-testing]}
+    - {core: [java, junit, selenium, test-design], optional: [api-testing, allure, jenkins, sql, appium]}
+  devops:
+    - {core: [linux, bash, docker, kubernetes, git], optional: [helm, terraform, ansible, gitlab-ci, prometheus, grafana, nginx, yandex-cloud, python, argocd]}
+    - {core: [linux, docker, ansible, nginx, bash], optional: [jenkins, prometheus, grafana, elk, postgresql, python, aws]}
+  mobile:
+    - {core: [swift, ios-sdk, swiftui, git], optional: [rest-api, coroutines, figma, ci-cd]}
+    - {core: [kotlin, android-sdk, jetpack-compose, coroutines, git], optional: [rest-api, java, ci-cd, figma]}
+    - {core: [dart, flutter, git], optional: [rest-api, figma, ci-cd]}
+
+about_templates:
+  - "Работаю над {domain}: {words}. Основной стек — {stack}. Люблю понятный код, ревью и тесты."
+  - "Последние годы занимаюсь {domain}. Отвечаю за свою часть продукта от постановки до продакшена: {words}. Стек: {stack}."
+  - "Интересны задачи {domain}: {words}. Пишу на {stack}, умею разбираться в чужом коде и договариваться с командой."
+
+demo_company:
+  name: Кедр Технологии
+  industry: fintech
+  size: medium
+  city: Москва
+  website: kedr.example
+  description: "Финтех-компания: платёжный шлюз для малого бизнеса и сервис аналитики продаж. Команда — 120 человек, из них 70 в разработке."
+  contact_email: hr@kedr.example
+  contact_telegram: "@kedr_hr"
+  recruiter: {full_name: Мария Соколова, position: HR-партнёр по разработке}
+  needs:
+    - title: Python-разработчик в команду платежей
+      specialization: backend
+      grades: [middle]
+      salary: [230000, 320000]
+      work_formats: [remote, hybrid]
+      city: Москва
+      team_description: "Развиваем платёжный шлюз: эквайринг, биллинг, сверки с банками. Высокая нагрузка, микросервисы на Python и FastAPI, очереди Kafka."
+      raw_text: |
+        Python-разработчик (Middle) в команду платежей
+        Требования: Python, FastAPI, PostgreSQL, опыт от 2 лет.
+        Будет плюсом: Kafka, Docker, Kubernetes.
+        Удалённо или гибрид, вилка 230–320 тыс. ₽ до вычета НДФЛ.
+      skills: {must: [python, fastapi, postgresql], nice: [kafka, docker, kubernetes]}
+    - title: Frontend-разработчик в личный кабинет
+      specialization: frontend
+      grades: [junior, middle]
+      salary: [150000, 240000]
+      work_formats: [hybrid]
+      city: Москва
+      team_description: "Делаем личный кабинет продавца: дашборды продаж, выгрузки, настройки оплаты. React, TypeScript, дизайн-система."
+      raw_text: |
+        Frontend-разработчик в личный кабинет продавца
+        Ищем: React, TypeScript, CSS. Желательно: Redux, Jest, Storybook.
+      skills: {must: [react, typescript, css], nice: [redux, jest, storybook]}

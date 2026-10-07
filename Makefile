@@ -75,8 +75,8 @@ migrate: ## Применить миграции к локальной БД
 revision: ## Новая миграция: make revision m="описание"
 	$(BACKEND) uv run alembic revision --autogenerate -m "$(m)"
 
-seed: ## Наполнить справочники и демо-аккаунты
-	$(BACKEND) uv run python -m app.seed
+seed: ## Наполнить справочники, демо-аккаунты и демо-популяцию
+	$(BACKEND) uv run python -m app.seed && uv run python -m app.seed.population
 
 openapi: ## Выгрузить OpenAPI и перегенерировать типы фронтенда
 	$(BACKEND) uv run python -m scripts.export_openapi

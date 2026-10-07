@@ -18,8 +18,8 @@ async def main() -> None:
         if settings.seed_demo_users:
             await seed_demo_accounts(session, settings, report)
         await session.commit()
-    await engine.dispose()
     logger.info("Сидирование завершено: %s", report.summary() or "изменений нет")
+    await engine.dispose()
 
 
 if __name__ == "__main__":

@@ -60,6 +60,7 @@ services:
     build:
       context: ./backend
     restart: unless-stopped
+    init: true
     environment: *backend-environment
     depends_on:
       db:

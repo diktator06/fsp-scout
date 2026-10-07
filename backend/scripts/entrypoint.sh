@@ -8,6 +8,9 @@ alembic upgrade head
 echo "Наполняю справочники…"
 python -m app.seed
 
+echo "Создаю демо-популяцию (кандидаты проходят тест настоящим сервисом оценки)…"
+python -m app.seed.population
+
 echo "Запускаю API на :8000"
 exec uvicorn app.main:app \
   --host 0.0.0.0 \
