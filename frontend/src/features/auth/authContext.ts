@@ -9,6 +9,7 @@ export interface AuthContextValue {
   login: (email: string, password: string) => Promise<CurrentUser>;
   register: (payload: RegisterRequest) => Promise<RegisterResponse>;
   verifyEmail: (token: string) => Promise<CurrentUser>;
+  loginWithFsp: (code: string, state: string) => Promise<CurrentUser>;
   resendVerification: (email: string) => Promise<void>;
   logout: () => Promise<void>;
 }

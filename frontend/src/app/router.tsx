@@ -5,6 +5,7 @@ import { AuthLayout } from '@/layouts/AuthLayout';
 import { CabinetLayout } from '@/layouts/CabinetLayout';
 import { PublicLayout } from '@/layouts/PublicLayout';
 import { CheckEmailPage } from '@/pages/auth/CheckEmailPage';
+import { FspLoginCallbackPage } from '@/pages/auth/FspLoginCallbackPage';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { VerifyEmailPage } from '@/pages/auth/VerifyEmailPage';
@@ -59,6 +60,7 @@ export const router = createBrowserRouter([
       },
       { path: 'check-email', element: <CheckEmailPage /> },
       { path: 'verify', element: <VerifyEmailPage /> },
+      { path: 'fsp/callback', element: <FspLoginCallbackPage /> },
     ],
   },
   {
@@ -103,6 +105,20 @@ export const router = createBrowserRouter([
         lazy: page(
           () => import('@/pages/candidate/AssessmentSessionPage'),
           (module) => module.AssessmentSessionPage,
+        ),
+      },
+      {
+        path: 'fsp',
+        lazy: page(
+          () => import('@/pages/candidate/FspPage'),
+          (module) => module.FspPage,
+        ),
+      },
+      {
+        path: 'fsp/callback',
+        lazy: page(
+          () => import('@/pages/candidate/FspCallbackPage'),
+          (module) => module.FspCallbackPage,
         ),
       },
       {

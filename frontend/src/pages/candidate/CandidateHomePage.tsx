@@ -16,9 +16,11 @@ import {
   IconLock,
   IconMail,
   IconTargetArrow,
+  IconTrophy,
 } from '@tabler/icons-react';
 import { Link } from 'react-router';
 import { useCandidateStatus } from '@/api/candidate';
+import { useFspProfile } from '@/api/fsp';
 import { useCandidateInvitations } from '@/api/invitations';
 import { errorMessage } from '@/api/errors';
 import type { CandidateStatus } from '@/api/types';
@@ -132,6 +134,45 @@ function InvitationsTeaser() {
         </Group>
         <Button component={Link} to="/c/invitations" rightSection={<IconArrowRight size={16} />}>
           Открыть
+        </Button>
+      </Group>
+    </Card>
+  );
+}
+
+function FspTeaser() {
+  // Короткая сводка ФСП: что привязано и сколько это даёт индексу, или приглашение
+  // привязать ФСП ID. Отсутствие привязки подаётся как возможность, а не как недостача.
+  const fsp = useFspProfile();
+  if (!fsp.data?.enabled) return null;
+  const data = fsp.data;
+  const linked = data.state !== 'not_linked';
+  const text = !linked
+    ? 'Привяжите ФСП ID — подтверждённые участия в соревнованиях добавят до 15 баллов к индексу.'
+    : data.state === 'linked'
+      ? `${data.score.summary}. Вклад в индекс: +${data.score.vps_points.toLocaleString('ru-RU')} из 15.`
+      : 'ФСП ID привязан, участий в реестре пока нет. Индекс строится по тесту и профилю.';
+  return (
+    <Card mt="lg">
+      <Group justify="space-between" wrap="wrap" gap="md">
+        <Group gap="sm" wrap="nowrap" style={{ flex: '1 1 320px' }}>
+          <ThemeIcon color={linked ? 'teal' : 'fsp'} variant="light" radius="md" size={36}>
+            <IconTrophy size={20} />
+          </ThemeIcon>
+          <div>
+            <Title order={4}>Достижения ФСП</Title>
+            <Text size="sm" c="dimmed">
+              {text}
+            </Text>
+          </div>
+        </Group>
+        <Button
+          component={Link}
+          to="/c/fsp"
+          variant={linked ? 'light' : 'filled'}
+          rightSection={<IconArrowRight size={16} />}
+        >
+          {linked ? 'Открыть' : 'Привязать ФСП ID'}
         </Button>
       </Group>
     </Card>
@@ -291,6 +332,7 @@ export function CandidateHomePage() {
           </Stack>
         </Card>
       </SimpleGrid>
+      <FspTeaser />
     </>
   );
 }

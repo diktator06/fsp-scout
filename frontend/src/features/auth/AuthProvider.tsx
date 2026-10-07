@@ -41,6 +41,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return session.user;
   }, []);
 
+  const loginWithFsp = useCallback(async (code: string, state: string) => {
+    const session = await unwrap(api.POST('/api/v1/auth/fsp/callback', { body: { code, state } }));
+    applySession(session);
+    return session.user;
+  }, []);
+
   const resendVerification = useCallback(async (email: string) => {
     await unwrap(api.POST('/api/v1/auth/resend-verification', { body: { email } }));
   }, []);
@@ -58,8 +64,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [queryClient]);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ status, user, login, register, verifyEmail, resendVerification, logout }),
-    [status, user, login, register, verifyEmail, resendVerification, logout],
+    () => ({
+      status,
+      user,
+      login,
+      register,
+      verifyEmail,
+      loginWithFsp,
+      resendVerification,
+      logout,
+    }),
+    [status, user, login, register, verifyEmail, loginWithFsp, resendVerification, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

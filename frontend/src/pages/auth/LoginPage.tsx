@@ -13,10 +13,11 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { IconAlertCircle, IconMailForward } from '@tabler/icons-react';
+import { IconAlertCircle, IconId, IconMailForward } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { ApiError, errorMessage } from '@/api/errors';
+import { startFspLogin } from '@/api/fsp';
 import { safeNextPath } from '@/features/auth/roles';
 import { useAuth } from '@/features/auth/useAuth';
 import { DEMO_ACCOUNTS, DEMO_PASSWORD, env } from '@/shared/config/env';
@@ -32,6 +33,22 @@ export function LoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [failure, setFailure] = useState<ApiError | null>(null);
+  const [fspStarting, setFspStarting] = useState(false);
+
+  const handleFspLogin = async () => {
+    // Вход через ФСП ID работает для аккаунтов, к которым ФСП ID уже привязан.
+    // Браузер уходит на страницу провайдера и возвращается на /auth/fsp/callback.
+    setFailure(null);
+    setFspStarting(true);
+    try {
+      window.location.assign(await startFspLogin());
+    } catch (error) {
+      setFspStarting(false);
+      setFailure(
+        error instanceof ApiError ? error : new ApiError(0, 'unknown', errorMessage(error)),
+      );
+    }
+  };
 
   const form = useForm<LoginValues>({
     initialValues: { email: '', password: '' },
@@ -105,6 +122,20 @@ export function LoginPage() {
           <Button type="submit" size="md" loading={form.submitting} fullWidth mt="xs">
             Войти
           </Button>
+          <Divider label="или" labelPosition="center" />
+          <Button
+            variant="default"
+            size="md"
+            fullWidth
+            leftSection={<IconId size={18} />}
+            loading={fspStarting}
+            onClick={() => void handleFspLogin()}
+          >
+            Войти через ФСП ID
+          </Button>
+          <Text size="xs" c="dimmed" ta="center" mt={-6}>
+            Для аккаунтов, к которым привязан ФСП ID участника соревнований
+          </Text>
         </Stack>
       </form>
 
