@@ -23,6 +23,7 @@ def _summary(participant: dict[str, Any]) -> dict[str, Any]:
         "events": len(achievements),
         "results": sum(1 for item in achievements if item["result_status"] in {"winner", "prize"}),
         "finals": sum(1 for item in achievements if item["result_status"] == "finalist"),
+        "demo_persona": bool(participant.get("persona")),
     }
 
 

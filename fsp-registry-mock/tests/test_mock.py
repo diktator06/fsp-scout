@@ -169,6 +169,9 @@ async def test_service_access_to_registry(client: httpx.AsyncClient) -> None:
     listing = (await client.get("/participants", params={"limit": 500}, headers=headers)).json()
     assert listing["total"] == len(listing["items"]) > 100
     assert any(item["events"] == 0 for item in listing["items"])
+    personas = [item for item in listing["items"] if item["demo_persona"]]
+    assert len(personas) == 4
+    assert {item["events"] == 0 for item in personas} == {True, False}
     detail = await client.get(
         f"/participants/{listing['items'][0]['id']}/achievements", headers=headers
     )

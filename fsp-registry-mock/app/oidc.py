@@ -58,29 +58,11 @@ def _client_credentials(
 
 
 def _featured(registry: Registry) -> list[dict[str, Any]]:
-    """Участники для быстрого входа на демо-странице: богатая история, средняя и пустая."""
-
-    def results(item: dict[str, Any]) -> int:
-        """Сколько у участника побед и призовых мест."""
-        return sum(1 for a in item["achievements"] if a["result_status"] in {"winner", "prize"})
-
-    ranked = sorted(
-        registry.participants, key=lambda item: (results(item), len(item["achievements"]))
-    )
-    rich = ranked[-1]
-    middle = next(item for item in ranked if len(item["achievements"]) >= 3 and results(item) == 1)
-    empty = next(item for item in ranked if not item["achievements"])
-    newcomer = next(
-        item for item in ranked if len(item["achievements"]) == 1 and results(item) == 0
-    )
+    """Демо-персоны для быстрого входа: их не занимает демо-сид бэкенда."""
+    personas = [item for item in registry.participants if item.get("persona")]
     return [
-        {
-            **rich,
-            "hint": f"{len(rich['achievements'])} соревнований, побед и призов: {results(rich)}",
-        },
-        {**middle, "hint": f"{len(middle['achievements'])} соревнования, одно призовое место"},
-        {**newcomer, "hint": "одно участие без призового места"},
-        {**empty, "hint": "ФСП ID есть, участий пока нет"},
+        {**item, "hint": item["persona"]["hint"]}
+        for item in sorted(personas, key=lambda item: item["persona"]["rank"])
     ]
 
 

@@ -427,7 +427,11 @@
   "full_name": "Ксения Гарипова",
   "region": "Томская область",
   "sport_rank": null,
-  "achievements": []
+  "achievements": [],
+  "persona": {
+   "rank": 4,
+   "hint": "ФСП ID есть, участий пока нет"
+  }
  },
  {
   "id": "fsp-000008",
@@ -663,7 +667,11 @@
     "rating_points": 41.7,
     "protocol_url": "https://fsp-registry.example/protocols/EV-2025-062"
    }
-  ]
+  ],
+  "persona": {
+   "rank": 3,
+   "hint": "одно участие без призового места"
+  }
  },
  {
   "id": "fsp-000013",
@@ -1320,7 +1328,11 @@
     "rating_points": 100.0,
     "protocol_url": "https://fsp-registry.example/protocols/EV-2022-051"
    }
-  ]
+  ],
+  "persona": {
+   "rank": 1,
+   "hint": "7 соревнований, побед и призов: 6"
+  }
  },
  {
   "id": "fsp-000022",
@@ -1654,7 +1666,11 @@
     "rating_points": 81.0,
     "protocol_url": "https://fsp-registry.example/protocols/EV-2022-035"
    }
-  ]
+  ],
+  "persona": {
+   "rank": 2,
+   "hint": "3 соревнования, одно призовое место"
+  }
  },
  {
   "id": "fsp-000031",

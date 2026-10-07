@@ -4,11 +4,12 @@ from datetime import datetime
 from typing import Any
 
 from sqlalchemy import delete, select
-from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.dialects.postgresql import distinct_on, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.crud.base import CRUDBase
+from app.models.assessment import AssessmentSession, SessionStatus
 from app.models.candidate import (
     CandidateProfile,
     CandidateSkill,
@@ -18,6 +19,7 @@ from app.models.candidate import (
     WorkExperience,
 )
 from app.models.dictionary import Category, Skill
+from app.models.user import User
 
 
 class CandidateProfileCRUD(CRUDBase[CandidateProfile]):
@@ -44,6 +46,29 @@ class CandidateProfileCRUD(CRUDBase[CandidateProfile]):
         if for_update:
             statement = statement.with_for_update(of=CandidateProfile)
         return await session.scalar(statement)
+
+    async def list_with_theta_by_email_prefix(
+        self, session: AsyncSession, prefix: str
+    ) -> list[tuple[CandidateProfile, User, float | None]]:
+        """Профили и владельцы по префиксу email вместе с θ последнего завершённого теста."""
+        latest = (
+            select(AssessmentSession.candidate_id, AssessmentSession.theta)
+            .where(AssessmentSession.status == SessionStatus.COMPLETED)
+            .order_by(AssessmentSession.candidate_id, AssessmentSession.finished_at.desc())
+            .ext(distinct_on(AssessmentSession.candidate_id))
+            .subquery()
+        )
+        result = await session.execute(
+            select(CandidateProfile, User, latest.c.theta)
+            .join(User, User.id == CandidateProfile.user_id)
+            .outerjoin(latest, latest.c.candidate_id == CandidateProfile.id)
+            .where(User.email.startswith(prefix, autoescape=True))
+            .order_by(User.email)
+        )
+        return [
+            (profile, user, float(theta) if theta is not None else None)
+            for profile, user, theta in result.all()
+        ]
 
     async def alias_taken(self, session: AsyncSession, alias: str) -> bool:
         """Занят ли публичный псевдоним."""

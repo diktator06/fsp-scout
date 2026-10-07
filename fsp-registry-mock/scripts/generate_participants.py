@@ -162,9 +162,39 @@ def build() -> list[dict[str, Any]]:
     return participants
 
 
+def _medals(item: dict[str, Any]) -> int:
+    """Сколько у участника побед и призовых мест."""
+    return sum(1 for a in item["achievements"] if a["result_status"] in {"winner", "prize"})
+
+
+def mark_personas(participants: list[dict[str, Any]]) -> None:
+    """Отмечает демо-персоны для страницы входа: богатая история, средняя, одно участие, пустая.
+
+    Демо-сид бэкенда не привязывает персоны к синтетическим кандидатам, поэтому
+    любой из них можно привязать к демо-аккаунту прямо на показе.
+    """
+    ranked = sorted(participants, key=lambda item: (_medals(item), len(item["achievements"])))
+    rich = ranked[-1]
+    middle = next(i for i in ranked if len(i["achievements"]) >= 3 and _medals(i) == 1)
+    newcomer = next(i for i in ranked if len(i["achievements"]) == 1 and _medals(i) == 0)
+    empty = next(i for i in ranked if not i["achievements"])
+    hints = [
+        (rich, f"{len(rich['achievements'])} соревнований, побед и призов: {_medals(rich)}"),
+        (middle, f"{len(middle['achievements'])} соревнования, одно призовое место"),
+        (newcomer, "одно участие без призового места"),
+        (empty, "ФСП ID есть, участий пока нет"),
+    ]
+    for rank, (person, hint) in enumerate(hints, start=1):
+        person["persona"] = {"rank": rank, "hint": hint}
+
+
 def main() -> None:
     """Пишет participants.json. Сид фиксирован, поэтому файл воспроизводим."""
-    OUTPUT.write_text(json.dumps(build(), ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    participants = build()
+    mark_personas(participants)
+    OUTPUT.write_text(
+        json.dumps(participants, ensure_ascii=False, indent=1) + "\n", encoding="utf-8"
+    )
     print(f"Участников: {PARTICIPANTS}, файл: {OUTPUT}")
 
 
