@@ -4,6 +4,7 @@ from app.api.deps import (
     AuthServiceDep,
     ClientContextDep,
     CurrentUser,
+    FspLoginServiceDep,
     SettingsDep,
 )
 from app.api.errors import error_responses
@@ -19,6 +20,7 @@ from app.schemas.auth import (
     VerifyEmailRequest,
 )
 from app.schemas.common import MessageResponse
+from app.schemas.fsp import FspAuthorizationRead, FspCallback
 from app.schemas.user import UserRead
 from app.services.auth.auth_service import AuthenticatedSession
 
@@ -153,6 +155,38 @@ async def login(
 ) -> TokenResponse:
     """Возвращает access-токен в теле и ставит refresh-токен в httpOnly-cookie."""
     auth = await service.login(payload, client)
+    _set_refresh_cookie(response, auth, settings)
+    return _token_response(auth)
+
+
+@router.post(
+    "/fsp/start",
+    response_model=FspAuthorizationRead,
+    responses=error_responses(404, 429, 503),
+    dependencies=[Depends(login_limiter)],
+    summary="Вход через ФСП ID: начало",
+)
+async def fsp_login_start(service: FspLoginServiceDep) -> FspAuthorizationRead:
+    """Адрес страницы входа ФСП ID. Работает для аккаунтов, к которым ФСП ID уже привязан."""
+    return await service.start()
+
+
+@router.post(
+    "/fsp/callback",
+    response_model=TokenResponse,
+    responses=error_responses(400, 403, 409, 422, 429, 503),
+    dependencies=[Depends(login_limiter)],
+    summary="Вход через ФСП ID: завершение",
+)
+async def fsp_login_callback(
+    payload: FspCallback,
+    response: Response,
+    service: FspLoginServiceDep,
+    client: ClientContextDep,
+    settings: SettingsDep,
+) -> TokenResponse:
+    """Проверяет ответ ФСП ID и открывает сессию так же, как вход по паролю."""
+    auth = await service.complete(payload, client)
     _set_refresh_cookie(response, auth, settings)
     return _token_response(auth)
 

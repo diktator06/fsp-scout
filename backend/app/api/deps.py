@@ -1,5 +1,6 @@
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Annotated
 
 from fastapi import Depends, Query, Request
@@ -10,6 +11,7 @@ from app.api.rate_limit import client_ip
 from app.core.config import Settings, get_settings
 from app.core.exceptions import AuthenticationError
 from app.db.session import get_session
+from app.integrations.fsp_gateway import FspGateway, build_fsp_gateway
 from app.integrations.mailer import Mailer, build_mailer
 from app.models.user import User, UserRole
 from app.services.assessment.assessment_service import AssessmentService
@@ -19,6 +21,8 @@ from app.services.auth.tokens import ClientContext
 from app.services.candidate.profile_service import CandidateProfileService
 from app.services.dictionary_service import DictionaryService
 from app.services.employer.company_service import CompanyService
+from app.services.fsp.fsp_login import FspLoginService
+from app.services.fsp.fsp_service import FspService
 from app.services.invitations.invitation_service import InvitationService
 from app.services.matching.bank_service import BankService
 from app.services.matching.need_service import NeedService
@@ -38,6 +42,15 @@ _bearer_scheme = HTTPBearer(
 def get_mailer(settings: SettingsDep) -> Mailer:
     """Способ отправки писем. В тестах подменяется заглушкой, которая складывает письма в список."""
     return build_mailer(settings)
+
+
+@lru_cache
+def get_fsp_gateway() -> FspGateway:
+    """Шлюз ФСП, один на процесс: в нём кешируются метаданные, ключи и сервисный токен.
+
+    В тестах подменяется шлюзом с поддельным транспортом HTTP.
+    """
+    return build_fsp_gateway(get_settings())
 
 
 def get_client_context(request: Request) -> ClientContext:
@@ -61,6 +74,7 @@ async def get_current_user(
 CurrentUser = Annotated[User, Depends(get_current_user)]
 ClientContextDep = Annotated[ClientContext, Depends(get_client_context)]
 MailerDep = Annotated[Mailer, Depends(get_mailer)]
+FspGatewayDep = Annotated[FspGateway, Depends(get_fsp_gateway)]
 
 
 def require_roles(*roles: UserRole) -> Callable[..., Awaitable[User]]:
@@ -126,6 +140,20 @@ def get_invitation_service(
     return InvitationService(session, settings, mailer)
 
 
+def get_fsp_service(
+    session: SessionDep, settings: SettingsDep, gateway: FspGatewayDep
+) -> FspService:
+    """Сервис ФСП кандидата на время запроса."""
+    return FspService(session, settings, gateway)
+
+
+def get_fsp_login_service(
+    session: SessionDep, settings: SettingsDep, gateway: FspGatewayDep
+) -> FspLoginService:
+    """Сервис входа через ФСП ID на время запроса."""
+    return FspLoginService(session, settings, gateway)
+
+
 def get_notification_service(session: SessionDep) -> NotificationService:
     """Сервис уведомлений на время запроса."""
     return NotificationService(session)
@@ -138,6 +166,8 @@ ShortlistServiceDep = Annotated[ShortlistService, Depends(get_shortlist_service)
 BankServiceDep = Annotated[BankService, Depends(get_bank_service)]
 InvitationServiceDep = Annotated[InvitationService, Depends(get_invitation_service)]
 NotificationServiceDep = Annotated[NotificationService, Depends(get_notification_service)]
+FspServiceDep = Annotated[FspService, Depends(get_fsp_service)]
+FspLoginServiceDep = Annotated[FspLoginService, Depends(get_fsp_login_service)]
 ProfileServiceDep = Annotated[CandidateProfileService, Depends(get_profile_service)]
 AssessmentServiceDep = Annotated[AssessmentService, Depends(get_assessment_service)]
 DictionaryServiceDep = Annotated[DictionaryService, Depends(get_dictionary_service)]

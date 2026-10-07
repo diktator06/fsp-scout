@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.v1 import assessment, auth, dictionaries, notifications, system
+from app.api.v1.candidates import fsp as candidate_fsp
 from app.api.v1.candidates import invitations as candidate_invitations
 from app.api.v1.candidates import profile
 from app.api.v1.employer import candidates, company, needs
@@ -13,6 +14,7 @@ api_router.include_router(dictionaries.router)
 api_router.include_router(profile.router)
 api_router.include_router(assessment.router)
 api_router.include_router(candidate_invitations.router)
+api_router.include_router(candidate_fsp.router)
 api_router.include_router(company.router)
 api_router.include_router(needs.router)
 api_router.include_router(candidates.router)
