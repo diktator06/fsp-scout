@@ -1,0 +1,54 @@
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: rem(6px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: rem(5px);
+  padding: rem(3px) rem(9px);
+  border-radius: rem(999px);
+  border: 1px solid transparent;
+  font-size: rem(12px);
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.chip[data-importance='must'] {
+  border-width: 1.5px;
+}
+
+.mark {
+  font-weight: 800;
+}
+
+.chip[data-status='verified'] {
+  background: #e6f6f1;
+  border-color: #9fd9c6;
+  color: #075c47;
+}
+
+.chip[data-status='declared'] {
+  background: #f7f0fb;
+  border-color: #d9b9ec;
+  color: #420762;
+}
+
+.chip[data-status='related'] {
+  background: #f4f3fb;
+  border-color: #cfcbee;
+  border-style: dashed;
+  color: #463f87;
+}
+
+.chip[data-status='missing'] {
+  background: #ffffff;
+  border-color: #ffadc8;
+  color: #b3003b;
+}

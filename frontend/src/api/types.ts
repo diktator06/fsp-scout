@@ -46,3 +46,41 @@ export type AssessmentMode = AssessmentSession['mode'];
 export type SessionOutcome = SessionResult['outcome'];
 export type SessionStatus = AssessmentSession['status'];
 export type IntegrityEvent = Schemas['IntegrityEventCreate']['event'];
+
+export type Company = Schemas['CompanyRead'];
+export type CompanyUpdate = Schemas['CompanyUpdate'];
+export type EmployerProfile = Schemas['EmployerProfileRead'];
+export type EmployerDashboard = Schemas['EmployerDashboardRead'];
+export type InvitationQuota = Schemas['InvitationQuotaRead'];
+export type CompanySize = NonNullable<Company['size']>;
+
+export type NeedDraft = Schemas['NeedDraft'];
+export type NeedCreate = Schemas['NeedCreate'];
+export type Need = Schemas['NeedRead'];
+export type SkillImportance = Schemas['NeedSkillRead']['importance'];
+export type CategorySlice = Schemas['CategorySliceRead'];
+export type ShortlistFilters = Schemas['ShortlistFilters'];
+export type Shortlist = Schemas['ShortlistRead'];
+export type ShortlistEntry = Schemas['ShortlistEntryRead'];
+export type ShortlistMark = NonNullable<ShortlistEntry['mark']>;
+export type Match = Schemas['MatchRead'];
+export type ScoreComponent = Schemas['ScoreComponentRead'];
+export type ExplanationItem = Schemas['ExplanationItemRead'];
+export type SkillMatch = Schemas['SkillMatchRead'];
+export type CandidateCard = Schemas['CandidateAnonymousCard'];
+export type CandidateCardView = Schemas['CandidateCardRead'];
+export type DisclosedContacts = Schemas['DisclosedContacts'];
+export type BankPage = Schemas['BankPage'];
+export type BankCandidate = Schemas['BankCandidateRead'];
+export type BankSort = Schemas['BankSort'];
+export type InvitationBrief = Schemas['InvitationBrief'];
+
+export type InvitationCreate = Schemas['InvitationCreate'];
+export type EmployerInvitation = Schemas['EmployerInvitationRead'];
+export type CandidateInvitation = Schemas['CandidateInvitationRead'];
+export type InvitationEvent = Schemas['InvitationEventRead'];
+export type DeclineReason = Schemas['DeclineRequest']['reason'];
+export type InvitationStatusCode = EmployerInvitation['status'];
+
+export type NotificationItem = Schemas['NotificationRead'];
+export type NotificationList = Schemas['NotificationListRead'];

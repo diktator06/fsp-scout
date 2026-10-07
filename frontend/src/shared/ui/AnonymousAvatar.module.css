@@ -1,0 +1,10 @@
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border-radius: rem(12px);
+  color: #ffffff;
+  font-family: var(--mantine-font-family-monospace);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}

@@ -420,6 +420,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/candidates/me/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Мои приглашения
+         * @description Входящие приглашения: компания и вилка видны сразу.
+         */
+        get: operations["list_invitations_api_v1_candidates_me_invitations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/invitations/{invitation_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Приглашение (отмечается просмотренным)
+         * @description Первое открытие переводит приглашение в «просмотрено» — это видит работодатель.
+         */
+        get: operations["read_invitation_api_v1_candidates_me_invitations__invitation_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/invitations/{invitation_id}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Принять приглашение
+         * @description Принимает приглашение: компании открываются разрешённые контакты, кандидату — её.
+         */
+        post: operations["accept_invitation_api_v1_candidates_me_invitations__invitation_id__accept_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/candidates/me/invitations/{invitation_id}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Отклонить приглашение
+         * @description Отклоняет приглашение с причиной. Контакты не раскрываются.
+         */
+        post: operations["decline_invitation_api_v1_candidates_me_invitations__invitation_id__decline_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/candidates/me/privacy": {
         parameters: {
             query?: never;
@@ -666,6 +746,355 @@ export interface paths {
         patch: operations["update_specialization_api_v1_dictionaries_specializations__specialization_id__patch"];
         trace?: never;
     };
+    "/api/v1/employer/candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Банк кандидатов
+         * @description Обезличенные карточки кандидатов, давших согласие на публикацию.
+         *
+         *     По умолчанию подтверждённые тестом идут раньше заявленных, внутри — по индексу
+         *     подтверждённого профиля.
+         */
+        get: operations["search_candidates_api_v1_employer_candidates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/candidates/{candidate_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Карточка кандидата
+         * @description Обезличенная карточка; контакты — только если кандидат раскрыл их компании.
+         */
+        get: operations["candidate_card_api_v1_employer_candidates__candidate_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/company": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Моя компания
+         * @description Профиль компании, рекрутер и квота приглашений. До заполнения — пустые поля.
+         */
+        get: operations["read_company_api_v1_employer_company_get"];
+        /**
+         * Сохранить профиль компании
+         * @description Создаёт компанию при первом сохранении, дальше обновляет её.
+         */
+        put: operations["save_company_api_v1_employer_company_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Сводка кабинета работодателя
+         * @description Активные потребности, воронка приглашений и остаток дневной квоты.
+         */
+        get: operations["dashboard_api_v1_employer_dashboard_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Приглашения компании
+         * @description Приглашения со статусами и таймлайном, с фильтром по статусу и потребности.
+         */
+        get: operations["list_invitations_api_v1_employer_invitations_get"];
+        put?: never;
+        /**
+         * Пригласить кандидата
+         * @description Приглашение с описанием, вилкой «от–до» и способом связи (все поля обязательны).
+         *
+         *     Одно активное приглашение на пару «компания — кандидат», дневная квота по уровню
+         *     доверия компании, срок ответа — 14 дней.
+         */
+        post: operations["create_invitation_api_v1_employer_invitations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/invitations/{invitation_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Приглашение
+         * @description Приглашение компании. Чужое — 404.
+         */
+        get: operations["read_invitation_api_v1_employer_invitations__invitation_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/invitations/{invitation_id}/withdraw": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Отозвать приглашение
+         * @description Отзывает приглашение, пока кандидат не ответил.
+         */
+        post: operations["withdraw_invitation_api_v1_employer_invitations__invitation_id__withdraw_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/needs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Потребности компании
+         * @description Все потребности компании, от новых к старым.
+         */
+        get: operations["list_needs_api_v1_employer_needs_get"];
+        put?: never;
+        /**
+         * Создать потребность
+         * @description Сохраняет потребность. Вилка обязательна и не шире чем вдвое.
+         */
+        post: operations["create_need_api_v1_employer_needs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/needs/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Разобрать текст потребности
+         * @description Свободный текст → специализация, грейды, навыки must/nice, формат, город, вилка.
+         *
+         *     Разбор работает на правилах и справочнике навыков, без внешних моделей. Каждое
+         *     поле сопровождается фрагментом текста, по которому оно найдено. Ничего не сохраняет.
+         */
+        post: operations["parse_need_api_v1_employer_needs_parse_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/needs/{need_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Потребность
+         * @description Потребность компании. Чужая — 404.
+         */
+        get: operations["read_need_api_v1_employer_needs__need_id__get"];
+        /**
+         * Изменить потребность
+         * @description Изменяет потребность. Уже построенные версии подборки не меняются.
+         */
+        put: operations["update_need_api_v1_employer_needs__need_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/needs/{need_id}/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Рекомендованные категории с рыночным срезом
+         * @description Целевая и соседние категории: сколько кандидатов, сколько сильных, медиана ожиданий.
+         */
+        get: operations["need_categories_api_v1_employer_needs__need_id__categories_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/needs/{need_id}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Закрыть потребность
+         * @description Переводит потребность в архив.
+         */
+        post: operations["close_need_api_v1_employer_needs__need_id__close_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/needs/{need_id}/marks/{candidate_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Закрепить или скрыть кандидата
+         * @description Отметка действует на все следующие версии подборки этой потребности.
+         */
+        put: operations["set_mark_api_v1_employer_needs__need_id__marks__candidate_id__put"];
+        post?: never;
+        /**
+         * Снять отметку
+         * @description Снимает отметку «закреплён» или «скрыт».
+         */
+        delete: operations["remove_mark_api_v1_employer_needs__need_id__marks__candidate_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/needs/{need_id}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Вернуть потребность в работу
+         * @description Возвращает потребность из архива.
+         */
+        post: operations["reopen_need_api_v1_employer_needs__need_id__reopen_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/needs/{need_id}/shortlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Подборка (последняя или указанная версия)
+         * @description Ранжированная подборка с баллом, разложением и «Почему в подборке».
+         */
+        get: operations["read_shortlist_api_v1_employer_needs__need_id__shortlist_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/needs/{need_id}/shortlists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Уточнить подборку (новая версия)
+         * @description Строит новую версию подборки с фильтрами. Закреплённые кандидаты переносятся.
+         */
+        post: operations["build_shortlist_api_v1_employer_needs__need_id__shortlists_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health": {
         parameters: {
             query?: never;
@@ -680,6 +1109,66 @@ export interface paths {
         get: operations["health_api_v1_health_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Мои уведомления
+         * @description Последние уведомления и число непрочитанных.
+         */
+        get: operations["list_notifications_api_v1_notifications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Отметить все прочитанными
+         * @description Отмечает все уведомления прочитанными.
+         */
+        post: operations["read_all_api_v1_notifications_read_all_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{notification_id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Отметить уведомление прочитанным
+         * @description Отмечает одно уведомление прочитанным.
+         */
+        post: operations["read_one_api_v1_notifications__notification_id__read_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -719,6 +1208,40 @@ export interface components {
          * @enum {string}
          */
         AssessmentMode: "full" | "express";
+        /**
+         * BankCandidateRead
+         * @description Кандидат в выдаче банка.
+         */
+        BankCandidateRead: {
+            card: components["schemas"]["CandidateAnonymousCard"];
+            /** Contacts Disclosed */
+            contacts_disclosed: boolean;
+            invitation: components["schemas"]["InvitationBrief"] | null;
+        };
+        /**
+         * BankPage
+         * @description Страница банка с общим числом и разбивкой по статусу грейда.
+         */
+        BankPage: {
+            /** Confirmed */
+            confirmed: number;
+            /** Items */
+            items: components["schemas"]["BankCandidateRead"][];
+            /** Limit */
+            limit: number;
+            /** Offset */
+            offset: number;
+            /** Total */
+            total: number;
+            /** Unconfirmed */
+            unconfirmed: number;
+        };
+        /**
+         * BankSort
+         * @description Порядок банка кандидатов.
+         * @enum {string}
+         */
+        BankSort: "score" | "recent" | "experience";
         /**
          * BlueprintCompetency
          * @description Компетенция в тесте и её доля.
@@ -760,6 +1283,117 @@ export interface components {
              * @description true — дать согласие, false — отозвать
              */
             granted: boolean;
+        };
+        /**
+         * CandidateAnonymousCard
+         * @description Обезличенная карточка кандидата.
+         *
+         *     Контактных полей (ФИО, email, телефон, Telegram) в этой схеме нет физически:
+         *     их невозможно случайно отдать работодателю сериализацией. Контакты приходят
+         *     отдельным объектом `DisclosedContacts` и только после согласия кандидата.
+         */
+        CandidateAnonymousCard: {
+            /** About */
+            about: string;
+            /** Alias */
+            alias: string;
+            /**
+             * Candidate Id
+             * Format: uuid
+             */
+            candidate_id: string;
+            category: components["schemas"]["CategoryRead"];
+            /** City */
+            city: string | null;
+            /** Experience Years */
+            experience_years: number | null;
+            /** Experiences */
+            experiences: components["schemas"]["CardExperience"][];
+            fsp: components["schemas"]["FspSummary"];
+            /**
+             * Grade Status
+             * @enum {string}
+             */
+            grade_status: "confirmed" | "unconfirmed";
+            /** Relocation Ready */
+            relocation_ready: boolean;
+            /** Salary Expectation */
+            salary_expectation: number | null;
+            /** Salary Gross */
+            salary_gross: boolean;
+            search_status: components["schemas"]["SearchStatus"];
+            /** Skills */
+            skills: components["schemas"]["CardSkill"][];
+            test: components["schemas"]["CardTest"] | null;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            verified_score: components["schemas"]["VerifiedScoreRead"];
+            /** Work Formats */
+            work_formats: string[];
+        };
+        /**
+         * CandidateCardRead
+         * @description Карточка кандидата для работодателя.
+         *
+         *     `card` всегда обезличена. `contacts` заполняются, только если кандидат раскрыл их
+         *     этой компании. `match` есть, если карточку открыли из подборки потребности.
+         */
+        CandidateCardRead: {
+            card: components["schemas"]["CandidateAnonymousCard"];
+            contacts: components["schemas"]["DisclosedContacts"] | null;
+            invitation: components["schemas"]["InvitationBrief"] | null;
+            match: components["schemas"]["MatchRead"] | null;
+        };
+        /**
+         * CandidateInvitationRead
+         * @description Приглашение глазами кандидата.
+         */
+        CandidateInvitationRead: {
+            company: components["schemas"]["CompanyBrief"];
+            /** Contact Method */
+            contact_method: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Decline Comment */
+            decline_comment: string;
+            decline_reason: components["schemas"]["DeclineReason"] | null;
+            employer_contacts: components["schemas"]["EmployerContacts"] | null;
+            /** Events */
+            events: components["schemas"]["InvitationEventRead"][];
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Offer Description */
+            offer_description: string;
+            /** Recruiter Name */
+            recruiter_name: string | null;
+            /** Responded At */
+            responded_at: string | null;
+            /** Salary From */
+            salary_from: number;
+            /** Salary Gross */
+            salary_gross: boolean;
+            /** Salary To */
+            salary_to: number;
+            status: components["schemas"]["InvitationStatus"];
+            /** Title */
+            title: string;
+            /** Viewed At */
+            viewed_at: string | null;
+            work_format: components["schemas"]["WorkFormat"];
         };
         /**
          * CandidateProfileRead
@@ -922,6 +1556,72 @@ export interface components {
             survey_completed: boolean;
         };
         /**
+         * CardCompetency
+         * @description Результат теста по компетенции.
+         */
+        CardCompetency: {
+            /** Answered */
+            answered: number;
+            /** Code */
+            code: string;
+            /** Correct */
+            correct: number;
+            /** Name */
+            name: string;
+        };
+        /**
+         * CardExperience
+         * @description Место работы. Название компании — только если кандидат разрешил его показывать.
+         */
+        CardExperience: {
+            /** Company Name */
+            company_name: string | null;
+            /** Description */
+            description: string;
+            /** Ended On */
+            ended_on: string | null;
+            /** Position */
+            position: string;
+            /**
+             * Started On
+             * Format: date
+             */
+            started_on: string;
+        };
+        /**
+         * CardSkill
+         * @description Навык в карточке.
+         */
+        CardSkill: {
+            /** Id */
+            id: number;
+            kind: components["schemas"]["SkillKind"];
+            /** Name */
+            name: string;
+            /** Self Level */
+            self_level: number | null;
+            /** Verified */
+            verified: boolean;
+        };
+        /**
+         * CardTest
+         * @description Сводка теста, присвоившего категорию.
+         */
+        CardTest: {
+            /** Competencies */
+            competencies: components["schemas"]["CardCompetency"][];
+            /**
+             * Finished At
+             * Format: date-time
+             */
+            finished_at: string;
+            /** Items */
+            items: number;
+            mode: components["schemas"]["AssessmentMode"];
+            /** Percentile */
+            percentile: number | null;
+        };
+        /**
          * CategoryRead
          * @description Категория кандидатов: специализация × грейд.
          */
@@ -936,6 +1636,137 @@ export interface components {
             theta_cut: number;
             /** Title */
             title: string;
+        };
+        /**
+         * CategorySliceRead
+         * @description Рекомендованная категория с рыночным срезом.
+         */
+        CategorySliceRead: {
+            /** Candidates */
+            candidates: number;
+            category: components["schemas"]["CategoryRead"];
+            /** Confirmed */
+            confirmed: number;
+            /** Covering Must */
+            covering_must: number;
+            /** Median Expectation */
+            median_expectation: number | null;
+            /**
+             * Relation
+             * @description target, adjacent_grade или adjacent_specialization
+             */
+            relation: string;
+            /** Strong Matches */
+            strong_matches: number;
+            /** Within Budget */
+            within_budget: boolean | null;
+        };
+        /**
+         * CompanyBrief
+         * @description Компания глазами кандидата: видна сразу, ещё до ответа на приглашение.
+         */
+        CompanyBrief: {
+            /** City */
+            city: string | null;
+            /** Description */
+            description: string;
+            /** Industry */
+            industry: string | null;
+            /** Name */
+            name: string;
+            size: components["schemas"]["CompanySize"] | null;
+            trust_level: components["schemas"]["TrustLevel"];
+            /** Website */
+            website: string | null;
+        };
+        /**
+         * CompanyRead
+         * @description Профиль компании.
+         */
+        CompanyRead: {
+            /** City */
+            city: string | null;
+            /** Contact Email */
+            contact_email: string | null;
+            /** Contact Phone */
+            contact_phone: string | null;
+            /** Contact Telegram */
+            contact_telegram: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Description */
+            description: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            industry: components["schemas"]["IndustryRead"] | null;
+            /** Inn */
+            inn: string | null;
+            /** Name */
+            name: string;
+            size: components["schemas"]["CompanySize"] | null;
+            trust_level: components["schemas"]["TrustLevel"];
+            /** Website */
+            website: string | null;
+        };
+        /**
+         * CompanySize
+         * @description Размер компании по числу сотрудников.
+         * @enum {string}
+         */
+        CompanySize: "tiny" | "small" | "medium" | "large" | "enterprise";
+        /**
+         * CompanyUpdate
+         * @description Профиль компании и данные рекрутера, который его заполняет.
+         */
+        CompanyUpdate: {
+            /** City */
+            city?: string | null;
+            /** Contact Email */
+            contact_email?: string | null;
+            /** Contact Phone */
+            contact_phone?: string | null;
+            /** Contact Telegram */
+            contact_telegram?: string | null;
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            /** Industry Id */
+            industry_id?: number | null;
+            /**
+             * Inn
+             * @example 7701234567
+             */
+            inn?: string | null;
+            /**
+             * Name
+             * @example Кедр Технологии
+             */
+            name: string;
+            /**
+             * Recruiter Full Name
+             * @example Мария Соколова
+             */
+            recruiter_full_name: string;
+            /**
+             * Recruiter Position
+             * @default
+             * @example HR-партнёр
+             */
+            recruiter_position: string;
+            size?: components["schemas"]["CompanySize"] | null;
+            /**
+             * Website
+             * @example https://kedr.example
+             */
+            website?: string | null;
         };
         /**
          * CompetencyResult
@@ -969,6 +1800,50 @@ export interface components {
          * @enum {string}
          */
         ContactChannel: "email" | "phone" | "telegram";
+        /**
+         * DeclineReason
+         * @description Причина отказа: агрегаты по ним работодатель видит как обратную связь.
+         * @enum {string}
+         */
+        DeclineReason: "salary" | "stack" | "work_format" | "not_looking" | "company" | "other";
+        /**
+         * DeclineRequest
+         * @description Отказ от приглашения с причиной: из причин складывается обратная связь работодателю.
+         */
+        DeclineRequest: {
+            /**
+             * Comment
+             * @default
+             */
+            comment: string;
+            reason: components["schemas"]["DeclineReason"];
+        };
+        /**
+         * DisclosedContacts
+         * @description Контакты кандидата: только каналы, которые он разрешил раскрывать.
+         */
+        DisclosedContacts: {
+            /**
+             * Disclosed At
+             * Format: date-time
+             */
+            disclosed_at: string;
+            /** Email */
+            email: string | null;
+            /** Full Name */
+            full_name: string | null;
+            /** Phone */
+            phone: string | null;
+            reason: components["schemas"]["DisclosureReason"];
+            /** Telegram */
+            telegram: string | null;
+        };
+        /**
+         * DisclosureReason
+         * @description Основание раскрытия контактов: принятое приглашение или собственный отклик кандидата.
+         * @enum {string}
+         */
+        DisclosureReason: "invitation_accepted" | "application";
         /**
          * EducationInput
          * @description Образование.
@@ -1016,6 +1891,95 @@ export interface components {
             survey: components["schemas"]["SurveyRead"] | null;
         };
         /**
+         * EmployerContacts
+         * @description Контакты работодателя, которые кандидат видит после принятия приглашения.
+         */
+        EmployerContacts: {
+            /** Email */
+            email: string | null;
+            /** Phone */
+            phone: string | null;
+            /** Recruiter Name */
+            recruiter_name: string | null;
+            /** Recruiter Position */
+            recruiter_position: string | null;
+            /** Telegram */
+            telegram: string | null;
+        };
+        /**
+         * EmployerDashboardRead
+         * @description Сводка для главной кабинета работодателя.
+         */
+        EmployerDashboardRead: {
+            /** Accepted Contacts */
+            accepted_contacts: number;
+            /** Active Needs */
+            active_needs: number;
+            /** Invitations */
+            invitations: {
+                [key: string]: number;
+            };
+            quota: components["schemas"]["InvitationQuotaRead"];
+        };
+        /**
+         * EmployerInvitationRead
+         * @description Приглашение глазами работодателя.
+         */
+        EmployerInvitationRead: {
+            candidate: components["schemas"]["InvitationCandidateRead"];
+            /** Contact Method */
+            contact_method: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Decline Comment */
+            decline_comment: string;
+            decline_reason: components["schemas"]["DeclineReason"] | null;
+            /** Events */
+            events: components["schemas"]["InvitationEventRead"][];
+            /**
+             * Expires At
+             * Format: date-time
+             */
+            expires_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Need Id */
+            need_id: string | null;
+            /** Need Title */
+            need_title: string | null;
+            /** Offer Description */
+            offer_description: string;
+            /** Responded At */
+            responded_at: string | null;
+            /** Salary From */
+            salary_from: number;
+            /** Salary Gross */
+            salary_gross: boolean;
+            /** Salary To */
+            salary_to: number;
+            status: components["schemas"]["InvitationStatus"];
+            /** Title */
+            title: string;
+            /** Viewed At */
+            viewed_at: string | null;
+            work_format: components["schemas"]["WorkFormat"];
+        };
+        /**
+         * EmployerProfileRead
+         * @description Кабинет работодателя: компания, рекрутер и квота. Без компании — пустые поля.
+         */
+        EmployerProfileRead: {
+            company: components["schemas"]["CompanyRead"] | null;
+            quota: components["schemas"]["InvitationQuotaRead"] | null;
+            recruiter: components["schemas"]["RecruiterRead"] | null;
+        };
+        /**
          * ErrorBody
          * @description Тело ошибки: машинный код для фронтенда и текст для человека.
          */
@@ -1041,6 +2005,29 @@ export interface components {
          */
         ErrorResponse: {
             error: components["schemas"]["ErrorBody"];
+        };
+        /**
+         * ExplanationItemRead
+         * @description Причина в блоке «Почему в подборке».
+         */
+        ExplanationItemRead: {
+            /**
+             * Kind
+             * @description plus, minus или info
+             */
+            kind: string;
+            /** Text */
+            text: string;
+        };
+        /**
+         * FspSummary
+         * @description Блок ФСП. Пока ФСП ID не привязан, это нейтральное пустое состояние, а не минус.
+         */
+        FspSummary: {
+            /** Linked */
+            linked: boolean;
+            /** Message */
+            message: string;
         };
         /**
          * GradeBrief
@@ -1161,6 +2148,119 @@ export interface components {
             event: "focus_lost" | "paste" | "fullscreen_exit";
         };
         /**
+         * InvitationBrief
+         * @description Последнее приглашение компании кандидату — для метки в выдаче.
+         */
+        InvitationBrief: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            status: components["schemas"]["InvitationStatus"];
+        };
+        /**
+         * InvitationCandidateRead
+         * @description Кандидат в приглашении глазами работодателя: псевдоним до согласия, контакты после.
+         */
+        InvitationCandidateRead: {
+            /** Alias */
+            alias: string;
+            /**
+             * Candidate Id
+             * Format: uuid
+             */
+            candidate_id: string;
+            category: components["schemas"]["CategoryRead"] | null;
+            contacts: components["schemas"]["DisclosedContacts"] | null;
+            /**
+             * Grade Status
+             * @enum {string}
+             */
+            grade_status: "confirmed" | "unconfirmed";
+        };
+        /**
+         * InvitationCreate
+         * @description Приглашение кандидату: описание, вилка и способ связи обязательны (ТЗ §2.2.2).
+         */
+        InvitationCreate: {
+            /**
+             * Candidate Id
+             * Format: uuid
+             */
+            candidate_id: string;
+            /**
+             * Contact Method
+             * @example Telegram @kedr_hr, отвечаем в течение дня
+             */
+            contact_method: string;
+            /** Need Id */
+            need_id?: string | null;
+            /** Offer Description */
+            offer_description: string;
+            /**
+             * Salary From
+             * @example 250000
+             */
+            salary_from: number;
+            /**
+             * Salary Gross
+             * @default true
+             */
+            salary_gross: boolean;
+            /**
+             * Salary To
+             * @example 320000
+             */
+            salary_to: number;
+            /**
+             * Title
+             * @example Python-разработчик в платежи
+             */
+            title: string;
+            work_format: components["schemas"]["WorkFormat"];
+        };
+        /**
+         * InvitationEventRead
+         * @description Шаг таймлайна приглашения.
+         */
+        InvitationEventRead: {
+            /**
+             * Actor
+             * @enum {string}
+             */
+            actor: "employer" | "candidate" | "system";
+            /**
+             * At
+             * Format: date-time
+             */
+            at: string;
+            status: components["schemas"]["InvitationStatus"];
+        };
+        /**
+         * InvitationQuotaRead
+         * @description Дневная квота приглашений: защита кандидатов от массовых рассылок.
+         */
+        InvitationQuotaRead: {
+            /** Daily Limit */
+            daily_limit: number;
+            /** Remaining */
+            remaining: number;
+            /** Used Today */
+            used_today: number;
+        };
+        /**
+         * InvitationStatus
+         * @description Статусы приглашения. Переходы задаёт автомат в `services/invitations/state_machine.py`.
+         * @enum {string}
+         */
+        InvitationStatus: "sent" | "viewed" | "accepted" | "declined" | "withdrawn" | "expired";
+        /**
          * ItemOption
          * @description Вариант ответа.
          */
@@ -1241,12 +2341,243 @@ export interface components {
             password: string;
         };
         /**
+         * MarkUpdate
+         * @description Отметка кандидата в потребности.
+         */
+        MarkUpdate: {
+            mark: components["schemas"]["ShortlistMarkKind"];
+            /**
+             * Note
+             * @default
+             */
+            note: string;
+        };
+        /**
+         * MatchRead
+         * @description Балл соответствия потребности с разложением и объяснением.
+         */
+        MatchRead: {
+            /** Components */
+            components: components["schemas"]["ScoreComponentRead"][];
+            /** Explanation */
+            explanation: components["schemas"]["ExplanationItemRead"][];
+            /** Penalties */
+            penalties: string[];
+            /** Score */
+            score: number;
+            /** Skills */
+            skills: components["schemas"]["SkillMatchRead"][];
+        };
+        /**
          * MessageResponse
          * @description Короткий ответ без данных: для операций вроде повторной отправки письма.
          */
         MessageResponse: {
             /** Message */
             message: string;
+        };
+        /**
+         * NeedCreate
+         * @description Потребность работодателя. Вилка обязательна.
+         */
+        NeedCreate: {
+            /** City */
+            city?: string | null;
+            /** Grade Ids */
+            grade_ids: number[];
+            /**
+             * Raw Text
+             * @default
+             */
+            raw_text: string;
+            /** Salary From */
+            salary_from: number;
+            /**
+             * Salary Gross
+             * @default true
+             */
+            salary_gross: boolean;
+            /** Salary To */
+            salary_to: number;
+            /** Skills */
+            skills?: components["schemas"]["NeedSkillInput"][];
+            /** Specialization Id */
+            specialization_id: number;
+            /**
+             * Team Description
+             * @default
+             */
+            team_description: string;
+            /**
+             * Title
+             * @example Python-разработчик в платежи
+             */
+            title: string;
+            /** Work Formats */
+            work_formats?: components["schemas"]["WorkFormat"][];
+        };
+        /**
+         * NeedDraft
+         * @description Черновик потребности из разбора текста. Работодатель проверяет его перед сохранением.
+         */
+        NeedDraft: {
+            /** City */
+            city: string | null;
+            /** Evidence */
+            evidence: {
+                [key: string]: string;
+            };
+            /** Experience Years Min */
+            experience_years_min: number | null;
+            /** Grades */
+            grades: components["schemas"]["GradeBrief"][];
+            /** Raw Text */
+            raw_text: string;
+            /** Salary From */
+            salary_from: number | null;
+            /** Salary Gross */
+            salary_gross: boolean | null;
+            /** Salary To */
+            salary_to: number | null;
+            /** Skills */
+            skills: components["schemas"]["NeedSkillDraft"][];
+            specialization: components["schemas"]["SpecializationBrief"] | null;
+            /** Specialization Confidence */
+            specialization_confidence: number;
+            /** Title */
+            title: string | null;
+            /** Work Formats */
+            work_formats: components["schemas"]["WorkFormat"][];
+        };
+        /**
+         * NeedParseRequest
+         * @description Свободное описание потребности для разбора.
+         */
+        NeedParseRequest: {
+            /** Text */
+            text: string;
+        };
+        /**
+         * NeedRead
+         * @description Потребность работодателя.
+         */
+        NeedRead: {
+            /** City */
+            city: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Grades */
+            grades: components["schemas"]["GradeBrief"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Invitations Sent */
+            invitations_sent: number;
+            /** Latest Version */
+            latest_version: number;
+            /** Raw Text */
+            raw_text: string;
+            /** Salary From */
+            salary_from: number;
+            /** Salary Gross */
+            salary_gross: boolean;
+            /** Salary To */
+            salary_to: number;
+            /** Skills */
+            skills: components["schemas"]["NeedSkillRead"][];
+            specialization: components["schemas"]["SpecializationBrief"];
+            status: components["schemas"]["NeedStatus"];
+            /** Team Description */
+            team_description: string;
+            /** Title */
+            title: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /** Work Formats */
+            work_formats: components["schemas"]["WorkFormat"][];
+        };
+        /**
+         * NeedSkillDraft
+         * @description Навык, найденный в тексте, с фрагментом-обоснованием.
+         */
+        NeedSkillDraft: {
+            /** Evidence */
+            evidence: string | null;
+            importance: components["schemas"]["SkillImportance"];
+            skill: components["schemas"]["SkillRead"];
+        };
+        /**
+         * NeedSkillInput
+         * @description Навык потребности.
+         */
+        NeedSkillInput: {
+            /** @default must */
+            importance: components["schemas"]["SkillImportance"];
+            /** Skill Id */
+            skill_id: number;
+        };
+        /**
+         * NeedSkillRead
+         * @description Навык потребности со справочными данными.
+         */
+        NeedSkillRead: {
+            importance: components["schemas"]["SkillImportance"];
+            skill: components["schemas"]["SkillRead"];
+        };
+        /**
+         * NeedStatus
+         * @description Статус потребности: закрытая остаётся в истории вместе с подборками.
+         * @enum {string}
+         */
+        NeedStatus: "active" | "closed";
+        /**
+         * NotificationKind
+         * @description Виды уведомлений в кабинете.
+         * @enum {string}
+         */
+        NotificationKind: "invitation_received" | "invitation_accepted" | "invitation_declined" | "invitation_withdrawn" | "invitation_expired";
+        /**
+         * NotificationListRead
+         * @description Последние уведомления и число непрочитанных.
+         */
+        NotificationListRead: {
+            /** Items */
+            items: components["schemas"]["NotificationRead"][];
+            /** Unread */
+            unread: number;
+        };
+        /**
+         * NotificationRead
+         * @description Уведомление в кабинете.
+         */
+        NotificationRead: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            kind: components["schemas"]["NotificationKind"];
+            /** Link */
+            link: string | null;
+            /** Read At */
+            read_at: string | null;
+            /** Text */
+            text: string;
+            /** Title */
+            title: string;
         };
         /** Page[SkillRead] */
         Page_SkillRead_: {
@@ -1290,6 +2621,16 @@ export interface components {
             show_fsp_achievements: boolean;
             /** Show Salary Expectation */
             show_salary_expectation: boolean;
+        };
+        /**
+         * RecruiterRead
+         * @description Рекрутер компании.
+         */
+        RecruiterRead: {
+            /** Full Name */
+            full_name: string;
+            /** Position */
+            position: string;
         };
         /**
          * RegisterRequest
@@ -1355,6 +2696,22 @@ export interface components {
          * @enum {string}
          */
         ResponseFormat: "single_choice" | "numeric";
+        /**
+         * ScoreComponentRead
+         * @description Фактор балла: значение 0..1, вес и вклад в итог.
+         */
+        ScoreComponentRead: {
+            /** Contribution */
+            contribution: number;
+            /** Key */
+            key: string;
+            /** Label */
+            label: string;
+            /** Value */
+            value: number;
+            /** Weight */
+            weight: number;
+        };
         /**
          * SearchStatus
          * @description Готовность кандидата к предложениям. «Не ищу» скрывает профиль из банка.
@@ -1476,6 +2833,116 @@ export interface components {
             theta: number | null;
         };
         /**
+         * ShortlistEntryRead
+         * @description Кандидат в подборке.
+         */
+        ShortlistEntryRead: {
+            card: components["schemas"]["CandidateAnonymousCard"];
+            contacts: components["schemas"]["DisclosedContacts"] | null;
+            invitation: components["schemas"]["InvitationBrief"] | null;
+            mark: components["schemas"]["ShortlistMarkKind"] | null;
+            match: components["schemas"]["MatchRead"];
+            /** Note */
+            note: string;
+            /** Outside Filters */
+            outside_filters: boolean;
+            /** Rank */
+            rank: number;
+        };
+        /**
+         * ShortlistFilters
+         * @description Уточнения подборки. Каждое применение создаёт новую версию.
+         */
+        ShortlistFilters: {
+            /** City */
+            city?: string | null;
+            /**
+             * Confirmed Only
+             * @default false
+             */
+            confirmed_only: boolean;
+            /**
+             * Expand Grades
+             * @description Добавить соседние грейды (с понижающим множителем)
+             * @default false
+             */
+            expand_grades: boolean;
+            /**
+             * Limit
+             * @default 50
+             */
+            limit: number;
+            /**
+             * Min Score
+             * @default 0
+             */
+            min_score: number;
+            /** Required Skill Ids */
+            required_skill_ids?: number[];
+            /**
+             * Verified Skill Ids
+             * @description Навыки, подтверждённые тестом
+             */
+            verified_skill_ids?: number[];
+            /**
+             * Within Budget
+             * @description Только с ожиданиями в вилке
+             * @default false
+             */
+            within_budget: boolean;
+            /** Work Formats */
+            work_formats?: components["schemas"]["WorkFormat"][];
+        };
+        /**
+         * ShortlistMarkKind
+         * @description Отметка работодателя в подборке. Переживает уточнение фильтров.
+         * @enum {string}
+         */
+        ShortlistMarkKind: "pinned" | "hidden";
+        /**
+         * ShortlistRead
+         * @description Версия подборки.
+         */
+        ShortlistRead: {
+            /** Algorithm Version */
+            algorithm_version: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Entries */
+            entries: components["schemas"]["ShortlistEntryRead"][];
+            filters: components["schemas"]["ShortlistFilters"];
+            stats: components["schemas"]["ShortlistStats"];
+            /** Version */
+            version: number;
+            /** Versions */
+            versions: number[];
+        };
+        /**
+         * ShortlistStats
+         * @description Сколько кандидатов было в пуле, прошло фильтры и попало в подборку.
+         */
+        ShortlistStats: {
+            /** After Filters */
+            after_filters: number;
+            /** Pool */
+            pool: number;
+            /** Shown */
+            shown: number;
+        };
+        /**
+         * SkillBrief
+         * @description Навык: идентификатор и название.
+         */
+        SkillBrief: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+        };
+        /**
          * SkillCreate
          * @description Новый навык.
          */
@@ -1500,11 +2967,31 @@ export interface components {
             specialization_ids?: number[];
         };
         /**
+         * SkillImportance
+         * @description Важность навыка в потребности: must весит вдвое больше nice.
+         * @enum {string}
+         */
+        SkillImportance: "must" | "nice";
+        /**
          * SkillKind
          * @description Тип навыка: от него зависит, как навык показывается в опросе и учитывается в подборе.
          * @enum {string}
          */
         SkillKind: "language" | "framework" | "database" | "tool" | "concept" | "soft";
+        /**
+         * SkillMatchRead
+         * @description Как кандидат закрывает навык потребности.
+         */
+        SkillMatchRead: {
+            importance: components["schemas"]["SkillImportance"];
+            skill: components["schemas"]["SkillBrief"];
+            /**
+             * Status
+             * @description verified, declared, related или missing
+             */
+            status: string;
+            via: components["schemas"]["SkillBrief"] | null;
+        };
         /**
          * SkillRead
          * @description Навык справочника.
@@ -1684,6 +3171,12 @@ export interface components {
             user: components["schemas"]["UserRead"];
         };
         /**
+         * TrustLevel
+         * @description Уровень доверия к компании: от него зависит дневная квота приглашений.
+         * @enum {string}
+         */
+        TrustLevel: "new" | "basic" | "verified";
+        /**
          * UserRead
          * @description Публичные сведения о текущем пользователе.
          */
@@ -1712,6 +3205,21 @@ export interface components {
          * @enum {string}
          */
         UserRole: "candidate" | "employer" | "methodist";
+        /**
+         * VerifiedScoreRead
+         * @description Индекс подтверждённого профиля (0–100) — ранг внутри категории.
+         */
+        VerifiedScoreRead: {
+            /** Components */
+            components: components["schemas"]["ScoreComponentRead"][];
+            /**
+             * Test Percentile
+             * @description Перцентиль θ среди подтверждённых коллег
+             */
+            test_percentile: number | null;
+            /** Total */
+            total: number;
+        };
         /**
          * VerifyEmailRequest
          * @description Токен из ссылки в письме.
@@ -2921,6 +4429,276 @@ export interface operations {
             };
         };
     };
+    list_invitations_api_v1_candidates_me_invitations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateInvitationRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_invitation_api_v1_candidates_me_invitations__invitation_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateInvitationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    accept_invitation_api_v1_candidates_me_invitations__invitation_id__accept_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateInvitationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    decline_invitation_api_v1_candidates_me_invitations__invitation_id__decline_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeclineRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateInvitationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     read_privacy_api_v1_candidates_me_privacy_get: {
         parameters: {
             query?: never;
@@ -3755,6 +5533,1456 @@ export interface operations {
             };
         };
     };
+    search_candidates_api_v1_employer_candidates_get: {
+        parameters: {
+            query?: {
+                specialization_id?: number | null;
+                grade_id?: number | null;
+                category_id?: number | null;
+                /** @description Все перечисленные навыки */
+                skill_ids?: number[] | null;
+                /** @description Навыки подтверждены тестом */
+                verified_skills_only?: boolean;
+                /** @description Только с подтверждённым грейдом */
+                confirmed_only?: boolean;
+                work_format?: components["schemas"]["WorkFormat"] | null;
+                city?: string | null;
+                sort?: components["schemas"]["BankSort"];
+                /** @description Размер страницы */
+                limit?: number;
+                /** @description Смещение от начала списка */
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankPage"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    candidate_card_api_v1_employer_candidates__candidate_id__get: {
+        parameters: {
+            query?: {
+                /** @description Потребность для балла */
+                need_id?: string | null;
+            };
+            header?: never;
+            path: {
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateCardRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_company_api_v1_employer_company_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployerProfileRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    save_company_api_v1_employer_company_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompanyUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployerProfileRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    dashboard_api_v1_employer_dashboard_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployerDashboardRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_invitations_api_v1_employer_invitations_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["InvitationStatus"][] | null;
+                need_id?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployerInvitationRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_invitation_api_v1_employer_invitations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvitationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployerInvitationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_invitation_api_v1_employer_invitations__invitation_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployerInvitationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    withdraw_invitation_api_v1_employer_invitations__invitation_id__withdraw_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployerInvitationRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_needs_api_v1_employer_needs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NeedRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_need_api_v1_employer_needs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NeedCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NeedRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    parse_need_api_v1_employer_needs_parse_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NeedParseRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NeedDraft"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_need_api_v1_employer_needs__need_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                need_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NeedRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_need_api_v1_employer_needs__need_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                need_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NeedCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NeedRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    need_categories_api_v1_employer_needs__need_id__categories_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                need_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategorySliceRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    close_need_api_v1_employer_needs__need_id__close_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                need_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NeedRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    set_mark_api_v1_employer_needs__need_id__marks__candidate_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                need_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    remove_mark_api_v1_employer_needs__need_id__marks__candidate_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                need_id: string;
+                candidate_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    reopen_need_api_v1_employer_needs__need_id__reopen_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                need_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NeedRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_shortlist_api_v1_employer_needs__need_id__shortlist_get: {
+        parameters: {
+            query?: {
+                /** @description Номер версии */
+                version?: number | null;
+            };
+            header?: never;
+            path: {
+                need_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShortlistRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    build_shortlist_api_v1_employer_needs__need_id__shortlists_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                need_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShortlistFilters"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShortlistRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     health_api_v1_health_get: {
         parameters: {
             query?: never;
@@ -3780,6 +7008,131 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+        };
+    };
+    list_notifications_api_v1_notifications_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationListRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_all_api_v1_notifications_read_all_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationListRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    read_one_api_v1_notifications__notification_id__read_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notification_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationListRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
