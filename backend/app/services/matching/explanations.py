@@ -1,5 +1,6 @@
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 from app.models.fsp import FspState
 from app.services.matching.facts import CandidateFacts
@@ -32,6 +33,29 @@ def _ordinal_percentile(value: float) -> str:
     return f"{round(value * 100)}-й перцентиль"
 
 
+def explain_micro_tasks(candidate: CandidateFacts, now: datetime) -> ExplanationItem | None:
+    """Свежий сигнал от микрозадачи: «5/5, 12 дней назад». Без задач — ничего."""
+    if not candidate.micro_count or candidate.micro_last_at is None:
+        return None
+    days = max(0, (now - candidate.micro_last_at).days)
+    when = "сегодня" if days == 0 else f"{days} {_days_word(days)} назад"
+    score = round(5 * (candidate.micro_last_score or 0.0))
+    kind = "plus" if (candidate.micro_last_score or 0.0) >= 0.6 else "info"
+    return ExplanationItem(kind, f"Микрозадача «{candidate.micro_last_title}»: {score}/5, {when}")
+
+
+def _days_word(days: int) -> str:
+    """Склонение слова «день»."""
+    tail = days % 100
+    if 11 <= tail <= 14:
+        return "дней"
+    if days % 10 == 1:
+        return "день"
+    if 2 <= days % 10 <= 4:
+        return "дня"
+    return "дней"
+
+
 def explain_fsp(candidate: CandidateFacts) -> ExplanationItem:
     """Причина про ФСП: лучший результат, сводка участий или нейтральная справка."""
     if candidate.fsp_state is not FspState.LINKED:
@@ -50,6 +74,7 @@ def explain_match(
     category_title: str,
     grade_name: str,
     shared_terms: Sequence[str] = (),
+    now: datetime | None = None,
 ) -> list[ExplanationItem]:
     """Человекочитаемые причины места кандидата в подборке.
 
@@ -131,5 +156,8 @@ def explain_match(
         items.append(
             ExplanationItem("plus", f"Опыт перекликается с задачами: {', '.join(shared_terms)}")
         )
+    micro = explain_micro_tasks(candidate, now or datetime.now(UTC))
+    if micro is not None:
+        items.append(micro)
     items.append(explain_fsp(candidate))
     return items

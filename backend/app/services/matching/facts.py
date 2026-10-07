@@ -62,6 +62,11 @@ class CandidateFacts:
     fsp_score: float = 0.0
     fsp_best: str | None = None
     fsp_summary: str | None = None
+    micro_score: float = 0.0
+    micro_count: int = 0
+    micro_last_title: str | None = None
+    micro_last_score: float | None = None
+    micro_last_at: datetime | None = None
 
 
 @dataclass(frozen=True, slots=True)

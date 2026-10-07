@@ -9,6 +9,7 @@ from app.models.candidate import SearchStatus
 from app.models.dictionary import SkillKind
 from app.models.fsp import FspEventLevel, FspParticipationFormat, FspResultStatus, FspState
 from app.models.invitation import DisclosureReason, InvitationStatus
+from app.models.microtask import MicroTaskKind
 from app.schemas.common import ORMModel
 from app.schemas.dictionary import CategoryRead
 
@@ -108,6 +109,24 @@ class FspSummary(BaseModel):
     achievements: list[FspAchievementRead]
 
 
+class MicroTaskResultRead(BaseModel):
+    """Результат микрозадачи в карточке: свежий сигнал о кандидате."""
+
+    title: str
+    kind: MicroTaskKind
+    score: float = Field(ge=0, le=1)
+    rating: int | None
+    graded_at: datetime
+
+
+class MicroTasksSummary(BaseModel):
+    """Фактор M и последние результаты микрозадач. Без задач — нейтральное «пока не было»."""
+
+    score: float = Field(ge=0, le=1, description="Фактор M индекса профиля")
+    count: int
+    recent: list[MicroTaskResultRead]
+
+
 class CandidateAnonymousCard(BaseModel):
     """Обезличенная карточка кандидата.
 
@@ -133,6 +152,7 @@ class CandidateAnonymousCard(BaseModel):
     experiences: list[CardExperience]
     test: CardTest | None
     fsp: FspSummary
+    micro_tasks: MicroTasksSummary
     updated_at: datetime
 
 

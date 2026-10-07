@@ -11,6 +11,8 @@ from app.schemas.cards import (
     CardTest,
     FspAchievementRead,
     FspSummary,
+    MicroTaskResultRead,
+    MicroTasksSummary,
     ScoreComponentRead,
     VerifiedScoreRead,
 )
@@ -21,6 +23,7 @@ from app.services.matching.candidate_pool import PoolMember
 from app.services.matching.verified_score import VerifiedScore
 
 _MASK = "[скрыто]"
+RECENT_MICRO_TASKS = 5
 _PII_PATTERNS = (
     re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+"),
     re.compile(r"(?:https?://|www\.|t\.me/)\S+", re.IGNORECASE),
@@ -151,5 +154,20 @@ def build_card(
         ],
         test=test,
         fsp=fsp_summary(member.fsp, facts.fsp_best),
+        micro_tasks=MicroTasksSummary(
+            score=facts.micro_score,
+            count=facts.micro_count,
+            recent=[
+                MicroTaskResultRead(
+                    title=task.title,
+                    kind=task.kind,
+                    score=assignment.score or 0.0,
+                    rating=assignment.rating,
+                    graded_at=assignment.graded_at,
+                )
+                for assignment, task in member.micro_tasks[:RECENT_MICRO_TASKS]
+                if assignment.graded_at is not None
+            ],
+        ),
         updated_at=profile.updated_at,
     )

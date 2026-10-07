@@ -43,6 +43,7 @@ from app.crud.matching import (
     shortlist_entry_crud,
     shortlist_mark_crud,
 )
+from app.crud.microtask import microtask_assignment_crud, microtask_crud
 from app.crud.notification import notification_crud
 from app.crud.user import user_crud
 from app.crud.vacancy import (
@@ -80,6 +81,8 @@ __all__ = [
     "invitation_crud",
     "invitation_event_crud",
     "item_family_crud",
+    "microtask_assignment_crud",
+    "microtask_crud",
     "need_skill_crud",
     "notification_crud",
     "oidc_flow_state_crud",

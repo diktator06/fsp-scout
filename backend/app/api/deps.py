@@ -27,6 +27,8 @@ from app.services.invitations.invitation_service import InvitationService
 from app.services.matching.bank_service import BankService
 from app.services.matching.need_service import NeedService
 from app.services.matching.shortlist_service import ShortlistService
+from app.services.microtasks.candidate_service import CandidateTaskService
+from app.services.microtasks.employer_service import EmployerTaskService
 from app.services.notifications import NotificationService
 from app.services.vacancies.board_service import VacancyBoardService
 from app.services.vacancies.vacancy_service import VacancyService
@@ -166,6 +168,16 @@ def get_vacancy_board_service(session: SessionDep) -> VacancyBoardService:
     return VacancyBoardService(session)
 
 
+def get_candidate_task_service(session: SessionDep, settings: SettingsDep) -> CandidateTaskService:
+    """Сервис микрозадач кандидата на время запроса."""
+    return CandidateTaskService(session, settings)
+
+
+def get_employer_task_service(session: SessionDep) -> EmployerTaskService:
+    """Сервис микрозадач работодателя на время запроса."""
+    return EmployerTaskService(session)
+
+
 def get_notification_service(session: SessionDep) -> NotificationService:
     """Сервис уведомлений на время запроса."""
     return NotificationService(session)
@@ -180,6 +192,8 @@ InvitationServiceDep = Annotated[InvitationService, Depends(get_invitation_servi
 NotificationServiceDep = Annotated[NotificationService, Depends(get_notification_service)]
 FspServiceDep = Annotated[FspService, Depends(get_fsp_service)]
 VacancyServiceDep = Annotated[VacancyService, Depends(get_vacancy_service)]
+CandidateTaskServiceDep = Annotated[CandidateTaskService, Depends(get_candidate_task_service)]
+EmployerTaskServiceDep = Annotated[EmployerTaskService, Depends(get_employer_task_service)]
 VacancyBoardServiceDep = Annotated[VacancyBoardService, Depends(get_vacancy_board_service)]
 FspLoginServiceDep = Annotated[FspLoginService, Depends(get_fsp_login_service)]
 ProfileServiceDep = Annotated[CandidateProfileService, Depends(get_profile_service)]

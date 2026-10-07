@@ -21,6 +21,8 @@ class NotificationKind(StrEnum):
     INVITATION_EXPIRED = "invitation_expired"
     APPLICATION_RECEIVED = "application_received"
     APPLICATION_UPDATED = "application_updated"
+    MICROTASK_SUBMITTED = "microtask_submitted"
+    MICROTASK_GRADED = "microtask_graded"
 
 
 class Notification(UUIDPrimaryKeyMixin, CreatedAtMixin, Base):

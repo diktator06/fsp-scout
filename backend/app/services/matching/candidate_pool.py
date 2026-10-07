@@ -5,17 +5,25 @@ from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud import candidate_pool_crud, category_crud, fsp_achievement_crud, fsp_link_crud
+from app.crud import (
+    candidate_pool_crud,
+    category_crud,
+    fsp_achievement_crud,
+    fsp_link_crud,
+    microtask_assignment_crud,
+)
 from app.crud.candidate_search import PoolQuery, PoolRow
 from app.models.assessment import AssessmentMode, AssessmentSession
 from app.models.candidate import CandidateSkill, PrivacySettings, WorkExperience
 from app.models.dictionary import Category, Skill
 from app.models.fsp import FspResultStatus
+from app.models.microtask import MicroTask, MicroTaskAssignment
 from app.services.candidate.profile_service import profile_completeness
 from app.services.fsp.achievements_scoring import describe_result, summarize
 from app.services.fsp.standing import NOT_LINKED, FspStanding, fsp_standing
 from app.services.matching.facts import AssessmentFact, CandidateFacts, SkillFact
 from app.services.matching.verified_score import VerifiedScore, compute_verified_score
+from app.services.microtasks.freshness import GradedResult, freshness
 
 
 def _now() -> datetime:
@@ -36,6 +44,7 @@ class PoolMember:
     experiences: list[WorkExperience] = field(default_factory=list)
     session: AssessmentSession | None = None
     fsp: FspStanding = NOT_LINKED
+    micro_tasks: list[tuple[MicroTaskAssignment, MicroTask]] = field(default_factory=list)
 
     @property
     def candidate_id(self) -> uuid.UUID:
@@ -87,6 +96,7 @@ class CandidatePoolService:
         extras = await candidate_pool_crud.load_extras(self._session, ids)
         fsp_links = await fsp_link_crud.for_candidates(self._session, ids)
         fsp_achievements = await fsp_achievement_crud.for_candidates(self._session, fsp_links)
+        micro_tasks = await microtask_assignment_crud.graded_for_candidates(self._session, ids)
         confirmed_categories = {
             row.profile.current_category_id
             for row in rows
@@ -115,6 +125,7 @@ class CandidatePoolService:
                 privacy=extras.privacy.get(row.profile.id),
                 experiences=extras.experiences.get(row.profile.id, []),
                 session=extras.sessions.get(row.profile.id),
+                micro_tasks=micro_tasks.get(row.profile.id, []),
             )
             member.fsp = fsp_standing(
                 fsp_links.get(row.profile.id),
@@ -123,11 +134,13 @@ class CandidatePoolService:
                 today=now.date(),
             )
             self._fill_facts(member)
+            self._fill_micro_tasks(member, now)
             member.score = compute_verified_score(
                 member.facts,
                 peers.get(category.id, []) if member.facts.confirmed else [],
                 await self.band(category),
                 now,
+                micro_tasks=member.facts.micro_score,
                 fsp=member.facts.fsp_score,
             )
             members.append(member)
@@ -143,6 +156,28 @@ class CandidatePoolService:
         if row.claimed_specialization_id is None or row.claimed_grade_id is None:
             return None
         return categories.get((row.claimed_specialization_id, row.claimed_grade_id))
+
+    @staticmethod
+    def _fill_micro_tasks(member: PoolMember, now: datetime) -> None:
+        """Фактор M: свежие оценённые микрозадачи с затуханием давности."""
+        results = [
+            GradedResult(
+                score=assignment.score or 0.0,
+                graded_at=assignment.graded_at,
+                title=task.title,
+                kind=task.kind.value,
+            )
+            for assignment, task in member.micro_tasks
+            if assignment.graded_at is not None
+        ]
+        fresh = freshness(results, now)
+        facts = member.facts
+        facts.micro_score = fresh.value
+        facts.micro_count = fresh.count
+        if fresh.last is not None:
+            facts.micro_last_title = fresh.last.title
+            facts.micro_last_score = fresh.last.score
+            facts.micro_last_at = fresh.last.graded_at
 
     @staticmethod
     def _fill_facts(member: PoolMember) -> None:

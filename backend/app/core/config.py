@@ -58,6 +58,10 @@ class Settings(BaseSettings):
 
     invitation_ttl_days: int = Field(default=14, ge=1, le=60)
 
+    microtask_interval_days: int = Field(default=7, ge=0, le=60)
+    microtask_weekly_limit: int = Field(default=3, ge=1, le=20)
+    microtask_due_days: int = Field(default=3, ge=1, le=30)
+
     fsp_enabled: bool = True
     fsp_oidc_issuer: str = "http://localhost:8090"
     fsp_internal_url: str = ""

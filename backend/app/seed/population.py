@@ -6,6 +6,7 @@ from app.core.config import get_settings
 from app.core.logging import configure_logging
 from app.db.session import SessionFactory, engine
 from app.seed.demo_fsp import seed_demo_fsp_links
+from app.seed.demo_microtasks import seed_demo_microtasks
 from app.seed.demo_population import seed_demo_population
 from app.seed.demo_vacancies import seed_demo_vacancies
 
@@ -31,8 +32,10 @@ async def main() -> None:
     fsp_summary = await seed_demo_fsp_links(SessionFactory, settings)
     logger.info("ФСП в демо-данных: %s за %.0f с", fsp_summary, time.monotonic() - started)
     vacancies_summary = await seed_demo_vacancies(SessionFactory, settings)
-    await engine.dispose()
     logger.info("Вакансии в демо-данных: %s", vacancies_summary)
+    microtasks_summary = await seed_demo_microtasks(SessionFactory, settings)
+    await engine.dispose()
+    logger.info("Микрозадачи в демо-данных: %s", microtasks_summary)
 
 
 if __name__ == "__main__":

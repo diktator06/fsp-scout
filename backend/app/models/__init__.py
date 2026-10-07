@@ -69,6 +69,13 @@ from app.models.matching import (
     ShortlistMarkKind,
     SkillImportance,
 )
+from app.models.microtask import (
+    AssignmentStatus,
+    MicroTask,
+    MicroTaskAssignment,
+    MicroTaskKind,
+    MicroTaskStatus,
+)
 from app.models.notification import Notification, NotificationKind
 from app.models.user import AuthProvider, User, UserRole
 from app.models.vacancy import (
@@ -88,6 +95,7 @@ __all__ = [
     "AssessmentItem",
     "AssessmentMode",
     "AssessmentSession",
+    "AssignmentStatus",
     "AuditLog",
     "AuthProvider",
     "CandidateProfile",
@@ -123,6 +131,10 @@ __all__ = [
     "ItemFamily",
     "ItemFamilyStatus",
     "ItemOrigin",
+    "MicroTask",
+    "MicroTaskAssignment",
+    "MicroTaskKind",
+    "MicroTaskStatus",
     "NeedSkill",
     "NeedStatus",
     "Notification",
