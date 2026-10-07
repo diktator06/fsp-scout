@@ -19,6 +19,7 @@ from app.services.auth.access import ensure_role, resolve_user_by_access_token
 from app.services.auth.auth_service import AuthService
 from app.services.auth.tokens import ClientContext
 from app.services.candidate.profile_service import CandidateProfileService
+from app.services.candidate.resume_import import ResumeImportService
 from app.services.dictionary_service import DictionaryService
 from app.services.employer.company_service import CompanyService
 from app.services.fsp.fsp_login import FspLoginService
@@ -112,6 +113,11 @@ def get_profile_service(session: SessionDep) -> CandidateProfileService:
     return CandidateProfileService(session)
 
 
+def get_resume_import_service(session: SessionDep) -> ResumeImportService:
+    """Сервис автораспознавания резюме на время запроса."""
+    return ResumeImportService(session)
+
+
 def get_assessment_service(session: SessionDep, settings: SettingsDep) -> AssessmentService:
     """Сервис опроса и тестирования на время запроса."""
     return AssessmentService(session, settings)
@@ -197,6 +203,7 @@ EmployerTaskServiceDep = Annotated[EmployerTaskService, Depends(get_employer_tas
 VacancyBoardServiceDep = Annotated[VacancyBoardService, Depends(get_vacancy_board_service)]
 FspLoginServiceDep = Annotated[FspLoginService, Depends(get_fsp_login_service)]
 ProfileServiceDep = Annotated[CandidateProfileService, Depends(get_profile_service)]
+ResumeImportServiceDep = Annotated[ResumeImportService, Depends(get_resume_import_service)]
 AssessmentServiceDep = Annotated[AssessmentService, Depends(get_assessment_service)]
 DictionaryServiceDep = Annotated[DictionaryService, Depends(get_dictionary_service)]
 

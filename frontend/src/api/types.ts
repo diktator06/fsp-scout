@@ -112,3 +112,5 @@ export type MicroTask = Schemas['MicroTaskRead'];
 export type MicroTaskCreate = Schemas['MicroTaskCreate'];
 export type MicroTaskKind = MicroTask['kind'];
 export type TaskSubmission = Schemas['SubmissionRead'];
+
+export type ResumeDraft = Schemas['ResumeDraftRead'];

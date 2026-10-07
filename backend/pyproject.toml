@@ -20,6 +20,8 @@ dependencies = [
     "numpy>=2.5",
     "weasyprint>=70",
     "httpx>=0.28",
+    "pypdf>=6",
+    "python-multipart>=0.0.20",
 ]
 
 [dependency-groups]

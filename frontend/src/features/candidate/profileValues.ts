@@ -1,6 +1,7 @@
 import type {
   CandidateProfile,
   CandidateProfileUpdate,
+  ResumeDraft,
   SearchStatus,
   Skill,
   TeamRole,
@@ -130,4 +131,53 @@ export function validateExperience(job: ExperienceEntry): string | null {
   if (job.ended_on && !isMonth(job.ended_on)) return 'Месяц окончания в формате ГГГГ-ММ';
   if (job.ended_on && job.ended_on < job.started_on) return 'Окончание раньше начала';
   return null;
+}
+
+export type ResumeSection =
+  'name' | 'contacts' | 'city' | 'experience_years' | 'skills' | 'roles' | 'experiences';
+
+export function applyResumeDraft(
+  values: ProfileFormValues,
+  draft: ResumeDraft,
+  sections: ReadonlySet<ResumeSection>,
+): ProfileFormValues {
+  // Переносит в анкету только отмеченные группы полей. Навыки, софт-скиллы и роли
+  // дополняют уже заполненное, а не заменяют его: кандидат мог указать больше, чем
+  // нашлось в резюме. Места работы добавляются в конец списка.
+  const next = { ...values };
+  if (sections.has('name') && draft.full_name) next.full_name = draft.full_name;
+  if (sections.has('contacts')) {
+    if (draft.phone) next.phone = draft.phone;
+    if (draft.telegram) next.telegram = draft.telegram;
+  }
+  if (sections.has('city') && draft.city) next.city = draft.city;
+  if (sections.has('experience_years') && draft.experience_years !== null) {
+    next.experience_years = draft.experience_years;
+  }
+  if (sections.has('skills')) {
+    const known = new Set(values.skills.map((item) => item.skill.id));
+    next.skills = [
+      ...values.skills,
+      ...draft.skills
+        .filter((item) => !known.has(item.skill.id))
+        .map((item) => ({ skill: item.skill, self_level: null })),
+    ];
+    next.soft_skills = Array.from(new Set([...values.soft_skills, ...draft.soft_skills]));
+  }
+  if (sections.has('roles')) {
+    next.team_roles = Array.from(new Set([...values.team_roles, ...draft.team_roles]));
+  }
+  if (sections.has('experiences')) {
+    next.experiences = [
+      ...values.experiences,
+      ...draft.experiences.map((item) => ({
+        company_name: item.company_name,
+        position: item.position,
+        started_on: toMonth(item.started_on ?? null),
+        ended_on: toMonth(item.ended_on ?? null),
+        description: item.description,
+      })),
+    ];
+  }
+  return next;
 }

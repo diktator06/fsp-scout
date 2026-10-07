@@ -434,3 +434,34 @@ def parse_need_text(
     elif _GROSS.search(text):
         parsed.salary_gross = True
     return parsed
+
+
+def find_skills(text: str, catalog: Sequence[CatalogSkill]) -> list[FoundSkill]:
+    """Навыки справочника в произвольном тексте — резюме или описании опыта."""
+    return _find_skills(_clauses(text), catalog)
+
+
+def detect_city(text: str) -> tuple[str | None, str | None]:
+    """Город из списка крупных городов во всех падежах и фрагмент, где он найден."""
+    for city, pattern in _CITIES:
+        match = pattern.search(text)
+        if match:
+            return city, match.group(0)
+    return None, None
+
+
+def detect_specialization(
+    text: str, skills: Sequence[FoundSkill], catalog: Sequence[CatalogSkill]
+) -> tuple[str | None, float, str | None]:
+    """Специализация по ключевым словам и весам найденных навыков."""
+    return _detect_specialization(text, skills, catalog)
+
+
+def grade_mentions(text: str) -> list[tuple[str, str]]:
+    """Явные упоминания грейда (Middle, «сеньор», «стажёр») с фрагментом текста."""
+    found = []
+    for code, pattern in _GRADE_PATTERNS:
+        match = pattern.search(text)
+        if match:
+            found.append((code, match.group(0)))
+    return found

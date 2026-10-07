@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 
 from app.models.candidate import ContactChannel, SearchStatus, SkillSource, WorkFormat
 from app.schemas.common import ORMModel
-from app.schemas.dictionary import CategoryRead, SkillRead
+from app.schemas.dictionary import CategoryRead, GradeBrief, SkillRead, SpecializationBrief
 
 TeamRole = Literal["developer", "team_lead", "tech_lead", "mentor", "architect", "researcher"]
 OnboardingStep = Literal["profile", "survey", "grade", "test", "done"]
@@ -238,3 +238,39 @@ class CandidateStatusRead(BaseModel):
     active_session_id: uuid.UUID | None
     bank_published: bool
     completeness: int
+
+
+class ResumeSkillDraft(BaseModel):
+    """Навык из резюме и фрагмент, где он найден."""
+
+    skill: SkillRead
+    evidence: str
+
+
+class ResumeExperienceDraft(BaseModel):
+    """Место работы из резюме: черновик, который кандидат проверит перед сохранением."""
+
+    position: str
+    company_name: str
+    started_on: date | None
+    ended_on: date | None
+    description: str
+
+
+class ResumeDraftRead(BaseModel):
+    """Результат автораспознавания резюме. Ничего не сохраняется, пока кандидат не подтвердит."""
+
+    full_name: str | None
+    email: str | None
+    phone: str | None
+    telegram: str | None
+    city: str | None
+    experience_years: float | None
+    grade: GradeBrief | None
+    specialization: SpecializationBrief | None
+    skills: list[ResumeSkillDraft]
+    soft_skills: list[str]
+    team_roles: list[TeamRole]
+    experiences: list[ResumeExperienceDraft]
+    evidence: dict[str, str]
+    warnings: list[str]

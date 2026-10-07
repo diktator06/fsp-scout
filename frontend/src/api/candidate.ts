@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './client';
 import { unwrap } from './errors';
-import type { CandidateProfileUpdate, PrivacySettingsUpdate } from './types';
+import type { CandidateProfileUpdate, PrivacySettingsUpdate, ResumeDraft } from './types';
 
 export const candidateKeys = {
   all: ['candidate'] as const,
@@ -86,4 +86,17 @@ export async function downloadProfilePdf(alias: string): Promise<void> {
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+export async function parseResume(file: File): Promise<ResumeDraft> {
+  // Резюме уходит multipart-формой: openapi-fetch передаёт FormData как есть, а
+  // заголовок с границей частей ставит браузер.
+  const body = new FormData();
+  body.append('file', file);
+  return unwrap(
+    api.POST('/api/v1/candidates/me/resume/parse', {
+      body: body as unknown as { file: string },
+      bodySerializer: (value) => value as unknown as FormData,
+    }),
+  );
 }

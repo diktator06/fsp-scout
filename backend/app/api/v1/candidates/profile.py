@@ -1,9 +1,15 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Response
+from fastapi import APIRouter, Body, Depends, File, Response, UploadFile
 
-from app.api.deps import CandidateUser, ClientContextDep, ProfileServiceDep
+from app.api.deps import (
+    CandidateUser,
+    ClientContextDep,
+    ProfileServiceDep,
+    ResumeImportServiceDep,
+)
 from app.api.errors import error_responses
+from app.api.rate_limit import RateLimiter
 from app.schemas.candidate import (
     CandidateProfileRead,
     CandidateProfileUpdate,
@@ -11,12 +17,15 @@ from app.schemas.candidate import (
     ConsentsRead,
     PrivacySettingsRead,
     PrivacySettingsUpdate,
+    ResumeDraftRead,
 )
 from app.services.candidate.profile_pdf import render_profile_pdf
+from app.services.candidate.resume_text import MAX_PDF_BYTES
 
 router = APIRouter(prefix="/candidates/me", tags=["candidate"])
 
 _errors = error_responses(401, 403, 422)
+resume_limiter = RateLimiter(limit=20, window_seconds=600)
 
 
 @router.get(
@@ -112,3 +121,24 @@ async def set_bank_publication(
 ) -> ConsentsRead:
     """Даёт или отзывает согласие. Без него профиль не виден работодателям в банке."""
     return await service.set_bank_publication(user, granted, client.ip_address)
+
+
+@router.post(
+    "/resume/parse",
+    response_model=ResumeDraftRead,
+    responses=error_responses(401, 403, 422, 429),
+    dependencies=[Depends(resume_limiter)],
+    summary="Распознать резюме из PDF",
+)
+async def parse_resume(
+    user: CandidateUser,
+    service: ResumeImportServiceDep,
+    file: Annotated[UploadFile, File(description="Резюме в PDF, до 5 МБ")],
+) -> ResumeDraftRead:
+    """Черновик полей профиля из PDF: ФИО, контакты, стек, грейд, роли, стаж, софт-скиллы.
+
+    Файл разбирается в памяти и не сохраняется; профиль не меняется, пока кандидат
+    не перенесёт найденное в анкету и не сохранит её.
+    """
+    data = await file.read(MAX_PDF_BYTES + 1)
+    return await service.parse(user, data)

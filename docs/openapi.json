@@ -476,6 +476,21 @@
         "title": "BlueprintRead",
         "type": "object"
       },
+      "Body_parse_resume_api_v1_candidates_me_resume_parse_post": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "description": "Резюме в PDF, до 5 МБ",
+            "title": "File",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_parse_resume_api_v1_candidates_me_resume_parse_post",
+        "type": "object"
+      },
       "Body_set_bank_publication_api_v1_candidates_me_consents_bank_publication_put": {
         "properties": {
           "granted": {
@@ -5255,6 +5270,233 @@
         ],
         "title": "ResponseFormat",
         "type": "string"
+      },
+      "ResumeDraftRead": {
+        "description": "Результат автораспознавания резюме. Ничего не сохраняется, пока кандидат не подтвердит.",
+        "properties": {
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "evidence": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Evidence",
+            "type": "object"
+          },
+          "experience_years": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Experience Years"
+          },
+          "experiences": {
+            "items": {
+              "$ref": "#/components/schemas/ResumeExperienceDraft"
+            },
+            "title": "Experiences",
+            "type": "array"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "grade": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GradeBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/ResumeSkillDraft"
+            },
+            "title": "Skills",
+            "type": "array"
+          },
+          "soft_skills": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Soft Skills",
+            "type": "array"
+          },
+          "specialization": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SpecializationBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "team_roles": {
+            "items": {
+              "enum": [
+                "developer",
+                "team_lead",
+                "tech_lead",
+                "mentor",
+                "architect",
+                "researcher"
+              ],
+              "type": "string"
+            },
+            "title": "Team Roles",
+            "type": "array"
+          },
+          "telegram": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telegram"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "full_name",
+          "email",
+          "phone",
+          "telegram",
+          "city",
+          "experience_years",
+          "grade",
+          "specialization",
+          "skills",
+          "soft_skills",
+          "team_roles",
+          "experiences",
+          "evidence",
+          "warnings"
+        ],
+        "title": "ResumeDraftRead",
+        "type": "object"
+      },
+      "ResumeExperienceDraft": {
+        "description": "Место работы из резюме: черновик, который кандидат проверит перед сохранением.",
+        "properties": {
+          "company_name": {
+            "title": "Company Name",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "ended_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended On"
+          },
+          "position": {
+            "title": "Position",
+            "type": "string"
+          },
+          "started_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started On"
+          }
+        },
+        "required": [
+          "position",
+          "company_name",
+          "started_on",
+          "ended_on",
+          "description"
+        ],
+        "title": "ResumeExperienceDraft",
+        "type": "object"
+      },
+      "ResumeSkillDraft": {
+        "description": "Навык из резюме и фрагмент, где он найден.",
+        "properties": {
+          "evidence": {
+            "title": "Evidence",
+            "type": "string"
+          },
+          "skill": {
+            "$ref": "#/components/schemas/SkillRead"
+          }
+        },
+        "required": [
+          "skill",
+          "evidence"
+        ],
+        "title": "ResumeSkillDraft",
+        "type": "object"
       },
       "ScoreComponentRead": {
         "description": "Фактор балла: значение 0..1, вес и вклад в итог.",
@@ -10200,6 +10442,83 @@
           }
         ],
         "summary": "Скачать стандартизированный PDF-профиль",
+        "tags": [
+          "candidate"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/resume/parse": {
+      "post": {
+        "description": "Черновик полей профиля из PDF: ФИО, контакты, стек, грейд, роли, стаж, софт-скиллы.\n\nФайл разбирается в памяти и не сохраняется; профиль не меняется, пока кандидат\nне перенесёт найденное в анкету и не сохранит её.",
+        "operationId": "parse_resume_api_v1_candidates_me_resume_parse_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_parse_resume_api_v1_candidates_me_resume_parse_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumeDraftRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Распознать резюме из PDF",
         "tags": [
           "candidate"
         ]

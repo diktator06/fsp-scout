@@ -24,19 +24,28 @@ import { IconAlertCircle, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState, type ReactNode } from 'react';
 import { useUpdateProfile } from '@/api/candidate';
 import { errorMessage, fieldErrors } from '@/api/errors';
-import type { CandidateProfile, SearchStatus, TeamRole, WorkFormat } from '@/api/types';
+import type {
+  CandidateProfile,
+  ResumeDraft,
+  SearchStatus,
+  TeamRole,
+  WorkFormat,
+} from '@/api/types';
 import {
   SEARCH_STATUS_LABELS,
   TEAM_ROLE_LABELS,
   WORK_FORMAT_LABELS,
   toOptions,
 } from '@/shared/lib/candidate';
+import { ResumeImport } from './ResumeImport';
 import { SkillPicker } from './SkillPicker';
 import {
+  applyResumeDraft,
   profileToValues,
   validateExperience,
   valuesToPayload,
   type ProfileFormValues,
+  type ResumeSection,
 } from './profileValues';
 import classes from './ProfileForm.module.css';
 
@@ -242,9 +251,20 @@ export function ProfileForm({ profile, variant, submitLabel, onSaved }: ProfileF
     </SimpleGrid>
   );
 
+  const applyResume = (draft: ResumeDraft, sections: Set<ResumeSection>) => {
+    // Перенос не сохраняет анкету: кандидат проверит поля и нажмёт «Сохранить».
+    form.setValues(applyResumeDraft(form.values, draft, sections));
+    notifications.show({
+      color: 'teal',
+      title: 'Поля заполнены из резюме',
+      message: 'Проверьте их и сохраните анкету',
+    });
+  };
+
   return (
     <form onSubmit={handleSubmit} noValidate>
       <Stack gap="lg">
+        <ResumeImport onApply={applyResume} />
         {full ? (
           <>
             <Section title="Основное" hint="Имя и контакты скрыты, пока вы не примете приглашение">

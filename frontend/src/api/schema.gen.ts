@@ -739,6 +739,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/candidates/me/resume/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Распознать резюме из PDF
+         * @description Черновик полей профиля из PDF: ФИО, контакты, стек, грейд, роли, стаж, софт-скиллы.
+         *
+         *     Файл разбирается в памяти и не сохраняется; профиль не меняется, пока кандидат
+         *     не перенесёт найденное в анкету и не сохранит её.
+         */
+        post: operations["parse_resume_api_v1_candidates_me_resume_parse_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/candidates/me/status": {
         parameters: {
             query?: never;
@@ -1952,6 +1975,14 @@ export interface components {
             /** Min Items */
             min_items: number;
             specialization: components["schemas"]["SpecializationBrief"];
+        };
+        /** Body_parse_resume_api_v1_candidates_me_resume_parse_post */
+        Body_parse_resume_api_v1_candidates_me_resume_parse_post: {
+            /**
+             * File
+             * @description Резюме в PDF, до 5 МБ
+             */
+            file: string;
         };
         /** Body_set_bank_publication_api_v1_candidates_me_consents_bank_publication_put */
         Body_set_bank_publication_api_v1_candidates_me_consents_bank_publication_put: {
@@ -3816,6 +3847,65 @@ export interface components {
          * @enum {string}
          */
         ResponseFormat: "single_choice" | "numeric";
+        /**
+         * ResumeDraftRead
+         * @description Результат автораспознавания резюме. Ничего не сохраняется, пока кандидат не подтвердит.
+         */
+        ResumeDraftRead: {
+            /** City */
+            city: string | null;
+            /** Email */
+            email: string | null;
+            /** Evidence */
+            evidence: {
+                [key: string]: string;
+            };
+            /** Experience Years */
+            experience_years: number | null;
+            /** Experiences */
+            experiences: components["schemas"]["ResumeExperienceDraft"][];
+            /** Full Name */
+            full_name: string | null;
+            grade: components["schemas"]["GradeBrief"] | null;
+            /** Phone */
+            phone: string | null;
+            /** Skills */
+            skills: components["schemas"]["ResumeSkillDraft"][];
+            /** Soft Skills */
+            soft_skills: string[];
+            specialization: components["schemas"]["SpecializationBrief"] | null;
+            /** Team Roles */
+            team_roles: ("developer" | "team_lead" | "tech_lead" | "mentor" | "architect" | "researcher")[];
+            /** Telegram */
+            telegram: string | null;
+            /** Warnings */
+            warnings: string[];
+        };
+        /**
+         * ResumeExperienceDraft
+         * @description Место работы из резюме: черновик, который кандидат проверит перед сохранением.
+         */
+        ResumeExperienceDraft: {
+            /** Company Name */
+            company_name: string;
+            /** Description */
+            description: string;
+            /** Ended On */
+            ended_on: string | null;
+            /** Position */
+            position: string;
+            /** Started On */
+            started_on: string | null;
+        };
+        /**
+         * ResumeSkillDraft
+         * @description Навык из резюме и фрагмент, где он найден.
+         */
+        ResumeSkillDraft: {
+            /** Evidence */
+            evidence: string;
+            skill: components["schemas"]["SkillRead"];
+        };
         /**
          * ScoreComponentRead
          * @description Фактор балла: значение 0..1, вес и вклад в итог.
@@ -6959,6 +7049,66 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    parse_resume_api_v1_candidates_me_resume_parse_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_parse_resume_api_v1_candidates_me_resume_parse_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResumeDraftRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
                 headers: {
                     [name: string]: unknown;
                 };
