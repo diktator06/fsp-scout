@@ -10,9 +10,16 @@ import {
   ThemeIcon,
   Title,
 } from '@mantine/core';
-import { IconArrowRight, IconEyeOff, IconLock, IconTargetArrow } from '@tabler/icons-react';
+import {
+  IconArrowRight,
+  IconEyeOff,
+  IconLock,
+  IconMail,
+  IconTargetArrow,
+} from '@tabler/icons-react';
 import { Link } from 'react-router';
 import { useCandidateStatus } from '@/api/candidate';
+import { useCandidateInvitations } from '@/api/invitations';
 import { errorMessage } from '@/api/errors';
 import type { CandidateStatus } from '@/api/types';
 import { useAuth } from '@/features/auth/useAuth';
@@ -101,6 +108,36 @@ function NextAction({ status }: { status: CandidateStatus }) {
   );
 }
 
+function InvitationsTeaser() {
+  // Новые приглашения — первое, что кандидат должен увидеть в кабинете.
+  const invitations = useCandidateInvitations();
+  const items = invitations.data ?? [];
+  if (items.length === 0) return null;
+  const fresh = items.filter((item) => item.status === 'sent').length;
+  return (
+    <Card mb="lg">
+      <Group justify="space-between" wrap="wrap" gap="md">
+        <Group gap="sm">
+          <ThemeIcon color="signal" variant="light" radius="md" size={36}>
+            <IconMail size={20} />
+          </ThemeIcon>
+          <div>
+            <Title order={4}>
+              {fresh > 0 ? `Новых приглашений: ${fresh}` : 'Приглашения от компаний'}
+            </Title>
+            <Text size="sm" c="dimmed">
+              {items[0]?.company.name}: {items[0]?.title}
+            </Text>
+          </div>
+        </Group>
+        <Button component={Link} to="/c/invitations" rightSection={<IconArrowRight size={16} />}>
+          Открыть
+        </Button>
+      </Group>
+    </Card>
+  );
+}
+
 export function CandidateHomePage() {
   const { user } = useAuth();
   const status = useCandidateStatus();
@@ -145,6 +182,7 @@ export function CandidateHomePage() {
   return (
     <>
       {header}
+      <InvitationsTeaser />
       <Card mb="lg">
         <Group justify="space-between" mb="lg" wrap="wrap" gap="sm">
           <Title order={4}>Шаги онбординга</Title>

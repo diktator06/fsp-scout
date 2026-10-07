@@ -1,0 +1,47 @@
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xl);
+  padding: rem(28px) rem(32px);
+  border-radius: var(--mantine-radius-lg);
+  background: var(--scout-hero-gradient);
+  color: #ffffff;
+  box-shadow: var(--mantine-shadow-lg);
+}
+
+.heroTitle {
+  flex: 1 1 rem(320px);
+  min-width: 0;
+}
+
+.company {
+  font-size: rem(13px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffd6e4;
+}
+
+.offer {
+  grid-column: span 2;
+}
+
+.text {
+  white-space: pre-line;
+}
+
+@media (max-width: 75em) {
+  .offer {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 48em) {
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: rem(22px);
+  }
+}

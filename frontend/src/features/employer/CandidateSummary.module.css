@@ -1,0 +1,32 @@
+.root {
+  min-width: 0;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.meta {
+  row-gap: rem(2px);
+}
+
+.vps {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: none;
+}
+
+.vpsValue {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: rem(22px);
+  font-weight: 700;
+  line-height: 1;
+  color: #310f53;
+}
+
+.vpsLabel {
+  font-size: rem(11px);
+  color: var(--mantine-color-dimmed);
+}

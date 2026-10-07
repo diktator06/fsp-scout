@@ -1,0 +1,13 @@
+.contacts {
+  padding: rem(12px) rem(14px);
+  border-radius: var(--mantine-radius-md);
+  background: #e6f6f1;
+  color: #075c47;
+}
+
+.salaryHero {
+  padding: rem(20px) rem(24px);
+  border-radius: var(--mantine-radius-lg);
+  background: var(--scout-hero-gradient);
+  color: #ffffff;
+}

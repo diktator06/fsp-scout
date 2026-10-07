@@ -112,6 +112,20 @@ export const router = createBrowserRouter([
           (module) => module.SettingsPage,
         ),
       },
+      {
+        path: 'invitations',
+        lazy: page(
+          () => import('@/pages/candidate/InvitationsPage'),
+          (module) => module.CandidateInvitationsPage,
+        ),
+      },
+      {
+        path: 'invitations/:invitationId',
+        lazy: page(
+          () => import('@/pages/candidate/InvitationPage'),
+          (module) => module.CandidateInvitationPage,
+        ),
+      },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
@@ -131,6 +145,70 @@ export const router = createBrowserRouter([
           (module) => module.EmployerHomePage,
         ),
       },
+      {
+        path: 'company',
+        lazy: page(
+          () => import('@/pages/employer/CompanyPage'),
+          (module) => module.CompanyPage,
+        ),
+      },
+      {
+        path: 'needs',
+        lazy: page(
+          () => import('@/pages/employer/NeedsPage'),
+          (module) => module.NeedsPage,
+        ),
+      },
+      {
+        path: 'needs/new',
+        lazy: page(
+          () => import('@/pages/employer/NewNeedPage'),
+          (module) => module.NewNeedPage,
+        ),
+      },
+      {
+        path: 'needs/:needId',
+        lazy: page(
+          () => import('@/pages/employer/NeedPage'),
+          (module) => module.NeedPage,
+        ),
+      },
+      {
+        path: 'needs/:needId/edit',
+        lazy: page(
+          () => import('@/pages/employer/EditNeedPage'),
+          (module) => module.EditNeedPage,
+        ),
+      },
+      {
+        path: 'bank',
+        lazy: page(
+          () => import('@/pages/employer/BankPage'),
+          (module) => module.BankPage,
+        ),
+      },
+      {
+        path: 'candidates/:candidateId',
+        lazy: page(
+          () => import('@/pages/employer/CandidatePage'),
+          (module) => module.CandidatePage,
+        ),
+      },
+      {
+        path: 'invitations',
+        lazy: page(
+          () => import('@/pages/employer/InvitationsPage'),
+          (module) => module.InvitationsPage,
+        ),
+      },
+      {
+        path: 'invitations/:invitationId',
+        lazy: page(
+          () => import('@/pages/employer/InvitationsPage'),
+          (module) => module.InvitationsPage,
+        ),
+      },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
   {

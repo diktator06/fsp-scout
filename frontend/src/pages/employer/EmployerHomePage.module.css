@@ -1,0 +1,28 @@
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: rem(6px);
+}
+
+.stat[data-accent] {
+  background: var(--scout-hero-gradient);
+  color: #ffffff;
+  border: none;
+}
+
+.stat[data-accent] p:first-child {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.value {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: rem(30px);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.of {
+  font-size: rem(14px);
+  font-weight: 500;
+  opacity: 0.8;
+}

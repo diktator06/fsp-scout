@@ -1,0 +1,12 @@
+.card {
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.card:hover {
+  border-color: #b7b2e5;
+  box-shadow: var(--mantine-shadow-md);
+}

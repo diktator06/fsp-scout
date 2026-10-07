@@ -1,0 +1,47 @@
+.contacts {
+  padding: rem(16px);
+  border-radius: var(--mantine-radius-md);
+  background: #e6f6f1;
+  color: #075c47;
+}
+
+.locked {
+  padding: rem(14px) rem(16px);
+  border: 1px dashed #cfcbee;
+  border-radius: var(--mantine-radius-md);
+  color: #463f87;
+  background: #faf9fd;
+}
+
+.about {
+  white-space: pre-line;
+}
+
+.competencies {
+  display: grid;
+  gap: rem(10px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.competencies li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: rem(4px) rem(12px);
+  font-size: rem(14px);
+}
+
+.bar {
+  grid-column: 1 / -1;
+  height: rem(6px);
+  border-radius: rem(999px);
+  background: #ece8f3;
+  overflow: hidden;
+}
+
+.bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #8a83d1, #520978);
+}

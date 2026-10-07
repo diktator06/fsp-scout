@@ -1,0 +1,21 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--mantine-spacing-lg);
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}
+
+@media (min-width: 75em) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) rem(320px);
+  }
+
+  .side {
+    position: sticky;
+    top: rem(92px);
+  }
+}
