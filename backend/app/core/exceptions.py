@@ -110,3 +110,25 @@ class RateLimitExceededError(AppError):
     status_code = 429
     code = "rate_limit_exceeded"
     default_message = "Слишком много запросов, попробуйте позже"
+
+
+class CompanyRequiredError(ConflictError):
+    """Работодатель ещё не заполнил профиль компании: искать и приглашать рано."""
+
+    code = "company_required"
+    default_message = "Сначала заполните профиль компании"
+
+
+class InvitationStateError(ConflictError):
+    """Переход приглашения в этот статус невозможен из текущего."""
+
+    code = "invitation_state"
+    default_message = "Приглашение уже в другом статусе, обновите страницу"
+
+
+class InvitationQuotaExceededError(AppError):
+    """Компания исчерпала дневную квоту приглашений."""
+
+    status_code = 429
+    code = "invitation_quota_exceeded"
+    default_message = "Дневной лимит приглашений исчерпан, попробуйте завтра"

@@ -11,6 +11,7 @@ from app.models.dictionary import (
     Industry,
     Skill,
     SkillKind,
+    SkillRelation,
     Specialization,
     SpecializationSkill,
 )
@@ -193,3 +194,25 @@ grade_crud = GradeCRUD(Grade)
 category_crud = CategoryCRUD(Category)
 skill_crud = SkillCRUD(Skill)
 specialization_skill_crud = SpecializationSkillCRUD(SpecializationSkill)
+
+
+class SkillRelationCRUD(CRUDBase[SkillRelation]):
+    """Доступ к связям родственных навыков."""
+
+    async def all_pairs(self, session: AsyncSession) -> dict[tuple[int, int], float]:
+        """Все связи как словарь (навык, родственный навык) → похожесть."""
+        result = await session.scalars(select(SkillRelation))
+        return {(item.skill_id, item.related_skill_id): item.similarity for item in result.all()}
+
+    async def replace_all(self, session: AsyncSession, rows: dict[tuple[int, int], float]) -> int:
+        """Полностью заменяет таблицу связей переданным набором."""
+        await session.execute(delete(SkillRelation))
+        session.add_all(
+            SkillRelation(skill_id=left, related_skill_id=right, similarity=similarity)
+            for (left, right), similarity in rows.items()
+        )
+        await session.flush()
+        return len(rows)
+
+
+skill_relation_crud = SkillRelationCRUD(SkillRelation)

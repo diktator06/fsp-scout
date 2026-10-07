@@ -17,6 +17,8 @@ from app.crud import (
     industry_crud,
     item_family_crud,
     skill_crud,
+    skill_lookup_crud,
+    skill_relation_crud,
     specialization_competency_crud,
     specialization_crud,
     specialization_skill_crud,
@@ -242,6 +244,26 @@ async def _sync_item_families(session: AsyncSession, report: SeedReport) -> None
                 report.count("item_families", created=False)
 
 
+async def _sync_skill_relations(session: AsyncSession, report: SeedReport) -> None:
+    """Связи родственных навыков из `skill_relations.yaml`, в обе стороны.
+
+    Таблица пересобирается, только если набор связей изменился: повторный сид
+    ничего не трогает.
+    """
+    records = load_records("skill_relations.yaml")
+    slugs = {slug for left, right, _ in records for slug in (left, right)}
+    ids = await skill_lookup_crud.ids_by_slugs(session, slugs)
+    unknown = sorted(slugs - set(ids))
+    if unknown:
+        raise ValueError(f"skill_relations.yaml: неизвестные навыки {unknown}")
+    desired: dict[tuple[int, int], float] = {}
+    for left, right, similarity in records:
+        desired[(ids[left], ids[right])] = float(similarity)
+        desired[(ids[right], ids[left])] = float(similarity)
+    if await skill_relation_crud.all_pairs(session) != desired:
+        report.updated["skill_relations"] = await skill_relation_crud.replace_all(session, desired)
+
+
 async def seed_reference_data(session: AsyncSession) -> SeedReport:
     """Наполняет справочники и банк заданий из `app/seed/data` и реестра генераторов.
 
@@ -261,6 +283,7 @@ async def seed_reference_data(session: AsyncSession) -> SeedReport:
     await _upsert_by_code(session, grade_crud, load_records("grades.yaml"), "grades", report)
     await _ensure_categories(session, report)
     await _upsert_skills(session, report)
+    await _sync_skill_relations(session, report)
     await _upsert_competencies(session, report)
     await _sync_item_families(session, report)
     return report
