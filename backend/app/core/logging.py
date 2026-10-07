@@ -18,3 +18,4 @@ def configure_logging(level: str = "INFO") -> None:
     root.setLevel(level.upper())
     logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
+    logging.getLogger("httpx").setLevel(logging.WARNING)

@@ -29,6 +29,12 @@ from app.crud.dictionary import (
     specialization_skill_crud,
 )
 from app.crud.employer import company_crud, recruiter_crud
+from app.crud.fsp import (
+    fsp_achievement_crud,
+    fsp_link_crud,
+    fsp_sync_log_crud,
+    oidc_flow_state_crud,
+)
 from app.crud.invitation import contact_disclosure_crud, invitation_crud, invitation_event_crud
 from app.crud.matching import (
     hiring_need_crud,
@@ -54,6 +60,9 @@ __all__ = [
     "contact_disclosure_crud",
     "education_crud",
     "email_verification_token_crud",
+    "fsp_achievement_crud",
+    "fsp_link_crud",
+    "fsp_sync_log_crud",
     "grade_crud",
     "grade_history_crud",
     "hiring_need_crud",
@@ -63,6 +72,7 @@ __all__ = [
     "item_family_crud",
     "need_skill_crud",
     "notification_crud",
+    "oidc_flow_state_crud",
     "privacy_settings_crud",
     "recruiter_crud",
     "refresh_session_crud",

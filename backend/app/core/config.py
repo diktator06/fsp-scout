@@ -6,6 +6,7 @@ from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEV_JWT_SECRET = "dev-only-jwt-secret-change-me-in-production"
+DEV_FSP_CLIENT_SECRET = "dev-only-fsp-client-secret"
 BACKEND_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -57,9 +58,21 @@ class Settings(BaseSettings):
 
     invitation_ttl_days: int = Field(default=14, ge=1, le=60)
 
+    fsp_enabled: bool = True
+    fsp_oidc_issuer: str = "http://localhost:8090"
+    fsp_internal_url: str = ""
+    fsp_registry_url: str = ""
+    fsp_client_id: str = "fsp-scout"
+    fsp_client_secret: str = DEV_FSP_CLIENT_SECRET
+    fsp_link_redirect_path: str = "/c/fsp/callback"
+    fsp_login_redirect_path: str = "/auth/fsp/callback"
+    fsp_flow_ttl_minutes: int = Field(default=10, ge=1, le=60)
+    fsp_http_timeout_seconds: float = Field(default=5.0, gt=0, le=60)
+
     seed_demo_users: bool = True
     seed_demo_population: bool = True
     demo_population_per_specialization: int = Field(default=16, ge=0, le=200)
+    demo_fsp_link_share: float = Field(default=0.4, ge=0, le=1)
     demo_password: str = "ScoutDemo2026"
 
     swagger_assets_dir: Path = BACKEND_ROOT / "static" / "swagger"
@@ -76,7 +89,28 @@ class Settings(BaseSettings):
             raise ValueError("В production необходимо задать собственный JWT_SECRET")
         if len(self.jwt_secret) < 32:
             raise ValueError("JWT_SECRET должен быть не короче 32 символов")
+        if self.app_env == "production" and self.fsp_client_secret == DEV_FSP_CLIENT_SECRET:
+            raise ValueError("В production необходимо задать собственный FSP_CLIENT_SECRET")
         return self
+
+    @property
+    def fsp_issuer(self) -> str:
+        """Идентификатор провайдера ФСП ID без завершающего слеша — как в claim `iss`."""
+        return self.fsp_oidc_issuer.rstrip("/")
+
+    @property
+    def fsp_backchannel_url(self) -> str:
+        """Адрес ФСП ID для запросов с сервера.
+
+        Браузер ходит на публичный адрес провайдера, а бэкенд внутри Docker — по имени
+        сервиса. Если внутренний адрес не задан, используется публичный.
+        """
+        return (self.fsp_internal_url or self.fsp_oidc_issuer).rstrip("/")
+
+    @property
+    def fsp_registry_base_url(self) -> str:
+        """Адрес API реестра достижений; по умолчанию тот же сервер, что и ФСП ID."""
+        return (self.fsp_registry_url or self.fsp_backchannel_url).rstrip("/")
 
     @property
     def is_production(self) -> bool:

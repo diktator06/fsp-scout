@@ -39,6 +39,18 @@ from app.models.dictionary import (
     SpecializationSkill,
 )
 from app.models.employer import Company, CompanySize, Recruiter, TrustLevel
+from app.models.fsp import (
+    FspAchievement,
+    FspEventLevel,
+    FspLink,
+    FspParticipationFormat,
+    FspResultStatus,
+    FspState,
+    FspSyncLog,
+    FspSyncStatus,
+    OidcFlowPurpose,
+    OidcFlowState,
+)
 from app.models.invitation import (
     ContactDisclosure,
     DeclineReason,
@@ -80,6 +92,14 @@ __all__ = [
     "DisclosureReason",
     "Education",
     "EmailVerificationToken",
+    "FspAchievement",
+    "FspEventLevel",
+    "FspLink",
+    "FspParticipationFormat",
+    "FspResultStatus",
+    "FspState",
+    "FspSyncLog",
+    "FspSyncStatus",
     "Grade",
     "GradeChangeReason",
     "GradeHistory",
@@ -95,6 +115,8 @@ __all__ = [
     "NeedStatus",
     "Notification",
     "NotificationKind",
+    "OidcFlowPurpose",
+    "OidcFlowState",
     "PrivacySettings",
     "Recruiter",
     "RefreshSession",

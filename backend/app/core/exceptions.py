@@ -132,3 +132,49 @@ class InvitationQuotaExceededError(AppError):
     status_code = 429
     code = "invitation_quota_exceeded"
     default_message = "Дневной лимит приглашений исчерпан, попробуйте завтра"
+
+
+class ConsentRequiredError(AppError):
+    """Действие требует отдельного согласия по 152-ФЗ, а оно не дано."""
+
+    status_code = 422
+    code = "consent_required"
+    default_message = "Нужно согласие на обработку данных"
+
+
+class FspUnavailableError(AppError):
+    """ФСП ID или реестр достижений не отвечает или отвечает ошибкой."""
+
+    status_code = 503
+    code = "fsp_unavailable"
+    default_message = "Сервис ФСП сейчас недоступен, попробуйте позже"
+
+
+class FspAuthError(AppError):
+    """Вход через ФСП ID не удался: просроченный state, неверный код или подпись токена."""
+
+    status_code = 400
+    code = "fsp_auth_failed"
+    default_message = "Не удалось подтвердить вход через ФСП ID, попробуйте ещё раз"
+
+
+class FspAlreadyLinkedError(ConflictError):
+    """Этот участник ФСП уже привязан к другому профилю."""
+
+    code = "fsp_already_linked"
+    default_message = "Этот ФСП ID уже привязан к другому аккаунту"
+
+
+class FspNotLinkedError(ConflictError):
+    """Профиль не связан с ФСП ID, а действие этого требует."""
+
+    code = "fsp_not_linked"
+    default_message = "ФСП ID не привязан"
+
+
+class FspDisabledError(AppError):
+    """Интеграция с ФСП выключена в настройках стенда."""
+
+    status_code = 404
+    code = "fsp_disabled"
+    default_message = "Интеграция с ФСП выключена"
