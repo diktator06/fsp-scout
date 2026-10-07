@@ -59,8 +59,18 @@ class NeedService:
             found = await specialization_crud.get_by_code(self._session, parsed.specialization_code)
             specialization = SpecializationBrief.model_validate(found) if found else None
         grade_by_code = {grade.code: grade for grade in catalog.grades}
+        title = parsed.title
+        if title is None and specialization is not None:
+            grade_names = [
+                grade_by_code[code].name for code in parsed.grade_codes if code in grade_by_code
+            ]
+            title = (
+                f"{specialization.name} · {', '.join(grade_names)}"
+                if grade_names
+                else specialization.name
+            )
         return NeedDraft(
-            title=parsed.title,
+            title=title,
             raw_text=text,
             specialization=specialization,
             specialization_confidence=parsed.specialization_confidence,

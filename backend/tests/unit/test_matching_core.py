@@ -150,6 +150,34 @@ class TestNeedParser:
         } == {7, 3}
         assert parse_need_text("We go live every week, удалённо", CATALOG, GRADES).skills == []
 
+    def test_nice_marker_scope_inside_sentence(self) -> None:
+        """«Желательно» действует от своего места до конца фразы, а не на всю строку."""
+        parsed = parse_need_text(
+            "Ищем бэкендера уровня мидл в команду лояльности. Нужны питон, FastAPI и постгрес, "
+            "желательно Kafka. Удалённо, до 280 тыс. на руки, от 200 тыс.",
+            CATALOG,
+            GRADES,
+        )
+        importance = {item.skill_id: item.importance for item in parsed.skills}
+        assert importance == {1: "must", 2: "must", 3: "must", 4: "nice"}
+        assert parsed.title == "Ищем бэкендера уровня мидл в команду лояльности"
+        assert (parsed.salary_from, parsed.salary_to, parsed.salary_gross) == (
+            200_000,
+            280_000,
+            False,
+        )
+        trailing = parse_need_text(
+            "Python и FastAPI обязательны, Kafka будет плюсом.", CATALOG, GRADES
+        )
+        assert {item.skill_id: item.importance for item in trailing.skills} == {
+            1: "must",
+            2: "must",
+            4: "nice",
+        }
+        assert (
+            parse_need_text("Требования: Python. Желательно Kafka.", CATALOG, GRADES).title is None
+        )
+
     def test_office_location_is_not_a_format_for_hybrid(self) -> None:
         """«Гибрид, офис в Казани» — один формат и город, а не офис плюс гибрид."""
         parsed = parse_need_text("Гибрид, офис в Казани. Python.", CATALOG, GRADES)

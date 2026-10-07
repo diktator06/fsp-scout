@@ -99,6 +99,9 @@ _EXPERIENCE = re.compile(
     re.IGNORECASE,
 )
 
+TITLE_MAX_LENGTH = 120
+SENTENCE_TITLE_MAX_LENGTH = 90
+
 _NICE_MARKERS = (
     "будет плюсом",
     "плюсом будет",
@@ -176,13 +179,35 @@ def _amount(raw: str, unit: str | None) -> int:
     return round(value)
 
 
+def _split_by_marker(clause: str, base_mode: str) -> list[tuple[str, str]]:
+    """Делит фразу по маркеру «желательно» на обязательную и желательную части.
+
+    Маркер действует от своего места до конца фразы: «нужны Python и FastAPI,
+    желательно Docker» — желателен только Docker. Если после маркера ничего нет
+    («Kafka будет плюсом»), желательна часть фразы до маркера от последней запятой.
+    """
+    lowered = clause.lower()
+    positions = [lowered.find(marker) for marker in _NICE_MARKERS if marker in lowered]
+    if not positions:
+        return [(clause, base_mode)]
+    start = min(positions)
+    tail = clause[start:]
+    marker_end = start + max(
+        len(marker) for marker in _NICE_MARKERS if lowered.startswith(marker, start)
+    )
+    if re.search(r"\w", clause[marker_end:]):
+        return [(clause[:start], base_mode), (tail, "nice")]
+    cut = max(clause.rfind(",", 0, start), clause.rfind(";", 0, start))
+    return [(clause[: cut + 1], base_mode), (clause[cut + 1 :], "nice")]
+
+
 def _clauses(text: str) -> list[tuple[str, str]]:
     """Разбивает текст на фразы и помечает каждую как обязательную или желательную.
 
     Заголовок «Будет плюсом:» переключает режим для следующих строк списка, пока не
-    встретится другой заголовок. Маркер внутри фразы действует только на неё.
+    встретится другой заголовок. Маркер внутри фразы действует только на её часть.
     """
-    result = []
+    result: list[tuple[str, str]] = []
     section_mode = "must"
     for line in text.splitlines():
         stripped = line.strip(" \t•*-–—·")
@@ -196,9 +221,11 @@ def _clauses(text: str) -> list[tuple[str, str]]:
             elif any(marker in lowered for marker in _MUST_MARKERS):
                 section_mode = "must"
         for clause in re.split(r"(?<=[.;!?])\s+", stripped):
-            clause_lower = clause.lower()
-            mode = "nice" if any(m in clause_lower for m in _NICE_MARKERS) else section_mode
-            result.append((clause, mode))
+            result.extend(
+                (part, mode)
+                for part, mode in _split_by_marker(clause, section_mode)
+                if part.strip()
+            )
     return result
 
 
@@ -334,11 +361,23 @@ def _detect_salary(text: str) -> tuple[int | None, int | None, str | None]:
 
 
 def _title(text: str) -> str | None:
-    """Первая строка как название, если она похожа на заголовок."""
+    """Название: первая строка, если она похожа на заголовок, иначе первое короткое предложение.
+
+    Текст одним абзацем («Ищем бэкендера в команду лояльности. Нужны…») тоже даёт
+    осмысленное название, а не пустое поле.
+    """
     for line in text.splitlines():
         stripped = line.strip(" \t•*-–—#")
-        if stripped:
-            return stripped[:120] if len(stripped) <= 120 and not stripped.endswith(":") else None
+        if not stripped:
+            continue
+        if stripped.endswith(":"):
+            return None
+        if len(stripped) <= TITLE_MAX_LENGTH and not re.search(r"[.;!?]\s", stripped):
+            return stripped.rstrip(".")
+        sentence = re.split(r"(?<=[.;!?])\s+", stripped)[0].rstrip(".;!?")
+        if ":" in sentence or len(sentence) > SENTENCE_TITLE_MAX_LENGTH:
+            return None
+        return sentence
     return None
 
 
