@@ -2,6 +2,7 @@ import { Badge, Card, Group, SimpleGrid, Stack, Text } from '@mantine/core';
 import { Link } from 'react-router';
 import { errorMessage } from '@/api/errors';
 import { useCandidateInvitations } from '@/api/invitations';
+import { BankPublishPrompt } from '@/features/candidate/BankPublishPrompt';
 import { formatDate } from '@/shared/lib/format';
 import {
   ErrorState,
@@ -31,12 +32,15 @@ export function CandidateInvitationsPage() {
           onRetry={() => void invitations.refetch()}
         />
       ) : invitations.data.length === 0 ? (
-        <Card>
-          <Text c="dimmed">
-            Приглашений пока нет. Они появятся, когда работодатель найдёт вас в банке кандидатов, —
-            проверьте, что профиль опубликован в разделе «Приватность».
-          </Text>
-        </Card>
+        <Stack gap="lg">
+          <BankPublishPrompt />
+          <Card>
+            <Text c="dimmed">
+              Приглашений пока нет. Они появятся, когда работодатель найдёт вас в банке кандидатов.
+              Чаще находят тех, у кого грейд подтверждён тестом и навыки отмечены в профиле.
+            </Text>
+          </Card>
+        </Stack>
       ) : (
         <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
           {invitations.data.map((item) => (

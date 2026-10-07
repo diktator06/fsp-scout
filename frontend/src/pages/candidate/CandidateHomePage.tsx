@@ -25,6 +25,7 @@ import { useCandidateInvitations } from '@/api/invitations';
 import { errorMessage } from '@/api/errors';
 import type { CandidateStatus } from '@/api/types';
 import { useAuth } from '@/features/auth/useAuth';
+import { BankPublishPrompt } from '@/features/candidate/BankPublishPrompt';
 import { GRADE_STATUS_COPY } from '@/shared/lib/candidate';
 import type { TimelineStep } from '@/shared/lib/invitationStatus';
 import {
@@ -58,7 +59,7 @@ function buildTimeline(status: CandidateStatus): TimelineStep[] {
       key: 'category',
       label: 'Категория',
       state: status.onboarding_step === 'done' ? 'success' : 'upcoming',
-      description: 'Вас видят компании',
+      description: status.bank_published ? 'Вас видят компании' : 'Затем — публикация',
     },
   ];
 }
@@ -182,16 +183,25 @@ function FspTeaser() {
 export function CandidateHomePage() {
   const { user } = useAuth();
   const status = useCandidateStatus();
+  const done = status.data?.onboarding_step === 'done';
 
   const header = (
     <PageHeader
       kicker="Кабинет специалиста"
-      title="Путь к вашей категории"
+      title={done ? 'Ваша категория подтверждена' : 'Путь к вашей категории'}
       description={
-        <>
-          Вы вошли как <b>{user?.email}</b>. Категория определяется опросом и тестом, а не резюме.
-          Как только она появится, работодатели смогут пригласить вас с вилкой зарплаты.
-        </>
+        done ? (
+          <>
+            Вы вошли как <b>{user?.email}</b>. Работодатели находят специалистов по категориям и
+            приглашают с вилкой зарплаты. Имя и контакты открываются, только когда вы принимаете
+            приглашение.
+          </>
+        ) : (
+          <>
+            Вы вошли как <b>{user?.email}</b>. Категория определяется опросом и тестом, а не резюме.
+            Как только она появится, работодатели смогут пригласить вас с вилкой зарплаты.
+          </>
+        )
       }
     />
   );
@@ -224,16 +234,22 @@ export function CandidateHomePage() {
     <>
       {header}
       <InvitationsTeaser />
-      <Card mb="lg">
-        <Group justify="space-between" mb="lg" wrap="wrap" gap="sm">
-          <Title order={4}>Шаги онбординга</Title>
-          <Badge color="lilac" variant="light">
-            {doneSteps} из 5
-          </Badge>
-        </Group>
-        <StatusTimeline steps={buildTimeline(data)} />
-        <NextAction status={data} />
-      </Card>
+      {done ? (
+        <Stack gap="lg" mb="lg">
+          <BankPublishPrompt />
+        </Stack>
+      ) : (
+        <Card mb="lg">
+          <Group justify="space-between" mb="lg" wrap="wrap" gap="sm">
+            <Title order={4}>Шаги онбординга</Title>
+            <Badge color="lilac" variant="light">
+              {doneSteps} из 5
+            </Badge>
+          </Group>
+          <StatusTimeline steps={buildTimeline(data)} />
+          <NextAction status={data} />
+        </Card>
+      )}
 
       <SimpleGrid cols={{ base: 1, lg: 2 }} spacing="lg">
         <Card>
@@ -289,6 +305,17 @@ export function CandidateHomePage() {
                 </Button>
               )}
             </Group>
+            {done && (
+              <Button
+                component={Link}
+                to="/c/assessment"
+                variant="light"
+                rightSection={<IconArrowRight size={16} />}
+                style={{ alignSelf: 'flex-start' }}
+              >
+                Тест на уровень выше
+              </Button>
+            )}
           </Stack>
         </Card>
 
@@ -303,7 +330,7 @@ export function CandidateHomePage() {
             <Text c="dimmed" size="sm" lh={1.6}>
               До вашего согласия компания видит обезличенную карточку: категорию, подтверждённые
               навыки и индекс профиля. Имя, телефон и email открываются, только когда вы принимаете
-              приглашение или откликаетесь сами.
+              приглашение.
             </Text>
             <Card withBorder radius="md" padding="md" bg="var(--scout-surface-muted)">
               <Group justify="space-between" align="flex-start" wrap="wrap" gap="sm">

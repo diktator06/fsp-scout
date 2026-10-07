@@ -196,7 +196,7 @@ export function ProfileForm({ profile, variant, submitLabel, onSaved }: ProfileF
     <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
       <NumberInput
         label="Зарплата от, ₽ в месяц"
-        description="Работодатель увидит её, только если вы разрешите в настройках приватности"
+        description="Видна работодателю, пока вы не скроете её в настройках приватности"
         thousandSeparator=" "
         min={0}
         step={5000}

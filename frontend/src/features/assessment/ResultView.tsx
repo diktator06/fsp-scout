@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { useAcceptSuggestedGrade } from '@/api/assessment';
 import { errorMessage } from '@/api/errors';
 import type { AssessmentSession, SessionResult } from '@/api/types';
+import { BankPublishPrompt } from '@/features/candidate/BankPublishPrompt';
 import { MODE_LABELS, OUTCOME_COPY, competencyShare } from '@/shared/lib/assessment';
 import { pluralizeRu } from '@/shared/lib/format';
 import { CategoryBadge, GradeScale, Kicker } from '@/shared/ui';
@@ -131,6 +132,8 @@ export function ResultView({ session }: { session: AssessmentSession }) {
           </div>
         </dl>
       </section>
+
+      {category && <BankPublishPrompt />}
 
       <SimpleGrid cols={{ base: 1, lg: 5 }} spacing="lg">
         <Card className={classes.scaleCard}>
