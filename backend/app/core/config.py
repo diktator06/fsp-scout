@@ -55,7 +55,11 @@ class Settings(BaseSettings):
     assessment_session_minutes: int = Field(default=60, ge=10, le=240)
     item_grace_seconds: int = Field(default=5, ge=0, le=60)
 
+    invitation_ttl_days: int = Field(default=14, ge=1, le=60)
+
     seed_demo_users: bool = True
+    seed_demo_population: bool = True
+    demo_population_per_specialization: int = Field(default=14, ge=0, le=200)
     demo_password: str = "ScoutDemo2026"
 
     swagger_assets_dir: Path = BACKEND_ROOT / "static" / "swagger"

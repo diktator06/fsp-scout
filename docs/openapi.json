@@ -57,6 +57,87 @@
         "title": "AssessmentMode",
         "type": "string"
       },
+      "BankCandidateRead": {
+        "description": "Кандидат в выдаче банка.",
+        "properties": {
+          "card": {
+            "$ref": "#/components/schemas/CandidateAnonymousCard"
+          },
+          "contacts_disclosed": {
+            "title": "Contacts Disclosed",
+            "type": "boolean"
+          },
+          "invitation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InvitationBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "card",
+          "contacts_disclosed",
+          "invitation"
+        ],
+        "title": "BankCandidateRead",
+        "type": "object"
+      },
+      "BankPage": {
+        "description": "Страница банка с общим числом и разбивкой по статусу грейда.",
+        "properties": {
+          "confirmed": {
+            "title": "Confirmed",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BankCandidateRead"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "unconfirmed": {
+            "title": "Unconfirmed",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "confirmed",
+          "unconfirmed",
+          "limit",
+          "offset"
+        ],
+        "title": "BankPage",
+        "type": "object"
+      },
+      "BankSort": {
+        "description": "Порядок банка кандидатов.",
+        "enum": [
+          "score",
+          "recent",
+          "experience"
+        ],
+        "title": "BankSort",
+        "type": "string"
+      },
       "BlueprintCompetency": {
         "description": "Компетенция в тесте и её доля.",
         "properties": {
@@ -140,6 +221,331 @@
           "granted"
         ],
         "title": "Body_set_bank_publication_api_v1_candidates_me_consents_bank_publication_put",
+        "type": "object"
+      },
+      "CandidateAnonymousCard": {
+        "description": "Обезличенная карточка кандидата.\n\nКонтактных полей (ФИО, email, телефон, Telegram) в этой схеме нет физически:\nих невозможно случайно отдать работодателю сериализацией. Контакты приходят\nотдельным объектом `DisclosedContacts` и только после согласия кандидата.",
+        "properties": {
+          "about": {
+            "title": "About",
+            "type": "string"
+          },
+          "alias": {
+            "title": "Alias",
+            "type": "string"
+          },
+          "candidate_id": {
+            "format": "uuid",
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CategoryRead"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "experience_years": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Experience Years"
+          },
+          "experiences": {
+            "items": {
+              "$ref": "#/components/schemas/CardExperience"
+            },
+            "title": "Experiences",
+            "type": "array"
+          },
+          "fsp": {
+            "$ref": "#/components/schemas/FspSummary"
+          },
+          "grade_status": {
+            "enum": [
+              "confirmed",
+              "unconfirmed"
+            ],
+            "title": "Grade Status",
+            "type": "string"
+          },
+          "relocation_ready": {
+            "title": "Relocation Ready",
+            "type": "boolean"
+          },
+          "salary_expectation": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Salary Expectation"
+          },
+          "salary_gross": {
+            "title": "Salary Gross",
+            "type": "boolean"
+          },
+          "search_status": {
+            "$ref": "#/components/schemas/SearchStatus"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/CardSkill"
+            },
+            "title": "Skills",
+            "type": "array"
+          },
+          "test": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CardTest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "verified_score": {
+            "$ref": "#/components/schemas/VerifiedScoreRead"
+          },
+          "work_formats": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Work Formats",
+            "type": "array"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "alias",
+          "category",
+          "grade_status",
+          "verified_score",
+          "skills",
+          "experience_years",
+          "work_formats",
+          "relocation_ready",
+          "city",
+          "salary_expectation",
+          "salary_gross",
+          "search_status",
+          "about",
+          "experiences",
+          "test",
+          "fsp",
+          "updated_at"
+        ],
+        "title": "CandidateAnonymousCard",
+        "type": "object"
+      },
+      "CandidateCardRead": {
+        "description": "Карточка кандидата для работодателя.\n\n`card` всегда обезличена. `contacts` заполняются, только если кандидат раскрыл их\nэтой компании. `match` есть, если карточку открыли из подборки потребности.",
+        "properties": {
+          "card": {
+            "$ref": "#/components/schemas/CandidateAnonymousCard"
+          },
+          "contacts": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DisclosedContacts"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "invitation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InvitationBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "match": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MatchRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "card",
+          "contacts",
+          "match",
+          "invitation"
+        ],
+        "title": "CandidateCardRead",
+        "type": "object"
+      },
+      "CandidateInvitationRead": {
+        "description": "Приглашение глазами кандидата.",
+        "properties": {
+          "company": {
+            "$ref": "#/components/schemas/CompanyBrief"
+          },
+          "contact_method": {
+            "title": "Contact Method",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "decline_comment": {
+            "title": "Decline Comment",
+            "type": "string"
+          },
+          "decline_reason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeclineReason"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "employer_contacts": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EmployerContacts"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/InvitationEventRead"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "offer_description": {
+            "title": "Offer Description",
+            "type": "string"
+          },
+          "recruiter_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recruiter Name"
+          },
+          "responded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Responded At"
+          },
+          "salary_from": {
+            "title": "Salary From",
+            "type": "integer"
+          },
+          "salary_gross": {
+            "title": "Salary Gross",
+            "type": "boolean"
+          },
+          "salary_to": {
+            "title": "Salary To",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InvitationStatus"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "viewed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Viewed At"
+          },
+          "work_format": {
+            "$ref": "#/components/schemas/WorkFormat"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "title",
+          "offer_description",
+          "salary_from",
+          "salary_to",
+          "salary_gross",
+          "work_format",
+          "contact_method",
+          "decline_reason",
+          "decline_comment",
+          "created_at",
+          "viewed_at",
+          "responded_at",
+          "expires_at",
+          "events",
+          "company",
+          "recruiter_name",
+          "employer_contacts"
+        ],
+        "title": "CandidateInvitationRead",
         "type": "object"
       },
       "CandidateProfileRead": {
@@ -663,6 +1069,169 @@
         "title": "CandidateStatusRead",
         "type": "object"
       },
+      "CardCompetency": {
+        "description": "Результат теста по компетенции.",
+        "properties": {
+          "answered": {
+            "title": "Answered",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "correct": {
+            "title": "Correct",
+            "type": "number"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "answered",
+          "correct"
+        ],
+        "title": "CardCompetency",
+        "type": "object"
+      },
+      "CardExperience": {
+        "description": "Место работы. Название компании — только если кандидат разрешил его показывать.",
+        "properties": {
+          "company_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company Name"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "ended_on": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ended On"
+          },
+          "position": {
+            "title": "Position",
+            "type": "string"
+          },
+          "started_on": {
+            "format": "date",
+            "title": "Started On",
+            "type": "string"
+          }
+        },
+        "required": [
+          "position",
+          "company_name",
+          "started_on",
+          "ended_on",
+          "description"
+        ],
+        "title": "CardExperience",
+        "type": "object"
+      },
+      "CardSkill": {
+        "description": "Навык в карточке.",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/SkillKind"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "self_level": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Self Level"
+          },
+          "verified": {
+            "title": "Verified",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "kind",
+          "verified",
+          "self_level"
+        ],
+        "title": "CardSkill",
+        "type": "object"
+      },
+      "CardTest": {
+        "description": "Сводка теста, присвоившего категорию.",
+        "properties": {
+          "competencies": {
+            "items": {
+              "$ref": "#/components/schemas/CardCompetency"
+            },
+            "title": "Competencies",
+            "type": "array"
+          },
+          "finished_at": {
+            "format": "date-time",
+            "title": "Finished At",
+            "type": "string"
+          },
+          "items": {
+            "title": "Items",
+            "type": "integer"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/AssessmentMode"
+          },
+          "percentile": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percentile"
+          }
+        },
+        "required": [
+          "finished_at",
+          "mode",
+          "items",
+          "percentile",
+          "competencies"
+        ],
+        "title": "CardTest",
+        "type": "object"
+      },
       "CategoryRead": {
         "description": "Категория кандидатов: специализация × грейд.",
         "properties": {
@@ -698,6 +1267,422 @@
           "grade"
         ],
         "title": "CategoryRead",
+        "type": "object"
+      },
+      "CategorySliceRead": {
+        "description": "Рекомендованная категория с рыночным срезом.",
+        "properties": {
+          "candidates": {
+            "title": "Candidates",
+            "type": "integer"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CategoryRead"
+          },
+          "confirmed": {
+            "title": "Confirmed",
+            "type": "integer"
+          },
+          "covering_must": {
+            "title": "Covering Must",
+            "type": "integer"
+          },
+          "median_expectation": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Expectation"
+          },
+          "relation": {
+            "description": "target, adjacent_grade или adjacent_specialization",
+            "title": "Relation",
+            "type": "string"
+          },
+          "strong_matches": {
+            "title": "Strong Matches",
+            "type": "integer"
+          },
+          "within_budget": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Within Budget"
+          }
+        },
+        "required": [
+          "category",
+          "relation",
+          "candidates",
+          "confirmed",
+          "covering_must",
+          "strong_matches",
+          "median_expectation",
+          "within_budget"
+        ],
+        "title": "CategorySliceRead",
+        "type": "object"
+      },
+      "CompanyBrief": {
+        "description": "Компания глазами кандидата: видна сразу, ещё до ответа на приглашение.",
+        "properties": {
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "industry": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Industry"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CompanySize"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trust_level": {
+            "$ref": "#/components/schemas/TrustLevel"
+          },
+          "website": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website"
+          }
+        },
+        "required": [
+          "name",
+          "industry",
+          "city",
+          "website",
+          "size",
+          "description",
+          "trust_level"
+        ],
+        "title": "CompanyBrief",
+        "type": "object"
+      },
+      "CompanyRead": {
+        "description": "Профиль компании.",
+        "properties": {
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "contact_email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Email"
+          },
+          "contact_phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Phone"
+          },
+          "contact_telegram": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Telegram"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "industry": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IndustryRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "inn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inn"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CompanySize"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trust_level": {
+            "$ref": "#/components/schemas/TrustLevel"
+          },
+          "website": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Website"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "inn",
+          "website",
+          "industry",
+          "description",
+          "size",
+          "city",
+          "contact_email",
+          "contact_phone",
+          "contact_telegram",
+          "trust_level",
+          "created_at"
+        ],
+        "title": "CompanyRead",
+        "type": "object"
+      },
+      "CompanySize": {
+        "description": "Размер компании по числу сотрудников.",
+        "enum": [
+          "tiny",
+          "small",
+          "medium",
+          "large",
+          "enterprise"
+        ],
+        "title": "CompanySize",
+        "type": "string"
+      },
+      "CompanyUpdate": {
+        "description": "Профиль компании и данные рекрутера, который его заполняет.",
+        "properties": {
+          "city": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "contact_email": {
+            "anyOf": [
+              {
+                "format": "email",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Email"
+          },
+          "contact_phone": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Phone"
+          },
+          "contact_telegram": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contact Telegram"
+          },
+          "description": {
+            "default": "",
+            "maxLength": 3000,
+            "title": "Description",
+            "type": "string"
+          },
+          "industry_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Industry Id"
+          },
+          "inn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": [
+              "7701234567"
+            ],
+            "title": "Inn"
+          },
+          "name": {
+            "examples": [
+              "Кедр Технологии"
+            ],
+            "maxLength": 200,
+            "minLength": 2,
+            "title": "Name",
+            "type": "string"
+          },
+          "recruiter_full_name": {
+            "examples": [
+              "Мария Соколова"
+            ],
+            "maxLength": 200,
+            "minLength": 2,
+            "title": "Recruiter Full Name",
+            "type": "string"
+          },
+          "recruiter_position": {
+            "default": "",
+            "examples": [
+              "HR-партнёр"
+            ],
+            "maxLength": 120,
+            "title": "Recruiter Position",
+            "type": "string"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CompanySize"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "website": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "examples": [
+              "https://kedr.example"
+            ],
+            "title": "Website"
+          }
+        },
+        "required": [
+          "name",
+          "recruiter_full_name"
+        ],
+        "title": "CompanyUpdate",
         "type": "object"
       },
       "CompetencyResult": {
@@ -769,6 +1754,114 @@
           "telegram"
         ],
         "title": "ContactChannel",
+        "type": "string"
+      },
+      "DeclineReason": {
+        "description": "Причина отказа: агрегаты по ним работодатель видит как обратную связь.",
+        "enum": [
+          "salary",
+          "stack",
+          "work_format",
+          "not_looking",
+          "company",
+          "other"
+        ],
+        "title": "DeclineReason",
+        "type": "string"
+      },
+      "DeclineRequest": {
+        "description": "Отказ от приглашения с причиной: из причин складывается обратная связь работодателю.",
+        "properties": {
+          "comment": {
+            "default": "",
+            "maxLength": 500,
+            "title": "Comment",
+            "type": "string"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/DeclineReason"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "DeclineRequest",
+        "type": "object"
+      },
+      "DisclosedContacts": {
+        "description": "Контакты кандидата: только каналы, которые он разрешил раскрывать.",
+        "properties": {
+          "disclosed_at": {
+            "format": "date-time",
+            "title": "Disclosed At",
+            "type": "string"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "full_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Name"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "reason": {
+            "$ref": "#/components/schemas/DisclosureReason"
+          },
+          "telegram": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telegram"
+          }
+        },
+        "required": [
+          "full_name",
+          "email",
+          "phone",
+          "telegram",
+          "disclosed_at",
+          "reason"
+        ],
+        "title": "DisclosedContacts",
+        "type": "object"
+      },
+      "DisclosureReason": {
+        "description": "Основание раскрытия контактов: принятое приглашение или собственный отклик кандидата.",
+        "enum": [
+          "invitation_accepted",
+          "application"
+        ],
+        "title": "DisclosureReason",
         "type": "string"
       },
       "EducationInput": {
@@ -900,6 +1993,295 @@
         "title": "EligibilityRead",
         "type": "object"
       },
+      "EmployerContacts": {
+        "description": "Контакты работодателя, которые кандидат видит после принятия приглашения.",
+        "properties": {
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "recruiter_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recruiter Name"
+          },
+          "recruiter_position": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recruiter Position"
+          },
+          "telegram": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telegram"
+          }
+        },
+        "required": [
+          "recruiter_name",
+          "recruiter_position",
+          "email",
+          "phone",
+          "telegram"
+        ],
+        "title": "EmployerContacts",
+        "type": "object"
+      },
+      "EmployerDashboardRead": {
+        "description": "Сводка для главной кабинета работодателя.",
+        "properties": {
+          "accepted_contacts": {
+            "title": "Accepted Contacts",
+            "type": "integer"
+          },
+          "active_needs": {
+            "title": "Active Needs",
+            "type": "integer"
+          },
+          "invitations": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/InvitationStatus"
+            },
+            "title": "Invitations",
+            "type": "object"
+          },
+          "quota": {
+            "$ref": "#/components/schemas/InvitationQuotaRead"
+          }
+        },
+        "required": [
+          "active_needs",
+          "invitations",
+          "accepted_contacts",
+          "quota"
+        ],
+        "title": "EmployerDashboardRead",
+        "type": "object"
+      },
+      "EmployerInvitationRead": {
+        "description": "Приглашение глазами работодателя.",
+        "properties": {
+          "candidate": {
+            "$ref": "#/components/schemas/InvitationCandidateRead"
+          },
+          "contact_method": {
+            "title": "Contact Method",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "decline_comment": {
+            "title": "Decline Comment",
+            "type": "string"
+          },
+          "decline_reason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DeclineReason"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/InvitationEventRead"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "need_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Need Id"
+          },
+          "need_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Need Title"
+          },
+          "offer_description": {
+            "title": "Offer Description",
+            "type": "string"
+          },
+          "responded_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Responded At"
+          },
+          "salary_from": {
+            "title": "Salary From",
+            "type": "integer"
+          },
+          "salary_gross": {
+            "title": "Salary Gross",
+            "type": "boolean"
+          },
+          "salary_to": {
+            "title": "Salary To",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InvitationStatus"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "viewed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Viewed At"
+          },
+          "work_format": {
+            "$ref": "#/components/schemas/WorkFormat"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "title",
+          "offer_description",
+          "salary_from",
+          "salary_to",
+          "salary_gross",
+          "work_format",
+          "contact_method",
+          "decline_reason",
+          "decline_comment",
+          "created_at",
+          "viewed_at",
+          "responded_at",
+          "expires_at",
+          "events",
+          "need_id",
+          "need_title",
+          "candidate"
+        ],
+        "title": "EmployerInvitationRead",
+        "type": "object"
+      },
+      "EmployerProfileRead": {
+        "description": "Кабинет работодателя: компания, рекрутер и квота. Без компании — пустые поля.",
+        "properties": {
+          "company": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CompanyRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "quota": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InvitationQuotaRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "recruiter": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RecruiterRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "company",
+          "recruiter",
+          "quota"
+        ],
+        "title": "EmployerProfileRead",
+        "type": "object"
+      },
       "ErrorBody": {
         "description": "Тело ошибки: машинный код для фронтенда и текст для человека.",
         "properties": {
@@ -949,6 +2331,45 @@
           "error"
         ],
         "title": "ErrorResponse",
+        "type": "object"
+      },
+      "ExplanationItemRead": {
+        "description": "Причина в блоке «Почему в подборке».",
+        "properties": {
+          "kind": {
+            "description": "plus, minus или info",
+            "title": "Kind",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "text"
+        ],
+        "title": "ExplanationItemRead",
+        "type": "object"
+      },
+      "FspSummary": {
+        "description": "Блок ФСП. Пока ФСП ID не привязан, это нейтральное пустое состояние, а не минус.",
+        "properties": {
+          "linked": {
+            "title": "Linked",
+            "type": "boolean"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "linked",
+          "message"
+        ],
+        "title": "FspSummary",
         "type": "object"
       },
       "GradeBrief": {
@@ -1200,6 +2621,231 @@
         "title": "IntegrityEventCreate",
         "type": "object"
       },
+      "InvitationBrief": {
+        "description": "Последнее приглашение компании кандидату — для метки в выдаче.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InvitationStatus"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "created_at"
+        ],
+        "title": "InvitationBrief",
+        "type": "object"
+      },
+      "InvitationCandidateRead": {
+        "description": "Кандидат в приглашении глазами работодателя: псевдоним до согласия, контакты после.",
+        "properties": {
+          "alias": {
+            "title": "Alias",
+            "type": "string"
+          },
+          "candidate_id": {
+            "format": "uuid",
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CategoryRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "contacts": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DisclosedContacts"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "grade_status": {
+            "enum": [
+              "confirmed",
+              "unconfirmed"
+            ],
+            "title": "Grade Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "alias",
+          "category",
+          "grade_status",
+          "contacts"
+        ],
+        "title": "InvitationCandidateRead",
+        "type": "object"
+      },
+      "InvitationCreate": {
+        "description": "Приглашение кандидату: описание, вилка и способ связи обязательны (ТЗ §2.2.2).",
+        "properties": {
+          "candidate_id": {
+            "format": "uuid",
+            "title": "Candidate Id",
+            "type": "string"
+          },
+          "contact_method": {
+            "examples": [
+              "Telegram @kedr_hr, отвечаем в течение дня"
+            ],
+            "maxLength": 300,
+            "minLength": 5,
+            "title": "Contact Method",
+            "type": "string"
+          },
+          "need_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Need Id"
+          },
+          "offer_description": {
+            "maxLength": 3000,
+            "minLength": 20,
+            "title": "Offer Description",
+            "type": "string"
+          },
+          "salary_from": {
+            "examples": [
+              250000
+            ],
+            "exclusiveMinimum": 0.0,
+            "maximum": 10000000.0,
+            "title": "Salary From",
+            "type": "integer"
+          },
+          "salary_gross": {
+            "default": true,
+            "title": "Salary Gross",
+            "type": "boolean"
+          },
+          "salary_to": {
+            "examples": [
+              320000
+            ],
+            "exclusiveMinimum": 0.0,
+            "maximum": 10000000.0,
+            "title": "Salary To",
+            "type": "integer"
+          },
+          "title": {
+            "examples": [
+              "Python-разработчик в платежи"
+            ],
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Title",
+            "type": "string"
+          },
+          "work_format": {
+            "$ref": "#/components/schemas/WorkFormat"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "title",
+          "offer_description",
+          "salary_from",
+          "salary_to",
+          "work_format",
+          "contact_method"
+        ],
+        "title": "InvitationCreate",
+        "type": "object"
+      },
+      "InvitationEventRead": {
+        "description": "Шаг таймлайна приглашения.",
+        "properties": {
+          "actor": {
+            "enum": [
+              "employer",
+              "candidate",
+              "system"
+            ],
+            "title": "Actor",
+            "type": "string"
+          },
+          "at": {
+            "format": "date-time",
+            "title": "At",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InvitationStatus"
+          }
+        },
+        "required": [
+          "status",
+          "at",
+          "actor"
+        ],
+        "title": "InvitationEventRead",
+        "type": "object"
+      },
+      "InvitationQuotaRead": {
+        "description": "Дневная квота приглашений: защита кандидатов от массовых рассылок.",
+        "properties": {
+          "daily_limit": {
+            "title": "Daily Limit",
+            "type": "integer"
+          },
+          "remaining": {
+            "title": "Remaining",
+            "type": "integer"
+          },
+          "used_today": {
+            "title": "Used Today",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "daily_limit",
+          "used_today",
+          "remaining"
+        ],
+        "title": "InvitationQuotaRead",
+        "type": "object"
+      },
+      "InvitationStatus": {
+        "description": "Статусы приглашения. Переходы задаёт автомат в `services/invitations/state_machine.py`.",
+        "enum": [
+          "sent",
+          "viewed",
+          "accepted",
+          "declined",
+          "withdrawn",
+          "expired"
+        ],
+        "title": "InvitationStatus",
+        "type": "string"
+      },
       "ItemOption": {
         "description": "Вариант ответа.",
         "properties": {
@@ -1391,6 +3037,73 @@
         "title": "LoginRequest",
         "type": "object"
       },
+      "MarkUpdate": {
+        "description": "Отметка кандидата в потребности.",
+        "properties": {
+          "mark": {
+            "$ref": "#/components/schemas/ShortlistMarkKind"
+          },
+          "note": {
+            "default": "",
+            "maxLength": 500,
+            "title": "Note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "mark"
+        ],
+        "title": "MarkUpdate",
+        "type": "object"
+      },
+      "MatchRead": {
+        "description": "Балл соответствия потребности с разложением и объяснением.",
+        "properties": {
+          "components": {
+            "items": {
+              "$ref": "#/components/schemas/ScoreComponentRead"
+            },
+            "title": "Components",
+            "type": "array"
+          },
+          "explanation": {
+            "items": {
+              "$ref": "#/components/schemas/ExplanationItemRead"
+            },
+            "title": "Explanation",
+            "type": "array"
+          },
+          "penalties": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Penalties",
+            "type": "array"
+          },
+          "score": {
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Score",
+            "type": "number"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/SkillMatchRead"
+            },
+            "title": "Skills",
+            "type": "array"
+          }
+        },
+        "required": [
+          "score",
+          "components",
+          "penalties",
+          "skills",
+          "explanation"
+        ],
+        "title": "MatchRead",
+        "type": "object"
+      },
       "MessageResponse": {
         "description": "Короткий ответ без данных: для операций вроде повторной отправки письма.",
         "properties": {
@@ -1403,6 +3116,527 @@
           "message"
         ],
         "title": "MessageResponse",
+        "type": "object"
+      },
+      "NeedCreate": {
+        "description": "Потребность работодателя. Вилка обязательна.",
+        "properties": {
+          "city": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "grade_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 4,
+            "minItems": 1,
+            "title": "Grade Ids",
+            "type": "array"
+          },
+          "raw_text": {
+            "default": "",
+            "maxLength": 5000,
+            "title": "Raw Text",
+            "type": "string"
+          },
+          "salary_from": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 10000000.0,
+            "title": "Salary From",
+            "type": "integer"
+          },
+          "salary_gross": {
+            "default": true,
+            "title": "Salary Gross",
+            "type": "boolean"
+          },
+          "salary_to": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 10000000.0,
+            "title": "Salary To",
+            "type": "integer"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/NeedSkillInput"
+            },
+            "maxItems": 25,
+            "title": "Skills",
+            "type": "array"
+          },
+          "specialization_id": {
+            "title": "Specialization Id",
+            "type": "integer"
+          },
+          "team_description": {
+            "default": "",
+            "maxLength": 3000,
+            "title": "Team Description",
+            "type": "string"
+          },
+          "title": {
+            "examples": [
+              "Python-разработчик в платежи"
+            ],
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Title",
+            "type": "string"
+          },
+          "work_formats": {
+            "items": {
+              "$ref": "#/components/schemas/WorkFormat"
+            },
+            "maxItems": 3,
+            "title": "Work Formats",
+            "type": "array"
+          }
+        },
+        "required": [
+          "title",
+          "specialization_id",
+          "grade_ids",
+          "salary_from",
+          "salary_to"
+        ],
+        "title": "NeedCreate",
+        "type": "object"
+      },
+      "NeedDraft": {
+        "description": "Черновик потребности из разбора текста. Работодатель проверяет его перед сохранением.",
+        "properties": {
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "evidence": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Evidence",
+            "type": "object"
+          },
+          "experience_years_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Experience Years Min"
+          },
+          "grades": {
+            "items": {
+              "$ref": "#/components/schemas/GradeBrief"
+            },
+            "title": "Grades",
+            "type": "array"
+          },
+          "raw_text": {
+            "title": "Raw Text",
+            "type": "string"
+          },
+          "salary_from": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Salary From"
+          },
+          "salary_gross": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Salary Gross"
+          },
+          "salary_to": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Salary To"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/NeedSkillDraft"
+            },
+            "title": "Skills",
+            "type": "array"
+          },
+          "specialization": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SpecializationBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "specialization_confidence": {
+            "title": "Specialization Confidence",
+            "type": "number"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "work_formats": {
+            "items": {
+              "$ref": "#/components/schemas/WorkFormat"
+            },
+            "title": "Work Formats",
+            "type": "array"
+          }
+        },
+        "required": [
+          "title",
+          "raw_text",
+          "specialization",
+          "specialization_confidence",
+          "grades",
+          "experience_years_min",
+          "skills",
+          "work_formats",
+          "city",
+          "salary_from",
+          "salary_to",
+          "salary_gross",
+          "evidence"
+        ],
+        "title": "NeedDraft",
+        "type": "object"
+      },
+      "NeedParseRequest": {
+        "description": "Свободное описание потребности для разбора.",
+        "properties": {
+          "text": {
+            "maxLength": 5000,
+            "minLength": 20,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "NeedParseRequest",
+        "type": "object"
+      },
+      "NeedRead": {
+        "description": "Потребность работодателя.",
+        "properties": {
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "grades": {
+            "items": {
+              "$ref": "#/components/schemas/GradeBrief"
+            },
+            "title": "Grades",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "invitations_sent": {
+            "title": "Invitations Sent",
+            "type": "integer"
+          },
+          "latest_version": {
+            "title": "Latest Version",
+            "type": "integer"
+          },
+          "raw_text": {
+            "title": "Raw Text",
+            "type": "string"
+          },
+          "salary_from": {
+            "title": "Salary From",
+            "type": "integer"
+          },
+          "salary_gross": {
+            "title": "Salary Gross",
+            "type": "boolean"
+          },
+          "salary_to": {
+            "title": "Salary To",
+            "type": "integer"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/NeedSkillRead"
+            },
+            "title": "Skills",
+            "type": "array"
+          },
+          "specialization": {
+            "$ref": "#/components/schemas/SpecializationBrief"
+          },
+          "status": {
+            "$ref": "#/components/schemas/NeedStatus"
+          },
+          "team_description": {
+            "title": "Team Description",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "work_formats": {
+            "items": {
+              "$ref": "#/components/schemas/WorkFormat"
+            },
+            "title": "Work Formats",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "raw_text",
+          "team_description",
+          "specialization",
+          "grades",
+          "skills",
+          "work_formats",
+          "city",
+          "salary_from",
+          "salary_to",
+          "salary_gross",
+          "status",
+          "latest_version",
+          "invitations_sent",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "NeedRead",
+        "type": "object"
+      },
+      "NeedSkillDraft": {
+        "description": "Навык, найденный в тексте, с фрагментом-обоснованием.",
+        "properties": {
+          "evidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence"
+          },
+          "importance": {
+            "$ref": "#/components/schemas/SkillImportance"
+          },
+          "skill": {
+            "$ref": "#/components/schemas/SkillRead"
+          }
+        },
+        "required": [
+          "skill",
+          "importance",
+          "evidence"
+        ],
+        "title": "NeedSkillDraft",
+        "type": "object"
+      },
+      "NeedSkillInput": {
+        "description": "Навык потребности.",
+        "properties": {
+          "importance": {
+            "$ref": "#/components/schemas/SkillImportance",
+            "default": "must"
+          },
+          "skill_id": {
+            "title": "Skill Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "skill_id"
+        ],
+        "title": "NeedSkillInput",
+        "type": "object"
+      },
+      "NeedSkillRead": {
+        "description": "Навык потребности со справочными данными.",
+        "properties": {
+          "importance": {
+            "$ref": "#/components/schemas/SkillImportance"
+          },
+          "skill": {
+            "$ref": "#/components/schemas/SkillRead"
+          }
+        },
+        "required": [
+          "skill",
+          "importance"
+        ],
+        "title": "NeedSkillRead",
+        "type": "object"
+      },
+      "NeedStatus": {
+        "description": "Статус потребности: закрытая остаётся в истории вместе с подборками.",
+        "enum": [
+          "active",
+          "closed"
+        ],
+        "title": "NeedStatus",
+        "type": "string"
+      },
+      "NotificationKind": {
+        "description": "Виды уведомлений в кабинете.",
+        "enum": [
+          "invitation_received",
+          "invitation_accepted",
+          "invitation_declined",
+          "invitation_withdrawn",
+          "invitation_expired"
+        ],
+        "title": "NotificationKind",
+        "type": "string"
+      },
+      "NotificationListRead": {
+        "description": "Последние уведомления и число непрочитанных.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/NotificationRead"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "unread": {
+            "title": "Unread",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "unread"
+        ],
+        "title": "NotificationListRead",
+        "type": "object"
+      },
+      "NotificationRead": {
+        "description": "Уведомление в кабинете.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/NotificationKind"
+          },
+          "link": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Link"
+          },
+          "read_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Read At"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "text",
+          "link",
+          "created_at",
+          "read_at"
+        ],
+        "title": "NotificationRead",
         "type": "object"
       },
       "Page_SkillRead_": {
@@ -1515,6 +3749,25 @@
         "title": "PrivacySettingsUpdate",
         "type": "object"
       },
+      "RecruiterRead": {
+        "description": "Рекрутер компании.",
+        "properties": {
+          "full_name": {
+            "title": "Full Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "string"
+          }
+        },
+        "required": [
+          "full_name",
+          "position"
+        ],
+        "title": "RecruiterRead",
+        "type": "object"
+      },
       "RegisterRequest": {
         "description": "Регистрация кандидата или работодателя.",
         "properties": {
@@ -1611,6 +3864,40 @@
         ],
         "title": "ResponseFormat",
         "type": "string"
+      },
+      "ScoreComponentRead": {
+        "description": "Фактор балла: значение 0..1, вес и вклад в итог.",
+        "properties": {
+          "contribution": {
+            "title": "Contribution",
+            "type": "number"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          },
+          "weight": {
+            "title": "Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "key",
+          "label",
+          "value",
+          "weight",
+          "contribution"
+        ],
+        "title": "ScoreComponentRead",
+        "type": "object"
       },
       "SearchStatus": {
         "description": "Готовность кандидата к предложениям. «Не ищу» скрывает профиль из банка.",
@@ -1927,6 +4214,247 @@
         "title": "SessionSummaryRead",
         "type": "object"
       },
+      "ShortlistEntryRead": {
+        "description": "Кандидат в подборке.",
+        "properties": {
+          "card": {
+            "$ref": "#/components/schemas/CandidateAnonymousCard"
+          },
+          "contacts": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DisclosedContacts"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "invitation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InvitationBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "mark": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ShortlistMarkKind"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "match": {
+            "$ref": "#/components/schemas/MatchRead"
+          },
+          "note": {
+            "title": "Note",
+            "type": "string"
+          },
+          "outside_filters": {
+            "title": "Outside Filters",
+            "type": "boolean"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "rank",
+          "card",
+          "match",
+          "mark",
+          "note",
+          "outside_filters",
+          "contacts",
+          "invitation"
+        ],
+        "title": "ShortlistEntryRead",
+        "type": "object"
+      },
+      "ShortlistFilters": {
+        "description": "Уточнения подборки. Каждое применение создаёт новую версию.",
+        "properties": {
+          "city": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "confirmed_only": {
+            "default": false,
+            "title": "Confirmed Only",
+            "type": "boolean"
+          },
+          "expand_grades": {
+            "default": false,
+            "description": "Добавить соседние грейды (с понижающим множителем)",
+            "title": "Expand Grades",
+            "type": "boolean"
+          },
+          "limit": {
+            "default": 50,
+            "maximum": 200.0,
+            "minimum": 5.0,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "min_score": {
+            "default": 0.0,
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Min Score",
+            "type": "number"
+          },
+          "required_skill_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 10,
+            "title": "Required Skill Ids",
+            "type": "array"
+          },
+          "verified_skill_ids": {
+            "description": "Навыки, подтверждённые тестом",
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 10,
+            "title": "Verified Skill Ids",
+            "type": "array"
+          },
+          "within_budget": {
+            "default": false,
+            "description": "Только с ожиданиями в вилке",
+            "title": "Within Budget",
+            "type": "boolean"
+          },
+          "work_formats": {
+            "items": {
+              "$ref": "#/components/schemas/WorkFormat"
+            },
+            "maxItems": 3,
+            "title": "Work Formats",
+            "type": "array"
+          }
+        },
+        "title": "ShortlistFilters",
+        "type": "object"
+      },
+      "ShortlistMarkKind": {
+        "description": "Отметка работодателя в подборке. Переживает уточнение фильтров.",
+        "enum": [
+          "pinned",
+          "hidden"
+        ],
+        "title": "ShortlistMarkKind",
+        "type": "string"
+      },
+      "ShortlistRead": {
+        "description": "Версия подборки.",
+        "properties": {
+          "algorithm_version": {
+            "title": "Algorithm Version",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/ShortlistEntryRead"
+            },
+            "title": "Entries",
+            "type": "array"
+          },
+          "filters": {
+            "$ref": "#/components/schemas/ShortlistFilters"
+          },
+          "stats": {
+            "$ref": "#/components/schemas/ShortlistStats"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          },
+          "versions": {
+            "items": {
+              "type": "integer"
+            },
+            "title": "Versions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "version",
+          "versions",
+          "created_at",
+          "algorithm_version",
+          "filters",
+          "stats",
+          "entries"
+        ],
+        "title": "ShortlistRead",
+        "type": "object"
+      },
+      "ShortlistStats": {
+        "description": "Сколько кандидатов было в пуле, прошло фильтры и попало в подборку.",
+        "properties": {
+          "after_filters": {
+            "title": "After Filters",
+            "type": "integer"
+          },
+          "pool": {
+            "title": "Pool",
+            "type": "integer"
+          },
+          "shown": {
+            "title": "Shown",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "pool",
+          "after_filters",
+          "shown"
+        ],
+        "title": "ShortlistStats",
+        "type": "object"
+      },
+      "SkillBrief": {
+        "description": "Навык: идентификатор и название.",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "SkillBrief",
+        "type": "object"
+      },
       "SkillCreate": {
         "description": "Новый навык.",
         "properties": {
@@ -1975,6 +4503,15 @@
         "title": "SkillCreate",
         "type": "object"
       },
+      "SkillImportance": {
+        "description": "Важность навыка в потребности: must весит вдвое больше nice.",
+        "enum": [
+          "must",
+          "nice"
+        ],
+        "title": "SkillImportance",
+        "type": "string"
+      },
       "SkillKind": {
         "description": "Тип навыка: от него зависит, как навык показывается в опросе и учитывается в подборе.",
         "enum": [
@@ -1987,6 +4524,40 @@
         ],
         "title": "SkillKind",
         "type": "string"
+      },
+      "SkillMatchRead": {
+        "description": "Как кандидат закрывает навык потребности.",
+        "properties": {
+          "importance": {
+            "$ref": "#/components/schemas/SkillImportance"
+          },
+          "skill": {
+            "$ref": "#/components/schemas/SkillBrief"
+          },
+          "status": {
+            "description": "verified, declared, related или missing",
+            "title": "Status",
+            "type": "string"
+          },
+          "via": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SkillBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "skill",
+          "importance",
+          "status",
+          "via"
+        ],
+        "title": "SkillMatchRead",
+        "type": "object"
       },
       "SkillRead": {
         "description": "Навык справочника.",
@@ -2404,6 +4975,16 @@
         "title": "TokenResponse",
         "type": "object"
       },
+      "TrustLevel": {
+        "description": "Уровень доверия к компании: от него зависит дневная квота приглашений.",
+        "enum": [
+          "new",
+          "basic",
+          "verified"
+        ],
+        "title": "TrustLevel",
+        "type": "string"
+      },
       "UserRead": {
         "description": "Публичные сведения о текущем пользователе.",
         "properties": {
@@ -2448,6 +5029,43 @@
         ],
         "title": "UserRole",
         "type": "string"
+      },
+      "VerifiedScoreRead": {
+        "description": "Индекс подтверждённого профиля (0–100) — ранг внутри категории.",
+        "properties": {
+          "components": {
+            "items": {
+              "$ref": "#/components/schemas/ScoreComponentRead"
+            },
+            "title": "Components",
+            "type": "array"
+          },
+          "test_percentile": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Перцентиль θ среди подтверждённых коллег",
+            "title": "Test Percentile"
+          },
+          "total": {
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Total",
+            "type": "number"
+          }
+        },
+        "required": [
+          "total",
+          "components",
+          "test_percentile"
+        ],
+        "title": "VerifiedScoreRead",
+        "type": "object"
       },
       "VerifyEmailRequest": {
         "description": "Токен из ссылки в письме.",
@@ -4045,6 +6663,364 @@
         ]
       }
     },
+    "/api/v1/candidates/me/invitations": {
+      "get": {
+        "description": "Входящие приглашения: компания и вилка видны сразу.",
+        "operationId": "list_invitations_api_v1_candidates_me_invitations_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CandidateInvitationRead"
+                  },
+                  "title": "Response List Invitations Api V1 Candidates Me Invitations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Мои приглашения",
+        "tags": [
+          "candidate: invitations"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/invitations/{invitation_id}": {
+      "get": {
+        "description": "Первое открытие переводит приглашение в «просмотрено» — это видит работодатель.",
+        "operationId": "read_invitation_api_v1_candidates_me_invitations__invitation_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "invitation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Invitation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateInvitationRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Приглашение (отмечается просмотренным)",
+        "tags": [
+          "candidate: invitations"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/invitations/{invitation_id}/accept": {
+      "post": {
+        "description": "Принимает приглашение: компании открываются разрешённые контакты, кандидату — её.",
+        "operationId": "accept_invitation_api_v1_candidates_me_invitations__invitation_id__accept_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "invitation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Invitation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateInvitationRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Принять приглашение",
+        "tags": [
+          "candidate: invitations"
+        ]
+      }
+    },
+    "/api/v1/candidates/me/invitations/{invitation_id}/decline": {
+      "post": {
+        "description": "Отклоняет приглашение с причиной. Контакты не раскрываются.",
+        "operationId": "decline_invitation_api_v1_candidates_me_invitations__invitation_id__decline_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "invitation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Invitation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeclineRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateInvitationRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Отклонить приглашение",
+        "tags": [
+          "candidate: invitations"
+        ]
+      }
+    },
     "/api/v1/candidates/me/privacy": {
       "get": {
         "description": "Что видит работодатель до раскрытия контактов.",
@@ -5191,6 +8167,2095 @@
         ]
       }
     },
+    "/api/v1/employer/candidates": {
+      "get": {
+        "description": "Обезличенные карточки кандидатов, давших согласие на публикацию.\n\nПо умолчанию подтверждённые тестом идут раньше заявленных, внутри — по индексу\nподтверждённого профиля.",
+        "operationId": "search_candidates_api_v1_employer_candidates_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "specialization_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Specialization Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "grade_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Grade Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "category_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Category Id"
+            }
+          },
+          {
+            "description": "Все перечисленные навыки",
+            "in": "query",
+            "name": "skill_ids",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "integer"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Все перечисленные навыки",
+              "title": "Skill Ids"
+            }
+          },
+          {
+            "description": "Навыки подтверждены тестом",
+            "in": "query",
+            "name": "verified_skills_only",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Навыки подтверждены тестом",
+              "title": "Verified Skills Only",
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Только с подтверждённым грейдом",
+            "in": "query",
+            "name": "confirmed_only",
+            "required": false,
+            "schema": {
+              "default": false,
+              "description": "Только с подтверждённым грейдом",
+              "title": "Confirmed Only",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "work_format",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/WorkFormat"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Work Format"
+            }
+          },
+          {
+            "in": "query",
+            "name": "city",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "City"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/BankSort",
+              "default": "score"
+            }
+          },
+          {
+            "description": "Размер страницы",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "description": "Размер страницы",
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Смещение от начала списка",
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "description": "Смещение от начала списка",
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BankPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Банк кандидатов",
+        "tags": [
+          "employer: bank"
+        ]
+      }
+    },
+    "/api/v1/employer/candidates/{candidate_id}": {
+      "get": {
+        "description": "Обезличенная карточка; контакты — только если кандидат раскрыл их компании.",
+        "operationId": "candidate_card_api_v1_employer_candidates__candidate_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Потребность для балла",
+            "in": "query",
+            "name": "need_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Потребность для балла",
+              "title": "Need Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateCardRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Карточка кандидата",
+        "tags": [
+          "employer: bank"
+        ]
+      }
+    },
+    "/api/v1/employer/company": {
+      "get": {
+        "description": "Профиль компании, рекрутер и квота приглашений. До заполнения — пустые поля.",
+        "operationId": "read_company_api_v1_employer_company_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployerProfileRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Моя компания",
+        "tags": [
+          "employer"
+        ]
+      },
+      "put": {
+        "description": "Создаёт компанию при первом сохранении, дальше обновляет её.",
+        "operationId": "save_company_api_v1_employer_company_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompanyUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployerProfileRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Сохранить профиль компании",
+        "tags": [
+          "employer"
+        ]
+      }
+    },
+    "/api/v1/employer/dashboard": {
+      "get": {
+        "description": "Активные потребности, воронка приглашений и остаток дневной квоты.",
+        "operationId": "dashboard_api_v1_employer_dashboard_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployerDashboardRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Сводка кабинета работодателя",
+        "tags": [
+          "employer"
+        ]
+      }
+    },
+    "/api/v1/employer/invitations": {
+      "get": {
+        "description": "Приглашения со статусами и таймлайном, с фильтром по статусу и потребности.",
+        "operationId": "list_invitations_api_v1_employer_invitations_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/components/schemas/InvitationStatus"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "need_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Need Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EmployerInvitationRead"
+                  },
+                  "title": "Response List Invitations Api V1 Employer Invitations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Приглашения компании",
+        "tags": [
+          "employer: invitations"
+        ]
+      },
+      "post": {
+        "description": "Приглашение с описанием, вилкой «от–до» и способом связи (все поля обязательны).\n\nОдно активное приглашение на пару «компания — кандидат», дневная квота по уровню\nдоверия компании, срок ответа — 14 дней.",
+        "operationId": "create_invitation_api_v1_employer_invitations_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvitationCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployerInvitationRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Пригласить кандидата",
+        "tags": [
+          "employer: invitations"
+        ]
+      }
+    },
+    "/api/v1/employer/invitations/{invitation_id}": {
+      "get": {
+        "description": "Приглашение компании. Чужое — 404.",
+        "operationId": "read_invitation_api_v1_employer_invitations__invitation_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "invitation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Invitation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployerInvitationRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Приглашение",
+        "tags": [
+          "employer: invitations"
+        ]
+      }
+    },
+    "/api/v1/employer/invitations/{invitation_id}/withdraw": {
+      "post": {
+        "description": "Отзывает приглашение, пока кандидат не ответил.",
+        "operationId": "withdraw_invitation_api_v1_employer_invitations__invitation_id__withdraw_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "invitation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Invitation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployerInvitationRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Отозвать приглашение",
+        "tags": [
+          "employer: invitations"
+        ]
+      }
+    },
+    "/api/v1/employer/needs": {
+      "get": {
+        "description": "Все потребности компании, от новых к старым.",
+        "operationId": "list_needs_api_v1_employer_needs_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/NeedRead"
+                  },
+                  "title": "Response List Needs Api V1 Employer Needs Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Потребности компании",
+        "tags": [
+          "employer: needs"
+        ]
+      },
+      "post": {
+        "description": "Сохраняет потребность. Вилка обязательна и не шире чем вдвое.",
+        "operationId": "create_need_api_v1_employer_needs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NeedCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NeedRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Создать потребность",
+        "tags": [
+          "employer: needs"
+        ]
+      }
+    },
+    "/api/v1/employer/needs/parse": {
+      "post": {
+        "description": "Свободный текст → специализация, грейды, навыки must/nice, формат, город, вилка.\n\nРазбор работает на правилах и справочнике навыков, без внешних моделей. Каждое\nполе сопровождается фрагментом текста, по которому оно найдено. Ничего не сохраняет.",
+        "operationId": "parse_need_api_v1_employer_needs_parse_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NeedParseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NeedDraft"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Разобрать текст потребности",
+        "tags": [
+          "employer: needs"
+        ]
+      }
+    },
+    "/api/v1/employer/needs/{need_id}": {
+      "get": {
+        "description": "Потребность компании. Чужая — 404.",
+        "operationId": "read_need_api_v1_employer_needs__need_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "need_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Need Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NeedRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Потребность",
+        "tags": [
+          "employer: needs"
+        ]
+      },
+      "put": {
+        "description": "Изменяет потребность. Уже построенные версии подборки не меняются.",
+        "operationId": "update_need_api_v1_employer_needs__need_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "need_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Need Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NeedCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NeedRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Изменить потребность",
+        "tags": [
+          "employer: needs"
+        ]
+      }
+    },
+    "/api/v1/employer/needs/{need_id}/categories": {
+      "get": {
+        "description": "Целевая и соседние категории: сколько кандидатов, сколько сильных, медиана ожиданий.",
+        "operationId": "need_categories_api_v1_employer_needs__need_id__categories_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "need_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Need Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CategorySliceRead"
+                  },
+                  "title": "Response Need Categories Api V1 Employer Needs  Need Id  Categories Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Рекомендованные категории с рыночным срезом",
+        "tags": [
+          "employer: needs"
+        ]
+      }
+    },
+    "/api/v1/employer/needs/{need_id}/close": {
+      "post": {
+        "description": "Переводит потребность в архив.",
+        "operationId": "close_need_api_v1_employer_needs__need_id__close_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "need_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Need Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NeedRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Закрыть потребность",
+        "tags": [
+          "employer: needs"
+        ]
+      }
+    },
+    "/api/v1/employer/needs/{need_id}/marks/{candidate_id}": {
+      "delete": {
+        "description": "Снимает отметку «закреплён» или «скрыт».",
+        "operationId": "remove_mark_api_v1_employer_needs__need_id__marks__candidate_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "need_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Need Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Снять отметку",
+        "tags": [
+          "employer: needs"
+        ]
+      },
+      "put": {
+        "description": "Отметка действует на все следующие версии подборки этой потребности.",
+        "operationId": "set_mark_api_v1_employer_needs__need_id__marks__candidate_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "need_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Need Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "candidate_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Candidate Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Закрепить или скрыть кандидата",
+        "tags": [
+          "employer: needs"
+        ]
+      }
+    },
+    "/api/v1/employer/needs/{need_id}/reopen": {
+      "post": {
+        "description": "Возвращает потребность из архива.",
+        "operationId": "reopen_need_api_v1_employer_needs__need_id__reopen_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "need_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Need Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NeedRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Вернуть потребность в работу",
+        "tags": [
+          "employer: needs"
+        ]
+      }
+    },
+    "/api/v1/employer/needs/{need_id}/shortlist": {
+      "get": {
+        "description": "Ранжированная подборка с баллом, разложением и «Почему в подборке».",
+        "operationId": "read_shortlist_api_v1_employer_needs__need_id__shortlist_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "need_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Need Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Номер версии",
+            "in": "query",
+            "name": "version",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Номер версии",
+              "title": "Version"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShortlistRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Подборка (последняя или указанная версия)",
+        "tags": [
+          "employer: needs"
+        ]
+      }
+    },
+    "/api/v1/employer/needs/{need_id}/shortlists": {
+      "post": {
+        "description": "Строит новую версию подборки с фильтрами. Закреплённые кандидаты переносятся.",
+        "operationId": "build_shortlist_api_v1_employer_needs__need_id__shortlists_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "need_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Need Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShortlistFilters"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShortlistRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Уточнить подборку (новая версия)",
+        "tags": [
+          "employer: needs"
+        ]
+      }
+    },
     "/api/v1/health": {
       "get": {
         "description": "Отвечает 200, если сервис и база работают. Используется healthcheck'ом Docker.",
@@ -5220,6 +10285,169 @@
         "summary": "Проверка работоспособности",
         "tags": [
           "system"
+        ]
+      }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "description": "Последние уведомления и число непрочитанных.",
+        "operationId": "list_notifications_api_v1_notifications_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationListRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Мои уведомления",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/read-all": {
+      "post": {
+        "description": "Отмечает все уведомления прочитанными.",
+        "operationId": "read_all_api_v1_notifications_read_all_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationListRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Отметить все прочитанными",
+        "tags": [
+          "notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/{notification_id}/read": {
+      "post": {
+        "description": "Отмечает одно уведомление прочитанным.",
+        "operationId": "read_one_api_v1_notifications__notification_id__read_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "notification_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Notification Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationListRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Отметить уведомление прочитанным",
+        "tags": [
+          "notifications"
         ]
       }
     }

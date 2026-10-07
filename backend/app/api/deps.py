@@ -18,6 +18,12 @@ from app.services.auth.auth_service import AuthService
 from app.services.auth.tokens import ClientContext
 from app.services.candidate.profile_service import CandidateProfileService
 from app.services.dictionary_service import DictionaryService
+from app.services.employer.company_service import CompanyService
+from app.services.invitations.invitation_service import InvitationService
+from app.services.matching.bank_service import BankService
+from app.services.matching.need_service import NeedService
+from app.services.matching.shortlist_service import ShortlistService
+from app.services.notifications import NotificationService
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 SettingsDep = Annotated[Settings, Depends(get_settings)]
@@ -70,6 +76,7 @@ def require_roles(*roles: UserRole) -> Callable[..., Awaitable[User]]:
 
 MethodistUser = Annotated[User, Depends(require_roles(UserRole.METHODIST))]
 CandidateUser = Annotated[User, Depends(require_roles(UserRole.CANDIDATE))]
+EmployerUser = Annotated[User, Depends(require_roles(UserRole.EMPLOYER))]
 
 
 def get_auth_service(session: SessionDep, settings: SettingsDep, mailer: MailerDep) -> AuthService:
@@ -92,7 +99,45 @@ def get_assessment_service(session: SessionDep, settings: SettingsDep) -> Assess
     return AssessmentService(session, settings)
 
 
+def get_company_service(session: SessionDep) -> CompanyService:
+    """Сервис профиля компании на время запроса."""
+    return CompanyService(session)
+
+
+def get_need_service(session: SessionDep) -> NeedService:
+    """Сервис потребностей работодателя на время запроса."""
+    return NeedService(session)
+
+
+def get_shortlist_service(session: SessionDep) -> ShortlistService:
+    """Сервис подборок на время запроса."""
+    return ShortlistService(session)
+
+
+def get_bank_service(session: SessionDep) -> BankService:
+    """Сервис банка кандидатов на время запроса."""
+    return BankService(session)
+
+
+def get_invitation_service(
+    session: SessionDep, settings: SettingsDep, mailer: MailerDep
+) -> InvitationService:
+    """Сервис приглашений на время запроса."""
+    return InvitationService(session, settings, mailer)
+
+
+def get_notification_service(session: SessionDep) -> NotificationService:
+    """Сервис уведомлений на время запроса."""
+    return NotificationService(session)
+
+
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
+CompanyServiceDep = Annotated[CompanyService, Depends(get_company_service)]
+NeedServiceDep = Annotated[NeedService, Depends(get_need_service)]
+ShortlistServiceDep = Annotated[ShortlistService, Depends(get_shortlist_service)]
+BankServiceDep = Annotated[BankService, Depends(get_bank_service)]
+InvitationServiceDep = Annotated[InvitationService, Depends(get_invitation_service)]
+NotificationServiceDep = Annotated[NotificationService, Depends(get_notification_service)]
 ProfileServiceDep = Annotated[CandidateProfileService, Depends(get_profile_service)]
 AssessmentServiceDep = Annotated[AssessmentService, Depends(get_assessment_service)]
 DictionaryServiceDep = Annotated[DictionaryService, Depends(get_dictionary_service)]
