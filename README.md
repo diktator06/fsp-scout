@@ -9,12 +9,19 @@
 
 | Документ | О чём |
 |---|---|
-| [docs/APPROACH.md](docs/APPROACH.md) | **Кратко для промежуточной сдачи:** механика подбора и адаптивного тестирования с обоснованием |
+| [docs/submission/scout-documentation.pdf](docs/submission/scout-documentation.pdf) | **Сопроводительная документация для финальной сдачи** (PDF и [DOCX](docs/submission/scout-documentation.docx), источник — [docs/SUBMISSION.md](docs/SUBMISSION.md)) |
+| [docs/VALIDATION.md](docs/VALIDATION.md) | **Валидация в цифрах:** подбор против BM25, test-retest, разделяющая сила, утечки |
+| [docs/APPROACH.md](docs/APPROACH.md) | Механика подбора и адаптивного тестирования с обоснованием |
 | [docs/MATCHING.md](docs/MATCHING.md) | Подбор: разбор потребности, ранжирование, объяснения, приглашения, раскрытие контактов |
 | [docs/ASSESSMENT.md](docs/ASSESSMENT.md) | Тестирование: банк семейств, IRT и CAT, правила пересдачи, валидация, калибровка |
 | [docs/FSP_INTEGRATION.md](docs/FSP_INTEGRATION.md) | ФСП ID и реестр достижений: протокол, данные, балл ФСП, три состояния, полноценный Keycloak |
 | [docs/KEYCLOAK_GUIDE.md](docs/KEYCLOAK_GUIDE.md) | ФСП ID на Keycloak простым языком: устройство, запуск, проверка в браузере |
 | [docs/TRUST_AND_ATS.md](docs/TRUST_AND_ATS.md) | Защита от фиктивных работодателей и интеграция с ATS: вебхуки, повторы, подпись, выгрузка |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Архитектура как построено: компоненты, слои, данные, безопасность |
+| [docs/LIBRARIES.md](docs/LIBRARIES.md) | Библиотеки и образы с версиями и лицензиями (из lock-файлов) |
+| [docs/LOAD_TEST.md](docs/LOAD_TEST.md) | Нагрузочный тест: 50 пользователей, p95 166 мс, без ошибок |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Развёртывание на VPS за Caddy с автоматическим HTTPS |
+| [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) | Сценарий видео и 10-минутного питча |
 | http://localhost:8080/api/docs | Swagger UI всех методов API (после запуска) |
 
 ## Запуск в одну команду
@@ -29,7 +36,7 @@ docker compose up --build
 Через минуту стенд готов: бэкенд сам применяет миграции, наполняет справочники, создаёт
 демо-аккаунты и около 120 синтетических кандидатов, а часть из них привязывает к участникам
 эмулятора ФСП. Файл `.env` не нужен: все значения по умолчанию заданы в `docker-compose.yml`.
-Переопределить их можно копией шаблона [.env.example](.env.example). Стенд занимает около 1 ГБ
+Переопределить их можно копией шаблона [.env.example](.env.example). Стенд занимает около 1,35 ГБ
 памяти по лимитам контейнеров и не использует GPU.
 
 | Что | Адрес |
@@ -74,7 +81,7 @@ Keycloak поднимается на http://localhost:8081 (админка `admi
 |---|---|---|
 | Специалист | `candidate@example.com` | Чистый аккаунт: онбординг, тест и привязка ФСП проходятся с нуля |
 | Работодатель | `employer@example.com` | Компания «Кедр Технологии»: две потребности с подборками, три вакансии с откликами, микрозадачи с ответами |
-| Методист | `methodist@example.com` | Справочники и модерация жалоб на работодателей |
+| Методист | `methodist@example.com` | Справочники, банк заданий, экран «Вакансия → тест», настройки оценки, модерация |
 | Синтетические кандидаты | `demo.<специализация>.<номер>@example.com`, например `demo.backend.01@example.com` | Прошли тест настоящим сервисом оценки; около 40 % привязаны к ФСП |
 
 **Участники ФСП в эмуляторе.** Боевого ФСП ID у команд нет, поэтому в стенде работает эмулятор
@@ -165,6 +172,11 @@ Keycloak поднимается на http://localhost:8081 (админка `admi
   страница входа Keycloak, `fsp000021` / `FspDemo2026`.
 - [ ] **Мобильная версия.** Все кабинеты работают на ширине телефона от 375 px: меню в «бургере»,
   карточки в одну колонку, без горизонтальной прокрутки.
+- [ ] **Вакансия → тест.** Методист → «Вакансия → тест» → любая вакансия: категория, состав теста
+  под её стек, три самых информативных у порога семейства с экземплярами, покрытие навыков.
+  «Банк заданий» → семейство → «Сгенерировать другие»: три кандидата — три разных экземпляра.
+- [ ] **Мои данные.** Меню аккаунта → «Мои данные» → «Скачать мои данные» (JSON) и «Удалить
+  аккаунт» с подтверждением email.
 
 ## Что работает
 
@@ -198,9 +210,16 @@ Keycloak поднимается на http://localhost:8081 (админка `admi
 - **Интеграция с ATS.** Подписанные HMAC-SHA256 вебхуки через outbox с повторами и
   `SKIP LOCKED`, защита от SSRF, журнал доставок, песочница-приёмник, выгрузка CSV/JSON с
   аудитом.
+- **Кабинет методиста.** Банк заданий с параметрами IRT, долей показов и живой генерацией
+  экземпляров; экран «Вакансия → тест»: категория вакансии, состав теста под её стек, задания у
+  порога грейда и навыки, которые проверяют микрозадачи; пороги грейдов с аудитом изменений.
+- **152-ФЗ.** Раздельные согласия; «Мои данные» в меню аккаунта: копия всех данных одним JSON и
+  удаление аккаунта с уничтожением данных.
 - **Мобильная вёрстка.** Все экраны проверены на ширине 375 px.
+- **Валидация и нагрузка.** Подбор и тест проверены в цифрах ([docs/VALIDATION.md](docs/VALIDATION.md)),
+  нагрузочный тест — [docs/LOAD_TEST.md](docs/LOAD_TEST.md).
 
-Проверки: 466 тестов бэкенда на реальном PostgreSQL, 6 тестов эмулятора ФСП, 69 тестов
+Проверки: 489 тестов бэкенда на реальном PostgreSQL, 6 тестов эмулятора ФСП, 76 тестов
 фронтенда, ruff и mypy в строгом режиме, eslint, tsc и проверка правил комментариев — всё это же
 запускает CI.
 
@@ -232,6 +251,12 @@ make dev-frontend   # Vite на :5173, /api проксируется на :8000
 | `make lint` | ruff, mypy в строгом режиме, eslint, tsc и проверка правил комментариев |
 | `make openapi` | выгрузка `docs/openapi.json` и перегенерация TS-типов клиента |
 | `make simulate` | симуляция адаптивного теста и отчёт в `docs/validation` |
+| `make validate-assessment` | валидация теста: оценщики, разделяющая сила, утечки |
+| `make eval-matching` | оценка подбора на размеченных парах в отдельной базе `fsp_scout_eval` |
+| `make validation-report` | собрать `docs/VALIDATION.md` из отчётов |
+| `make load-stand`, `make load-test` | стенд с 1050 кандидатами и нагрузочный тест |
+| `make submission` | сопроводительная документация в PDF и DOCX (нужен pandoc) |
+| `make vps-up`, `make vps-check DOMAIN=…` | развёртывание на VPS и проверка снаружи |
 | `make revision m="…"` | новая миграция Alembic |
 | `make reset` | остановка стенда с удалением данных БД |
 
@@ -245,16 +270,22 @@ backend/            FastAPI: api → services → crud → models, schemas, core
 frontend/           React 19 + Vite + Mantine: app, api, features, layouts, pages, shared/ui
 fsp-registry-mock/  эмулятор ФСП ID (OIDC) и реестра достижений, генератор участников
 keycloak/           realm ФСП ID для полноценного Keycloak (docker-compose.keycloak.yml)
-docs/               подход, методики, интеграция с ФСП и ATS, защита от фиктивных работодателей, OpenAPI
-tools/              проверка правил кода (docstring и комментарии на русском, только внутри функций)
+docs/               подход, методики, валидация, архитектура, нагрузка, развёртывание, OpenAPI, документация для сдачи
+deploy/             оверлей для VPS: Caddy с HTTPS, переменные и проверка развёрнутого стенда
+tools/              проверка правил кода (комментарии на русском, только внутри функций), список библиотек
 docker-compose.yml  db (PostgreSQL 16 + pgvector), backend, frontend (nginx), fsp-registry-mock, mailpit
 ```
 
-Подробное дерево и роль каждого модуля — в §4 [плана архитектуры](ARCHITECTURE_AND_PLAN.md).
+Слои, модули и данные — в [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Стек
 
 Python 3.13, FastAPI 0.142, SQLAlchemy 2.1 (async), Alembic 1.20, Pydantic 2.13, PostgreSQL 16 +
 pgvector, argon2-cffi, PyJWT (RS256 и JWKS), httpx · React 19, TypeScript 5.9, Vite 8, Mantine 9,
-TanStack Query 5, React Router 8, openapi-fetch · Docker Compose, nginx, Mailpit. Всё под
-открытыми лицензиями (MIT, Apache-2.0, BSD, PostgreSQL).
+TanStack Query 5, React Router 8, openapi-fetch · Docker Compose, nginx, Mailpit, Caddy на VPS.
+Всё под открытыми лицензиями (MIT, Apache-2.0, BSD, PostgreSQL); полный список —
+[docs/LIBRARIES.md](docs/LIBRARIES.md).
+
+## Лицензия
+
+[MIT](LICENSE).

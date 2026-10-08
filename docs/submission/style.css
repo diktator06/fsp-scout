@@ -1,0 +1,51 @@
+/* Оформление сопроводительной документации: A4, цвета ФСП, шрифт Montserrat из шаблона PDF-профиля.
+   WeasyPrint не учитывает unicode-range и путает веса у семейств из нескольких файлов,
+   поэтому каждое подмножество каждого веса — отдельное семейство: латиница, затем кириллица. */
+@font-face { font-family: "M400L"; src: url("../../backend/app/templates/pdf/fonts/montserrat-latin-400-normal.woff"); }
+@font-face { font-family: "M400C"; src: url("../../backend/app/templates/pdf/fonts/montserrat-cyrillic-400-normal.woff"); }
+@font-face { font-family: "M600L"; src: url("../../backend/app/templates/pdf/fonts/montserrat-latin-600-normal.woff"); }
+@font-face { font-family: "M600C"; src: url("../../backend/app/templates/pdf/fonts/montserrat-cyrillic-600-normal.woff"); }
+@font-face { font-family: "M800L"; src: url("../../backend/app/templates/pdf/fonts/montserrat-latin-800-normal.woff"); }
+@font-face { font-family: "M800C"; src: url("../../backend/app/templates/pdf/fonts/montserrat-cyrillic-800-normal.woff"); }
+
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 18mm 16mm;
+  @bottom-right { content: counter(page) " / " counter(pages); font: 8pt "M400L", "M400C"; color: #6b6f7d; }
+  @bottom-left { content: "«Скаут» · спецтрек ФСП · ЛЦТ-2026"; font: 8pt "M400L", "M400C"; color: #6b6f7d; }
+}
+
+html { font-family: "M400L", "M400C", Arial, sans-serif; font-size: 9.4pt; line-height: 1.5; color: #1c1d22; }
+body { margin: 0; max-width: none; padding: 0; }
+
+header#title-block-header {
+  margin: 0 0 14pt;
+  padding: 18pt 20pt;
+  border-radius: 10pt;
+  background: #310f53;
+  background-image: linear-gradient(135deg, #310f53 0%, #520978 100%);
+  color: #ffffff;
+}
+header#title-block-header h1.title { font-size: 22pt; font-family: "M800L", "M800C"; font-weight: normal; margin: 0; color: #ffffff; }
+header#title-block-header p.subtitle { margin: 4pt 0 0; color: #d9cfee; font-size: 10pt; }
+
+h1 { font-size: 14pt; font-family: "M800L", "M800C"; font-weight: normal; color: #310f53; margin: 16pt 0 6pt; break-after: avoid; }
+h1:not(.title)::before { content: ""; display: inline-block; width: 4pt; height: 12pt; margin-right: 6pt; background: #ff0053; border-radius: 2pt; vertical-align: -1pt; }
+h2, h3 { font-family: "M600L", "M600C"; font-weight: normal; color: #310f53; break-after: avoid; }
+p, li { orphans: 3; widows: 3; }
+strong, b { font-family: "M600L", "M600C"; font-weight: normal; }
+a { color: #520978; text-decoration: none; }
+code { font-family: "Menlo", "DejaVu Sans Mono", monospace; font-size: 8.4pt; background: #f1eff6; color: #420762; padding: 0 2pt; border-radius: 3pt; }
+pre { background: #1d1530; color: #f4f1f8; padding: 8pt 10pt; border-radius: 6pt; }
+pre code { background: none; color: inherit; }
+
+table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt; font-size: 8.4pt; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th { text-align: left; font-family: "M600L", "M600C"; font-weight: normal; color: #310f53; background: #f1eff6; border-bottom: 1.2pt solid #520978; padding: 4pt 5pt; }
+td { border-bottom: 0.6pt solid #e2deec; padding: 4pt 5pt; vertical-align: top; }
+
+/* pandoc задаёт ширину колонок по числу дефисов в разделителе таблицы; пусть ширину выбирает содержимое. */
+table { table-layout: auto; }
+col { width: auto !important; }
