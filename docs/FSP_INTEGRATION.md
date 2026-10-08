@@ -193,7 +193,77 @@ ID уже привязан. Аккаунт по ФСП ID не создаётс�
 | `FSP_INTERNAL_URL` | `http://fsp-registry-mock:8090` | пусто (тот же, что публичный) |
 | `FSP_REGISTRY_URL` | пусто (тот же сервис) | адрес API реестра достижений |
 | `FSP_CLIENT_ID`, `FSP_CLIENT_SECRET` | `fsp-scout`, dev-секрет | выданные ФСП. С dev-секретом production не стартует |
+| `FSP_PARTICIPANT_CLAIM` | `sub` | claim с номером участника реестра; в Keycloak обычно `fsp_participant_id` (§10) |
 
 У клиента в ФСП ID нужно зарегистрировать адреса возврата `<FRONTEND_URL>/c/fsp/callback` и
 `<FRONTEND_URL>/auth/fsp/callback`, scope `openid profile achievements` для участника и
 `registry:read` для сервисного доступа.
+
+## 10. Полноценный Keycloak
+
+ТЗ указывает, что ФСП ID в целевой архитектуре строится на Keycloak. Поэтому кроме эмулятора в
+репозитории есть готовая конфигурация настоящего Keycloak 26. Стенд с ним поднимается одной
+командой:
+
+```bash
+make up-keycloak   # то же: docker compose -f docker-compose.yml -f docker-compose.keycloak.yml up --build -d
+```
+
+| Что | Адрес и доступ |
+|---|---|
+| Страница входа ФСП ID | открывается сама по «Привязать ФСП ID» или «Войти через ФСП ID», realm `fsp` на http://localhost:8081 |
+| Админка Keycloak | http://localhost:8081/admin, `admin` / `admin` — только для локального стенда |
+| Участники | `fsp000021`, `fsp000030`, `fsp000012`, `fsp000007`, пароль `FspDemo2026` |
+
+Вход и токены выдаёт Keycloak. Реестр достижений остаётся в `fsp-registry-mock` и работает как
+отдельный ресурсный сервер: он проверяет токены Keycloak по его JWKS. Код бэкенда тот же, что и с
+эмулятором. Оверлей меняет только переменные окружения, поэтому так же подключается и боевой ФСП
+ID.
+
+**Realm `fsp`** ([keycloak/realm-fsp.json](../keycloak/realm-fsp.json)) импортируется при
+старте:
+
+- **Клиент `fsp-scout`.** Конфиденциальный, authorization code с обязательным PKCE S256, без
+  implicit и password grant. Включён service account для чтения реестра (client credentials).
+  Адреса возврата: `/c/fsp/callback` и `/auth/fsp/callback` фронтенда.
+- **Client scopes.**
+  - `basic` — `sub` и `auth_time`.
+  - `profile` — только логин, без имени: минимизация данных, как у эмулятора.
+  - `achievements` — для участника.
+  - `registry:read` — для сервиса.
+  - Оба последних добавляют в access-токен аудиторию `fsp-registry`: без неё реестр токен не примет.
+- **Мапперы атрибутов пользователя.** `fsp_participant_id` и `region` попадают в id- и
+  access-токен. В Keycloak `sub` — внутренний UUID пользователя, а номер участника реестра
+  хранится атрибутом. Бэкенд читает его из claim `FSP_PARTICIPANT_CLAIM=fsp_participant_id`, а
+  реестр — из такого же claim в access-токене.
+- **Профиль пользователя.** Атрибуты объявлены в декларативном профиле Keycloak. Номер участника
+  меняет только администратор, а сам участник его даже не видит.
+- **Прочее.** Регистрация в realm закрыта, есть защита от перебора паролей, интерфейс на
+  русском.
+
+**Адреса.** Браузер ходит в Keycloak по `http://localhost:8081`, а бэкенд и реестр — по
+внутреннему имени `http://keycloak:8080`. Keycloak запущен с `--hostname=http://localhost:8081` и
+`--hostname-backchannel-dynamic=true`. Поэтому `iss` в токенах всегда публичный, discovery по
+внутреннему адресу отдаёт внутренние token- и JWKS-эндпоинты, а `authorization_endpoint` остаётся
+публичным.
+
+| Сервис | Переменные оверлея |
+|---|---|
+| `backend` | `FSP_OIDC_ISSUER=http://localhost:8081/realms/fsp`, `FSP_INTERNAL_URL=http://keycloak:8080/realms/fsp`, `FSP_REGISTRY_URL=http://fsp-registry-mock:8090`, `FSP_PARTICIPANT_CLAIM=fsp_participant_id` |
+| `fsp-registry-mock` | `TRUSTED_ISSUER=http://localhost:8081/realms/fsp`, `TRUSTED_JWKS_URL=http://keycloak:8080/realms/fsp/protocol/openid-connect/certs` |
+
+**Проверено на живом стенде.**
+
+- Discovery через внутренний адрес возвращает публичный `issuer`.
+- Сервисный токен Keycloak несёт `aud=fsp-registry` и `scope=registry:read`, реестр по нему
+  отдаёт список участников.
+- `candidate@example.com` привязал `fsp000021` через страницу входа Keycloak: участник
+  `fsp-000021`, 7 участий из реестра, регион из claim Keycloak.
+- «Войти через ФСП ID» открывает кабинет того же кандидата по SSO-сессии Keycloak.
+- Автотесты: `test_keycloak_tokens_carry_participant_in_separate_claim` в бэкенде (номер
+  участника из отдельного claim, ошибка при неверной настройке) и
+  `test_registry_trusts_external_keycloak_tokens` в эмуляторе (токены доверенного издателя,
+  чужой издатель получает 401).
+
+Вернуться к эмулятору: `make down-keycloak && make up`.
+
