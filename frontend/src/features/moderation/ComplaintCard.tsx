@@ -17,17 +17,15 @@ export function ComplaintCard({ complaint }: { complaint: ModerationComplaint })
   return (
     <Card>
       <Stack gap="sm">
-        <Group justify="space-between" wrap="nowrap" gap="sm" align="flex-start">
-          <Stack gap={2} style={{ minWidth: 0 }}>
-            <Text fw={700}>{COMPLAINT_REASON_LABELS[complaint.reason]}</Text>
-            <Text size="sm" c="dimmed">
-              {complaint.target_title}
-            </Text>
-          </Stack>
-          <Badge color={status.color} variant="light" style={{ flexShrink: 0 }}>
+        <Stack gap={4}>
+          <Badge color={status.color} variant="light">
             {status.label}
           </Badge>
-        </Group>
+          <Text fw={700}>{COMPLAINT_REASON_LABELS[complaint.reason]}</Text>
+          <Text size="sm" c="dimmed">
+            {complaint.target_title}
+          </Text>
+        </Stack>
         <Group gap="xs" wrap="wrap">
           <Text size="sm" fw={600}>
             «{complaint.company.name}»

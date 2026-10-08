@@ -1,4 +1,4 @@
-import { Card, SegmentedControl, SimpleGrid, Stack, Tabs, Text, Title } from '@mantine/core';
+import { Card, Chip, Group, SimpleGrid, Stack, Tabs, Text, Title } from '@mantine/core';
 import { IconBuildingSkyscraper, IconFlag } from '@tabler/icons-react';
 import { useState } from 'react';
 import { errorMessage } from '@/api/errors';
@@ -8,22 +8,31 @@ import { CompanyModerationCard } from '@/features/moderation/CompanyModerationCa
 import { ComplaintCard } from '@/features/moderation/ComplaintCard';
 import { ErrorState, LoadingState, PageHeader } from '@/shared/ui';
 
+const STATUS_FILTERS: { value: ComplaintStatus | 'all'; label: string }[] = [
+  { value: 'open', label: 'Ждут решения' },
+  { value: 'confirmed', label: 'Подтверждённые' },
+  { value: 'rejected', label: 'Отклонённые' },
+  { value: 'all', label: 'Все' },
+];
+
 function ComplaintsTab() {
   const [status, setStatus] = useState<ComplaintStatus | 'all'>('open');
   const complaints = useModerationComplaints(status === 'all' ? null : status);
   return (
     <Stack gap="md">
-      <SegmentedControl
+      <Chip.Group
+        multiple={false}
         value={status}
         onChange={(value) => setStatus(value as ComplaintStatus | 'all')}
-        data={[
-          { value: 'open', label: 'Ждут решения' },
-          { value: 'confirmed', label: 'Подтверждённые' },
-          { value: 'rejected', label: 'Отклонённые' },
-          { value: 'all', label: 'Все' },
-        ]}
-        style={{ alignSelf: 'flex-start', maxWidth: '100%' }}
-      />
+      >
+        <Group gap="xs">
+          {STATUS_FILTERS.map((item) => (
+            <Chip key={item.value} value={item.value} variant="light">
+              {item.label}
+            </Chip>
+          ))}
+        </Group>
+      </Chip.Group>
       {complaints.isPending ? (
         <LoadingState blocks={2} height={180} />
       ) : complaints.isError ? (

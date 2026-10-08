@@ -44,4 +44,8 @@
     align-items: flex-start;
     padding: rem(22px);
   }
+
+  .heroTitle {
+    flex-basis: auto;
+  }
 }

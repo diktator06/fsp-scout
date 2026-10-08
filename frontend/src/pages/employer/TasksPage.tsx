@@ -15,16 +15,12 @@ function TaskCard({ task }: { task: MicroTask }) {
   return (
     <Card component={Link} to={`/e/tasks/${task.id}`}>
       <Stack gap="sm">
-        <Group justify="space-between" wrap="nowrap" align="flex-start">
-          <Title order={4}>{task.title}</Title>
-          <Badge
-            color={task.kind === 'solve' ? 'fsp' : 'lilac'}
-            variant="light"
-            style={{ flexShrink: 0 }}
-          >
+        <Stack gap={6} align="flex-start">
+          <Badge color={task.kind === 'solve' ? 'fsp' : 'lilac'} variant="light">
             {TASK_KIND_LABELS[task.kind]}
           </Badge>
-        </Group>
+          <Title order={4}>{task.title}</Title>
+        </Stack>
         <Text size="sm" c="dimmed">
           {task.specialization_name}
           {task.status === 'archived' ? ' · в архиве' : ''}

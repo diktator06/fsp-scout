@@ -13,6 +13,7 @@ import {
   Textarea,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useMediaQuery } from '@mantine/hooks';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useSpecializations } from '@/api/dictionaries';
@@ -54,6 +55,7 @@ export function TaskForm({ onCreated }: { onCreated: () => void }) {
   // рубрику — по ней оценит компания, и кандидат видит её заранее.
   const specializations = useSpecializations();
   const create = useCreateTask();
+  const compact = useMediaQuery('(max-width: 36em)');
   const [failure, setFailure] = useState<string | null>(null);
   const form = useForm<TaskFormValues>({
     initialValues: INITIAL,
@@ -108,6 +110,7 @@ export function TaskForm({ onCreated }: { onCreated: () => void }) {
       <Stack gap="md">
         <SegmentedControl
           fullWidth
+          orientation={compact ? 'vertical' : 'horizontal'}
           data={[
             { value: 'solve', label: 'Решить — проверит система' },
             { value: 'approach', label: 'Предложить подход — оцените вы' },
