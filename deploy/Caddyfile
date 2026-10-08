@@ -1,0 +1,31 @@
+# Caddy для «Скаута» на VPS: HTTPS-сертификаты Let's Encrypt выпускаются и продлеваются сами.
+# Три имени: приложение, эмулятор ФСП ID и Mailpit (за паролем — письма видят только свои).
+{
+	email {$ACME_EMAIL}
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+}
+
+{$DOMAIN} {
+	import security_headers
+	encode zstd gzip
+	reverse_proxy frontend:80
+}
+
+fsp.{$DOMAIN} {
+	import security_headers
+	reverse_proxy fsp-registry-mock:8090
+}
+
+mail.{$DOMAIN} {
+	import security_headers
+	basic_auth {
+		{$MAILPIT_USER} {$MAILPIT_PASSWORD_HASH}
+	}
+	reverse_proxy mailpit:8025
+}

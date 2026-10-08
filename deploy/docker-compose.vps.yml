@@ -1,0 +1,70 @@
+# Оверлей для VPS: Caddy с HTTPS перед стендом, наружу открыты только 80 и 443.
+#   docker compose -f docker-compose.yml -f deploy/docker-compose.vps.yml \
+#     --env-file deploy/vps.env up --build -d
+# Подробности — docs/DEPLOYMENT.md.
+x-required: &required
+  APP_ENV: production
+  FRONTEND_URL: https://${DOMAIN:?Задайте DOMAIN в deploy/vps.env}
+  REFRESH_COOKIE_SECURE: "true"
+  JWT_SECRET: "${JWT_SECRET:?Задайте JWT_SECRET: openssl rand -hex 32}"
+  ASSESSMENT_SECRET: "${ASSESSMENT_SECRET:?Задайте ASSESSMENT_SECRET: openssl rand -hex 32}"
+  FSP_CLIENT_SECRET: "${FSP_CLIENT_SECRET:?Задайте FSP_CLIENT_SECRET: openssl rand -hex 32}"
+  FSP_OIDC_ISSUER: https://fsp.${DOMAIN}
+  DEMO_PASSWORD: "${DEMO_PASSWORD:?Задайте DEMO_PASSWORD для демо-аккаунтов жюри}"
+
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN}
+      ACME_EMAIL: "${ACME_EMAIL:?Задайте ACME_EMAIL для Let's Encrypt}"
+      MAILPIT_USER: ${MAILPIT_USER:-jury}
+      MAILPIT_PASSWORD_HASH: "${MAILPIT_PASSWORD_HASH:?Задайте MAILPIT_PASSWORD_HASH: caddy hash-password}"
+    ports:
+      - "${CADDY_HTTP_PORT:-80}:80"
+      - "${CADDY_HTTPS_PORT:-443}:443"
+      - "${CADDY_HTTPS_PORT:-443}:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      frontend:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
+  backend:
+    environment: *required
+    ports: !reset []
+
+  db:
+    environment:
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Задайте POSTGRES_PASSWORD: openssl rand -hex 24}"
+    ports: !reset []
+
+  mailpit:
+    ports: !reset []
+
+  fsp-registry-mock:
+    environment:
+      PUBLIC_URL: https://fsp.${DOMAIN}
+      CLIENT_SECRET: ${FSP_CLIENT_SECRET}
+      REDIRECT_URIS: >-
+        ["https://${DOMAIN}/c/fsp/callback", "https://${DOMAIN}/auth/fsp/callback"]
+      DEMO_PASSWORD: "${FSP_DEMO_PASSWORD:?Задайте FSP_DEMO_PASSWORD для участников эмулятора}"
+    ports: !reset []
+
+  frontend:
+    build:
+      args:
+        VITE_MAILPIT_URL: https://mail.${DOMAIN}
+        VITE_SHOW_DEMO_ACCOUNTS: ${VITE_SHOW_DEMO_ACCOUNTS:-true}
+    ports: !reset []
+
+volumes:
+  caddy-data:
+  caddy-config:

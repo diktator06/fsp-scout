@@ -2,16 +2,17 @@
 
 COMPOSE := docker compose
 KEYCLOAK_COMPOSE := $(COMPOSE) -f docker-compose.yml -f docker-compose.keycloak.yml
+VPS_COMPOSE := $(COMPOSE) -f docker-compose.yml -f deploy/docker-compose.vps.yml --env-file deploy/vps.env
 BACKEND := cd backend &&
 FRONTEND := cd frontend &&
 MOCK := cd fsp-registry-mock &&
 EVAL_DATABASE_URL ?= postgresql+asyncpg://fsp:fsp@localhost:5432/fsp_scout_eval
 
 .DEFAULT_GOAL := help
-.PHONY: help up up-keycloak down-keycloak keycloak-smoke down restart logs ps reset db install install-backend install-frontend install-mock \
+.PHONY: help up up-keycloak down-keycloak keycloak-smoke vps-up vps-down vps-logs vps-check down restart logs ps reset db install install-backend install-frontend install-mock \
         dev-backend dev-frontend dev-mock test test-backend test-frontend test-mock lint \
         lint-backend lint-frontend lint-mock style format migrate revision seed openapi simulate \
-        eval-matching validate-assessment validation-report check
+        eval-matching validate-assessment validation-report libraries check
 
 help: ## Показать список команд
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -27,6 +28,18 @@ down-keycloak: ## Остановить стенд с Keycloak (данные БД
 
 keycloak-smoke: ## Проверить живой стенд с Keycloak: OIDC, токены, claims, привязка и вход
 	$(BACKEND) uv run python -m scripts.keycloak_smoke
+
+vps-up: ## VPS: собрать и поднять стенд за Caddy с HTTPS (нужен deploy/vps.env)
+	$(VPS_COMPOSE) up --build -d
+
+vps-down: ## VPS: остановить стенд (данные и сертификаты сохраняются)
+	$(VPS_COMPOSE) down
+
+vps-logs: ## VPS: логи всех сервисов
+	$(VPS_COMPOSE) logs -f --tail=200
+
+vps-check: ## VPS: проверить развёрнутый стенд, make vps-check DOMAIN=scout.example.ru
+	deploy/check.sh $(DOMAIN)
 
 down: ## Остановить стенд (данные БД сохраняются)
 	$(COMPOSE) down
@@ -119,5 +132,8 @@ eval-matching: ## Оценка подбора на размеченных пар
 
 validation-report: ## Собрать docs/VALIDATION.md из отчётов docs/validation
 	$(BACKEND) uv run python -m evaluation.report
+
+libraries: ## Собрать docs/LIBRARIES.md из манифестов и lock-файлов
+	$(BACKEND) uv run python ../tools/libraries.py
 
 check: lint test ## Всё, что проверяет CI

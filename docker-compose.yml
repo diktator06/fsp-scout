@@ -28,6 +28,7 @@ x-backend-environment: &backend-environment
   FSP_CLIENT_ID: ${FSP_CLIENT_ID:-fsp-scout}
   FSP_CLIENT_SECRET: ${FSP_CLIENT_SECRET:-dev-only-fsp-client-secret}
   WEBHOOK_ALLOW_PRIVATE_URLS: ${WEBHOOK_ALLOW_PRIVATE_URLS:-false}
+  ASSESSMENT_SECRET: ${ASSESSMENT_SECRET:-dev-only-assessment-secret-change-me}
 
 services:
   db:

@@ -33,3 +33,6 @@ docs/build/
 .idea/
 .vscode/
 *.swp
+
+# Секреты VPS: шаблон deploy/vps.env.example, заполненный файл не коммитится.
+deploy/vps.env

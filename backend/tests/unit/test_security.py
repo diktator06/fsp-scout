@@ -4,7 +4,7 @@ from datetime import UTC, datetime, timedelta
 import jwt
 import pytest
 
-from app.core.config import get_settings
+from app.core.config import Settings, get_settings
 from app.core.exceptions import InvalidTokenError
 from app.core.security import (
     create_access_token,
@@ -105,3 +105,18 @@ def test_tampered_or_foreign_token_is_rejected() -> None:
     for token in (forged, foreign_audience, "not.a.jwt"):
         with pytest.raises(InvalidTokenError):
             decode_access_token(token, settings)
+
+
+def test_production_refuses_published_dev_secrets() -> None:
+    """В production стенд не стартует с секретами из репозитория, включая секрет экземпляров."""
+    strong = {
+        "app_env": "production",
+        "jwt_secret": "j" * 40,
+        "fsp_client_secret": "f" * 40,
+        "assessment_secret": "a" * 40,
+    }
+    assert Settings(**strong).is_production
+    for field in ("jwt_secret", "fsp_client_secret", "assessment_secret"):
+        weak = {key: value for key, value in strong.items() if key != field}
+        with pytest.raises(ValueError, match=field.upper()):
+            Settings(**weak)

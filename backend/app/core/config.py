@@ -7,6 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEV_JWT_SECRET = "dev-only-jwt-secret-change-me-in-production"
 DEV_FSP_CLIENT_SECRET = "dev-only-fsp-client-secret"
+DEV_ASSESSMENT_SECRET = "dev-only-assessment-secret-change-me"
 BACKEND_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -48,7 +49,7 @@ class Settings(BaseSettings):
 
     rate_limit_enabled: bool = True
 
-    assessment_secret: str = "dev-only-assessment-secret-change-me"
+    assessment_secret: str = DEV_ASSESSMENT_SECRET
     grade_change_cooldown_days: int = Field(default=90, ge=0, le=365)
     upgrade_retry_days: int = Field(default=30, ge=0, le=365)
     onboarding_retry_hours: int = Field(default=24, ge=0, le=720)
@@ -103,6 +104,10 @@ class Settings(BaseSettings):
             raise ValueError("JWT_SECRET должен быть не короче 32 символов")
         if self.app_env == "production" and self.fsp_client_secret == DEV_FSP_CLIENT_SECRET:
             raise ValueError("В production необходимо задать собственный FSP_CLIENT_SECRET")
+        if self.app_env == "production" and self.assessment_secret == DEV_ASSESSMENT_SECRET:
+            # Секрет входит в HMAC seed экземпляров: зная его, можно заранее
+            # вычислить задания любой сессии и подготовить ответы.
+            raise ValueError("В production необходимо задать собственный ASSESSMENT_SECRET")
         return self
 
     @property
