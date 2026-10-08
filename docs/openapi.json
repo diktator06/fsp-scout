@@ -1,6 +1,21 @@
 {
   "components": {
     "schemas": {
+      "AccountDeletionRequest": {
+        "description": "Подтверждение удаления аккаунта: человек вводит свой email.",
+        "properties": {
+          "confirm_email": {
+            "format": "email",
+            "title": "Confirm Email",
+            "type": "string"
+          }
+        },
+        "required": [
+          "confirm_email"
+        ],
+        "title": "AccountDeletionRequest",
+        "type": "object"
+      },
       "ApplicationBrief": {
         "description": "Отклик кандидата на вакансию — для метки в списке.",
         "properties": {
@@ -6253,6 +6268,70 @@
         "title": "Page[SkillRead]",
         "type": "object"
       },
+      "PersonalDataExport": {
+        "description": "Выгрузка персональных данных пользователя (ст. 14 152-ФЗ — право на доступ).\n\nРазделы — таблицы, в которых есть данные человека, строки — записи как есть, без\nслужебных секретов: хешей паролей и токенов, ключей ответов и seed заданий.",
+        "properties": {
+          "counters": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Сводные числа без самих записей",
+            "title": "Counters",
+            "type": "object"
+          },
+          "format_version": {
+            "default": "1",
+            "title": "Format Version",
+            "type": "string"
+          },
+          "generated_at": {
+            "format": "date-time",
+            "title": "Generated At",
+            "type": "string"
+          },
+          "operator": {
+            "title": "Operator",
+            "type": "string"
+          },
+          "purposes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Purposes",
+            "type": "array"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole"
+          },
+          "sections": {
+            "additionalProperties": {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "title": "Sections",
+            "type": "object"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "generated_at",
+          "operator",
+          "purposes",
+          "user_id",
+          "role",
+          "sections",
+          "counters"
+        ],
+        "title": "PersonalDataExport",
+        "type": "object"
+      },
       "PolicySettingsRead": {
         "description": "Правила пересдачи и смены грейда.",
         "properties": {
@@ -9492,6 +9571,113 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/account": {
+      "delete": {
+        "description": "Необратимое удаление: отзыв согласия на обработку ПДн и уничтожение данных.",
+        "operationId": "delete_account_api_v1_account_delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountDeletionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Удалить аккаунт и все данные",
+        "tags": [
+          "account"
+        ]
+      }
+    },
+    "/api/v1/account/personal-data": {
+      "get": {
+        "description": "Все данные о пользователе одним JSON-файлом (ст. 14 152-ФЗ).",
+        "operationId": "export_personal_data_api_v1_account_personal_data_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonalDataExport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Выгрузка моих персональных данных",
+        "tags": [
+          "account"
+        ]
+      }
+    },
     "/api/v1/assessment/blueprint": {
       "get": {
         "description": "Какие компетенции и с какими весами войдут в тест.\n\nЯзыково-зависимые компетенции включаются, только если в стеке есть\nсоответствующий язык.",

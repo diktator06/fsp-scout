@@ -63,6 +63,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [queryClient]);
 
+  const deleteAccount = useCallback(
+    async (confirmEmail: string) => {
+      // Сервер уже удалил аккаунт и refresh-cookie, поэтому локальную сессию и кеш
+      // чистим сразу: данных этого пользователя больше нет нигде.
+      await unwrap(api.DELETE('/api/v1/account', { body: { confirm_email: confirmEmail } }));
+      applySession(null);
+      queryClient.clear();
+    },
+    [queryClient],
+  );
+
   const value = useMemo<AuthContextValue>(
     () => ({
       status,
@@ -73,8 +84,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loginWithFsp,
       resendVerification,
       logout,
+      deleteAccount,
     }),
-    [status, user, login, register, verifyEmail, loginWithFsp, resendVerification, logout],
+    [
+      status,
+      user,
+      login,
+      register,
+      verifyEmail,
+      loginWithFsp,
+      resendVerification,
+      logout,
+      deleteAccount,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

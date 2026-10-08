@@ -4,6 +4,46 @@
  */
 
 export interface paths {
+    "/api/v1/account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Удалить аккаунт и все данные
+         * @description Необратимое удаление: отзыв согласия на обработку ПДн и уничтожение данных.
+         */
+        delete: operations["delete_account_api_v1_account_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/account/personal-data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Выгрузка моих персональных данных
+         * @description Все данные о пользователе одним JSON-файлом (ст. 14 152-ФЗ).
+         */
+        get: operations["export_personal_data_api_v1_account_personal_data_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/assessment/blueprint": {
         parameters: {
             query?: never;
@@ -2242,6 +2282,17 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AccountDeletionRequest
+         * @description Подтверждение удаления аккаунта: человек вводит свой email.
+         */
+        AccountDeletionRequest: {
+            /**
+             * Confirm Email
+             * Format: email
+             */
+            confirm_email: string;
+        };
         /**
          * ApplicationBrief
          * @description Отклик кандидата на вакансию — для метки в списке.
@@ -4759,6 +4810,48 @@ export interface components {
             total: number;
         };
         /**
+         * PersonalDataExport
+         * @description Выгрузка персональных данных пользователя (ст. 14 152-ФЗ — право на доступ).
+         *
+         *     Разделы — таблицы, в которых есть данные человека, строки — записи как есть, без
+         *     служебных секретов: хешей паролей и токенов, ключей ответов и seed заданий.
+         */
+        PersonalDataExport: {
+            /**
+             * Counters
+             * @description Сводные числа без самих записей
+             */
+            counters: {
+                [key: string]: number;
+            };
+            /**
+             * Format Version
+             * @default 1
+             */
+            format_version: string;
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            /** Operator */
+            operator: string;
+            /** Purposes */
+            purposes: string[];
+            role: components["schemas"]["UserRole"];
+            /** Sections */
+            sections: {
+                [key: string]: {
+                    [key: string]: unknown;
+                }[];
+            };
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
          * PolicySettingsRead
          * @description Правила пересдачи и смены грейда.
          */
@@ -6129,6 +6222,93 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    delete_account_api_v1_account_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountDeletionRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    export_personal_data_api_v1_account_personal_data_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PersonalDataExport"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     preview_blueprint_api_v1_assessment_blueprint_get: {
         parameters: {
             query: {

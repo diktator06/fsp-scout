@@ -14,6 +14,7 @@ from app.db.session import get_session
 from app.integrations.fsp_gateway import FspGateway, build_fsp_gateway
 from app.integrations.mailer import Mailer, build_mailer
 from app.models.user import User, UserRole
+from app.services.account.personal_data_service import PersonalDataService
 from app.services.assessment.assessment_service import AssessmentService
 from app.services.assessment.methodist_service import MethodistService
 from app.services.auth.access import ensure_role, resolve_user_by_access_token
@@ -209,6 +210,13 @@ def get_moderation_service(session: SessionDep) -> ModerationService:
     return ModerationService(session)
 
 
+def get_personal_data_service(
+    session: SessionDep, settings: SettingsDep, mailer: MailerDep
+) -> PersonalDataService:
+    """Сервис прав субъекта ПДн: выгрузка и удаление аккаунта."""
+    return PersonalDataService(session, settings, mailer)
+
+
 def get_methodist_service(session: SessionDep, settings: SettingsDep) -> MethodistService:
     """Сервис кабинета методиста."""
     return MethodistService(session, settings)
@@ -231,6 +239,7 @@ VacancyServiceDep = Annotated[VacancyService, Depends(get_vacancy_service)]
 ComplaintServiceDep = Annotated[ComplaintService, Depends(get_complaint_service)]
 ModerationServiceDep = Annotated[ModerationService, Depends(get_moderation_service)]
 MethodistServiceDep = Annotated[MethodistService, Depends(get_methodist_service)]
+PersonalDataServiceDep = Annotated[PersonalDataService, Depends(get_personal_data_service)]
 CandidateTaskServiceDep = Annotated[CandidateTaskService, Depends(get_candidate_task_service)]
 EmployerTaskServiceDep = Annotated[EmployerTaskService, Depends(get_employer_task_service)]
 VacancyBoardServiceDep = Annotated[VacancyBoardService, Depends(get_vacancy_board_service)]

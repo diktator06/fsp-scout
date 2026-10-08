@@ -19,6 +19,7 @@ import {
   IconBuildingSkyscraper,
   IconChecklist,
   IconChevronDown,
+  IconDatabaseExport,
   IconHome,
   IconLogout,
   IconMailOpened,
@@ -112,6 +113,13 @@ function UserMenu() {
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>{ROLE_TITLES[user.role]}</Menu.Label>
+        <Menu.Item
+          leftSection={<IconDatabaseExport size={16} />}
+          component={Link}
+          to={`${ROLE_HOME[user.role]}/account`}
+        >
+          Мои данные
+        </Menu.Item>
         <Menu.Item leftSection={<IconLogout size={16} />} color="signal" onClick={handleLogout}>
           Выйти
         </Menu.Item>

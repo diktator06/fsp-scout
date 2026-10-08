@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.v1 import (
+    account,
     assessment,
     auth,
     complaints,
@@ -24,6 +25,7 @@ from app.api.v1.employer import vacancies as employer_vacancies
 api_router = APIRouter()
 api_router.include_router(system.router)
 api_router.include_router(auth.router)
+api_router.include_router(account.router)
 api_router.include_router(dictionaries.router)
 api_router.include_router(profile.router)
 api_router.include_router(assessment.router)

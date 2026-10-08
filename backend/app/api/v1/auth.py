@@ -53,7 +53,7 @@ def _set_refresh_cookie(response: Response, auth: AuthenticatedSession, settings
     )
 
 
-def _clear_refresh_cookie(response: Response, settings: Settings) -> None:
+def clear_refresh_cookie(response: Response, settings: Settings) -> None:
     """Удаляет refresh-cookie при выходе или недействительной сессии."""
     response.delete_cookie(
         key=settings.refresh_cookie_name,
@@ -226,7 +226,7 @@ async def logout(request: Request, service: AuthServiceDep, settings: SettingsDe
     """Отзывает текущую refresh-сессию и удаляет cookie."""
     await service.logout(request.cookies.get(settings.refresh_cookie_name))
     response = Response(status_code=status.HTTP_204_NO_CONTENT)
-    _clear_refresh_cookie(response, settings)
+    clear_refresh_cookie(response, settings)
     return response
 
 

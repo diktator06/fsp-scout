@@ -12,6 +12,7 @@ export interface AuthContextValue {
   loginWithFsp: (code: string, state: string) => Promise<CurrentUser>;
   resendVerification: (email: string) => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: (confirmEmail: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

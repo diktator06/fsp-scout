@@ -46,6 +46,7 @@ from app.crud.matching import (
 )
 from app.crud.microtask import microtask_assignment_crud, microtask_crud
 from app.crud.notification import notification_crud
+from app.crud.personal_data import personal_data_crud
 from app.crud.trust import complaint_crud, reputation_crud
 from app.crud.user import user_crud
 from app.crud.vacancy import (
@@ -89,6 +90,7 @@ __all__ = [
     "need_skill_crud",
     "notification_crud",
     "oidc_flow_state_crud",
+    "personal_data_crud",
     "privacy_settings_crud",
     "recruiter_crud",
     "refresh_session_crud",

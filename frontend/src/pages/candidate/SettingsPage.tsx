@@ -13,6 +13,7 @@ import {
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconBuildingBank, IconEyeOff } from '@tabler/icons-react';
+import { Link } from 'react-router';
 import {
   useBankPublication,
   useCandidateProfile,
@@ -254,6 +255,19 @@ export function SettingsPage() {
       <Stack gap="lg">
         <BankPublication />
         <PrivacyForm profile={profile.data} settings={privacy.data} />
+        <Card padding="lg">
+          <Group justify="space-between" wrap="wrap" gap="sm">
+            <Stack gap={4}>
+              <Title order={4}>Мои данные</Title>
+              <Text size="sm" c="dimmed">
+                Копия всего, что хранит платформа, и удаление аккаунта вместе с данными.
+              </Text>
+            </Stack>
+            <Button component={Link} to="/c/account" variant="light">
+              Открыть
+            </Button>
+          </Group>
+        </Card>
       </Stack>
     </>
   );

@@ -170,6 +170,13 @@ export const router = createBrowserRouter([
           (module) => module.CandidateInvitationPage,
         ),
       },
+      {
+        path: 'account',
+        lazy: page(
+          () => import('@/pages/account/AccountPage'),
+          (module) => module.AccountPage,
+        ),
+      },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
@@ -301,6 +308,13 @@ export const router = createBrowserRouter([
           (module) => module.InvitationsPage,
         ),
       },
+      {
+        path: 'account',
+        lazy: page(
+          () => import('@/pages/account/AccountPage'),
+          (module) => module.AccountPage,
+        ),
+      },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
@@ -346,6 +360,13 @@ export const router = createBrowserRouter([
         lazy: page(
           () => import('@/pages/methodist/AssessmentSettingsPage'),
           (module) => module.AssessmentSettingsPage,
+        ),
+      },
+      {
+        path: 'account',
+        lazy: page(
+          () => import('@/pages/account/AccountPage'),
+          (module) => module.AccountPage,
         ),
       },
     ],
