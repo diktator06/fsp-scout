@@ -7,6 +7,7 @@ os.environ["DATABASE_URL"] = os.environ.get(
 os.environ["RATE_LIMIT_ENABLED"] = "false"
 os.environ["MAIL_BACKEND"] = "console"
 os.environ["SEED_DEMO_USERS"] = "false"
+os.environ["WEBHOOK_DISPATCHER_ENABLED"] = "false"
 os.environ["FRONTEND_URL"] = "http://scout.test"
 
 import asyncio

@@ -2396,6 +2396,16 @@
         "title": "DeclineRequest",
         "type": "object"
       },
+      "DeliveryStatus": {
+        "description": "Состояние доставки события получателю.",
+        "enum": [
+          "pending",
+          "delivered",
+          "failed"
+        ],
+        "title": "DeliveryStatus",
+        "type": "string"
+      },
       "DisclosedContacts": {
         "description": "Контакты кандидата: только каналы, которые он разрешил раскрывать.",
         "properties": {
@@ -5381,7 +5391,8 @@
           "application_updated",
           "microtask_submitted",
           "microtask_graded",
-          "company_restricted"
+          "company_restricted",
+          "webhook_failed"
         ],
         "title": "NotificationKind",
         "type": "string"
@@ -5985,6 +5996,55 @@
           "message"
         ],
         "title": "SalaryCheckRead",
+        "type": "object"
+      },
+      "SandboxReceipt": {
+        "description": "Ответ песочницы ATS: событие принято и подпись проверена.",
+        "properties": {
+          "event_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Id"
+          },
+          "event_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Event Type"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "received": {
+            "title": "Received",
+            "type": "boolean"
+          },
+          "signature_valid": {
+            "title": "Signature Valid",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "received",
+          "signature_valid",
+          "event_type",
+          "event_id",
+          "message"
+        ],
+        "title": "SandboxReceipt",
         "type": "object"
       },
       "ScoreComponentRead": {
@@ -7918,6 +7978,359 @@
           "token"
         ],
         "title": "VerifyEmailRequest",
+        "type": "object"
+      },
+      "WebhookDeliveryRead": {
+        "description": "Доставка события: статус, попытки и ответ получателя.",
+        "properties": {
+          "attempts": {
+            "title": "Attempts",
+            "type": "integer"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "delivered_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delivered At"
+          },
+          "endpoint_id": {
+            "format": "uuid",
+            "title": "Endpoint Id",
+            "type": "string"
+          },
+          "endpoint_url": {
+            "title": "Endpoint Url",
+            "type": "string"
+          },
+          "error": {
+            "title": "Error",
+            "type": "string"
+          },
+          "event_id": {
+            "format": "uuid",
+            "title": "Event Id",
+            "type": "string"
+          },
+          "event_type": {
+            "title": "Event Type",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "last_attempt_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Attempt At"
+          },
+          "max_attempts": {
+            "title": "Max Attempts",
+            "type": "integer"
+          },
+          "next_attempt_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Attempt At"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          },
+          "response_body": {
+            "title": "Response Body",
+            "type": "string"
+          },
+          "response_status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Response Status"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DeliveryStatus"
+          }
+        },
+        "required": [
+          "id",
+          "endpoint_id",
+          "endpoint_url",
+          "event_id",
+          "event_type",
+          "status",
+          "attempts",
+          "max_attempts",
+          "next_attempt_at",
+          "last_attempt_at",
+          "response_status",
+          "response_body",
+          "error",
+          "delivered_at",
+          "created_at",
+          "payload"
+        ],
+        "title": "WebhookDeliveryRead",
+        "type": "object"
+      },
+      "WebhookEndpointCreate": {
+        "description": "Подключение ATS: адрес и события, на которые компания подписывается.",
+        "properties": {
+          "description": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Description",
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/WebhookEvent"
+            },
+            "minItems": 1,
+            "title": "Events",
+            "type": "array"
+          },
+          "url": {
+            "format": "uri",
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "events"
+        ],
+        "title": "WebhookEndpointCreate",
+        "type": "object"
+      },
+      "WebhookEndpointRead": {
+        "description": "Получатель вебхуков. Секрет показывается подсказкой: первые и последние символы.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/WebhookEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "is_sandbox": {
+            "title": "Is Sandbox",
+            "type": "boolean"
+          },
+          "secret_hint": {
+            "title": "Secret Hint",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "events",
+          "description",
+          "is_active",
+          "is_sandbox",
+          "secret_hint",
+          "created_at"
+        ],
+        "title": "WebhookEndpointRead",
+        "type": "object"
+      },
+      "WebhookEndpointSecretRead": {
+        "description": "Получатель с полным секретом — только сразу после создания или смены секрета.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/WebhookEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "is_sandbox": {
+            "title": "Is Sandbox",
+            "type": "boolean"
+          },
+          "secret": {
+            "title": "Secret",
+            "type": "string"
+          },
+          "secret_hint": {
+            "title": "Secret Hint",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "events",
+          "description",
+          "is_active",
+          "is_sandbox",
+          "secret_hint",
+          "created_at",
+          "secret"
+        ],
+        "title": "WebhookEndpointSecretRead",
+        "type": "object"
+      },
+      "WebhookEndpointUpdate": {
+        "description": "Изменение подписки: события, описание, включение и отключение.",
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "events": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/WebhookEvent"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Events"
+          },
+          "is_active": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Active"
+          }
+        },
+        "title": "WebhookEndpointUpdate",
+        "type": "object"
+      },
+      "WebhookEvent": {
+        "description": "События, о которых платформа сообщает ATS работодателя.",
+        "enum": [
+          "invitation.accepted",
+          "invitation.declined",
+          "application.created",
+          "application.withdrawn",
+          "ping"
+        ],
+        "title": "WebhookEvent",
+        "type": "string"
+      },
+      "WebhookEventInfo": {
+        "description": "Описание события для каталога.",
+        "properties": {
+          "contains_contacts": {
+            "title": "Contains Contacts",
+            "type": "boolean"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/WebhookEvent"
+          }
+        },
+        "required": [
+          "type",
+          "title",
+          "description",
+          "contains_contacts"
+        ],
+        "title": "WebhookEventInfo",
         "type": "object"
       },
       "WorkExperienceInput": {
@@ -13096,6 +13509,899 @@
         ]
       }
     },
+    "/api/v1/employer/integrations/deliveries": {
+      "get": {
+        "description": "Последние 50 доставок: статус, попытки, ответ получателя и тело события.",
+        "operationId": "deliveries_api_v1_employer_integrations_deliveries_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WebhookDeliveryRead"
+                  },
+                  "title": "Response Deliveries Api V1 Employer Integrations Deliveries Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Журнал доставок",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/employer/integrations/deliveries/{delivery_id}/retry": {
+      "post": {
+        "description": "Новая попытка с тем же `event_id`: получатель распознает повтор.",
+        "operationId": "redeliver_api_v1_employer_integrations_deliveries__delivery_id__retry_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "delivery_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Delivery Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookDeliveryRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Повторить доставку",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/employer/integrations/events": {
+      "get": {
+        "description": "События, на которые ATS может подписаться, и есть ли в них контакты кандидата.",
+        "operationId": "events_api_v1_employer_integrations_events_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WebhookEventInfo"
+                  },
+                  "title": "Response Events Api V1 Employer Integrations Events Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Каталог событий",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/employer/integrations/export": {
+      "get": {
+        "description": "Все, кто принял приглашение или откликнулся. Каждая выгрузка пишется в аудит.",
+        "operationId": "export_api_v1_employer_integrations_export_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "default": "csv",
+              "enum": [
+                "csv",
+                "json"
+              ],
+              "title": "Format",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "text/csv": {}
+            },
+            "description": "Файл с кандидатами, открывшими компании контакты"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Выгрузка кандидатов для ATS",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/employer/integrations/sandbox": {
+      "post": {
+        "description": "Встроенный получатель на все события: проверить интеграцию без своей ATS.",
+        "operationId": "connect_sandbox_api_v1_employer_integrations_sandbox_post",
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointSecretRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Подключить песочницу ATS",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/employer/integrations/webhooks": {
+      "get": {
+        "description": "Подключённые адреса ATS компании. Секрет показан подсказкой.",
+        "operationId": "endpoints_api_v1_employer_integrations_webhooks_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/WebhookEndpointRead"
+                  },
+                  "title": "Response Endpoints Api V1 Employer Integrations Webhooks Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Получатели вебхуков",
+        "tags": [
+          "integrations"
+        ]
+      },
+      "post": {
+        "description": "Адрес проверяется на доступность из интернета (защита от SSRF).\n\nПолный секрет подписи возвращается только в этом ответе — сохраните его в ATS.",
+        "operationId": "create_endpoint_api_v1_employer_integrations_webhooks_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEndpointCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointSecretRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Подключить ATS",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/employer/integrations/webhooks/{endpoint_id}": {
+      "delete": {
+        "description": "Удаляет получателя вместе с журналом его доставок.",
+        "operationId": "delete_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "endpoint_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Endpoint Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Отключить ATS",
+        "tags": [
+          "integrations"
+        ]
+      },
+      "patch": {
+        "description": "События, описание, включение и отключение получателя.",
+        "operationId": "update_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "endpoint_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Endpoint Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookEndpointUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Изменить подписку",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/employer/integrations/webhooks/{endpoint_id}/secret": {
+      "post": {
+        "description": "Старый секрет перестаёт действовать сразу.",
+        "operationId": "rotate_secret_api_v1_employer_integrations_webhooks__endpoint_id__secret_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "endpoint_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Endpoint Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookEndpointSecretRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Сменить секрет подписи",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/v1/employer/integrations/webhooks/{endpoint_id}/test": {
+      "post": {
+        "description": "Ставит в очередь событие `ping`; итог появится в журнале доставок.",
+        "operationId": "test_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__test_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "endpoint_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Endpoint Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookDeliveryRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Проверить связь",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
     "/api/v1/employer/invitations": {
       "get": {
         "description": "Приглашения со статусами и таймлайном, с фильтром по статусу и потребности.",
@@ -15813,6 +17119,58 @@
         ]
       }
     },
+    "/api/v1/integrations/sandbox/receive": {
+      "post": {
+        "description": "Принимает событие и проверяет подпись `X-Scout-Signature`, как настоящая ATS.",
+        "operationId": "sandbox_receive_api_v1_integrations_sandbox_receive_post",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SandboxReceipt"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "summary": "Песочница ATS: приём вебхука",
+        "tags": [
+          "integrations"
+        ]
+      }
+    },
     "/api/v1/moderation/companies": {
       "get": {
         "description": "Ограниченные, с жалобами и с подозрительными вилками — выше.",
@@ -16943,6 +18301,18 @@
     {
       "description": "Опрос и адаптивное тестирование: уникальные экземпляры заданий из калиброванного банка, оценка θ по IRT, присвоение категории",
       "name": "assessment"
+    },
+    {
+      "description": "Жалобы кандидатов на недобросовестных работодателей",
+      "name": "trust"
+    },
+    {
+      "description": "Модерация: решения по жалобам, ограничение компаний, уровень доверия",
+      "name": "moderation"
+    },
+    {
+      "description": "Интеграция с ATS работодателя: подписанные вебхуки (HMAC-SHA256) с повторами, журнал доставок, песочница-получатель и выгрузка кандидатов в CSV/JSON",
+      "name": "integrations"
     }
   ]
 }

@@ -35,6 +35,7 @@ from app.crud.fsp import (
     fsp_sync_log_crud,
     oidc_flow_state_crud,
 )
+from app.crud.integration import webhook_delivery_crud, webhook_endpoint_crud
 from app.crud.invitation import contact_disclosure_crud, invitation_crud, invitation_event_crud
 from app.crud.matching import (
     hiring_need_crud,
@@ -105,5 +106,7 @@ __all__ = [
     "user_crud",
     "vacancy_crud",
     "vacancy_skill_crud",
+    "webhook_delivery_crud",
+    "webhook_endpoint_crud",
     "work_experience_crud",
 ]

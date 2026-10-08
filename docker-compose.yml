@@ -27,6 +27,7 @@ x-backend-environment: &backend-environment
   FSP_REGISTRY_URL: ${FSP_REGISTRY_URL:-}
   FSP_CLIENT_ID: ${FSP_CLIENT_ID:-fsp-scout}
   FSP_CLIENT_SECRET: ${FSP_CLIENT_SECRET:-dev-only-fsp-client-secret}
+  WEBHOOK_ALLOW_PRIVATE_URLS: ${WEBHOOK_ALLOW_PRIVATE_URLS:-false}
 
 services:
   db:

@@ -51,6 +51,12 @@ from app.models.fsp import (
     OidcFlowPurpose,
     OidcFlowState,
 )
+from app.models.integration import (
+    DeliveryStatus,
+    WebhookDelivery,
+    WebhookEndpoint,
+    WebhookEvent,
+)
 from app.models.invitation import (
     ContactDisclosure,
     DeclineReason,
@@ -114,6 +120,7 @@ __all__ = [
     "ContactChannel",
     "ContactDisclosure",
     "DeclineReason",
+    "DeliveryStatus",
     "DisclosureReason",
     "Education",
     "EmailVerificationToken",
@@ -174,6 +181,9 @@ __all__ = [
     "Vacancy",
     "VacancySkill",
     "VacancyStatus",
+    "WebhookDelivery",
+    "WebhookEndpoint",
+    "WebhookEvent",
     "WorkExperience",
     "WorkFormat",
 ]

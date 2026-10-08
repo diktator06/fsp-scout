@@ -1171,6 +1171,196 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/employer/integrations/deliveries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Журнал доставок
+         * @description Последние 50 доставок: статус, попытки, ответ получателя и тело события.
+         */
+        get: operations["deliveries_api_v1_employer_integrations_deliveries_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/integrations/deliveries/{delivery_id}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Повторить доставку
+         * @description Новая попытка с тем же `event_id`: получатель распознает повтор.
+         */
+        post: operations["redeliver_api_v1_employer_integrations_deliveries__delivery_id__retry_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/integrations/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Каталог событий
+         * @description События, на которые ATS может подписаться, и есть ли в них контакты кандидата.
+         */
+        get: operations["events_api_v1_employer_integrations_events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/integrations/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Выгрузка кандидатов для ATS
+         * @description Все, кто принял приглашение или откликнулся. Каждая выгрузка пишется в аудит.
+         */
+        get: operations["export_api_v1_employer_integrations_export_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/integrations/sandbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Подключить песочницу ATS
+         * @description Встроенный получатель на все события: проверить интеграцию без своей ATS.
+         */
+        post: operations["connect_sandbox_api_v1_employer_integrations_sandbox_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/integrations/webhooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Получатели вебхуков
+         * @description Подключённые адреса ATS компании. Секрет показан подсказкой.
+         */
+        get: operations["endpoints_api_v1_employer_integrations_webhooks_get"];
+        put?: never;
+        /**
+         * Подключить ATS
+         * @description Адрес проверяется на доступность из интернета (защита от SSRF).
+         *
+         *     Полный секрет подписи возвращается только в этом ответе — сохраните его в ATS.
+         */
+        post: operations["create_endpoint_api_v1_employer_integrations_webhooks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/integrations/webhooks/{endpoint_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Отключить ATS
+         * @description Удаляет получателя вместе с журналом его доставок.
+         */
+        delete: operations["delete_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Изменить подписку
+         * @description События, описание, включение и отключение получателя.
+         */
+        patch: operations["update_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/employer/integrations/webhooks/{endpoint_id}/secret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Сменить секрет подписи
+         * @description Старый секрет перестаёт действовать сразу.
+         */
+        post: operations["rotate_secret_api_v1_employer_integrations_webhooks__endpoint_id__secret_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/employer/integrations/webhooks/{endpoint_id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Проверить связь
+         * @description Ставит в очередь событие `ping`; итог появится в журнале доставок.
+         */
+        post: operations["test_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/employer/invitations": {
         parameters: {
             query?: never;
@@ -1639,6 +1829,26 @@ export interface paths {
         get: operations["health_api_v1_health_get"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/integrations/sandbox/receive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Песочница ATS: приём вебхука
+         * @description Принимает событие и проверяет подпись `X-Scout-Signature`, как настоящая ATS.
+         */
+        post: operations["sandbox_receive_api_v1_integrations_sandbox_receive_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2820,6 +3030,12 @@ export interface components {
             comment: string;
             reason: components["schemas"]["DeclineReason"];
         };
+        /**
+         * DeliveryStatus
+         * @description Состояние доставки события получателю.
+         * @enum {string}
+         */
+        DeliveryStatus: "pending" | "delivered" | "failed";
         /**
          * DisclosedContacts
          * @description Контакты кандидата: только каналы, которые он разрешил раскрывать.
@@ -4039,7 +4255,7 @@ export interface components {
          * @description Виды уведомлений в кабинете.
          * @enum {string}
          */
-        NotificationKind: "invitation_received" | "invitation_accepted" | "invitation_declined" | "invitation_withdrawn" | "invitation_expired" | "application_received" | "application_updated" | "microtask_submitted" | "microtask_graded" | "company_restricted";
+        NotificationKind: "invitation_received" | "invitation_accepted" | "invitation_declined" | "invitation_withdrawn" | "invitation_expired" | "application_received" | "application_updated" | "microtask_submitted" | "microtask_graded" | "company_restricted" | "webhook_failed";
         /**
          * NotificationListRead
          * @description Последние уведомления и число непрочитанных.
@@ -4282,6 +4498,22 @@ export interface components {
              * @enum {string}
              */
             status: "ok" | "below_market" | "suspicious" | "unknown";
+        };
+        /**
+         * SandboxReceipt
+         * @description Ответ песочницы ATS: событие принято и подпись проверена.
+         */
+        SandboxReceipt: {
+            /** Event Id */
+            event_id: string | null;
+            /** Event Type */
+            event_type: string | null;
+            /** Message */
+            message: string;
+            /** Received */
+            received: boolean;
+            /** Signature Valid */
+            signature_valid: boolean;
         };
         /**
          * ScoreComponentRead
@@ -5074,6 +5306,164 @@ export interface components {
         VerifyEmailRequest: {
             /** Token */
             token: string;
+        };
+        /**
+         * WebhookDeliveryRead
+         * @description Доставка события: статус, попытки и ответ получателя.
+         */
+        WebhookDeliveryRead: {
+            /** Attempts */
+            attempts: number;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Delivered At */
+            delivered_at: string | null;
+            /**
+             * Endpoint Id
+             * Format: uuid
+             */
+            endpoint_id: string;
+            /** Endpoint Url */
+            endpoint_url: string;
+            /** Error */
+            error: string;
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            /** Event Type */
+            event_type: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Last Attempt At */
+            last_attempt_at: string | null;
+            /** Max Attempts */
+            max_attempts: number;
+            /** Next Attempt At */
+            next_attempt_at: string | null;
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+            /** Response Body */
+            response_body: string;
+            /** Response Status */
+            response_status: number | null;
+            status: components["schemas"]["DeliveryStatus"];
+        };
+        /**
+         * WebhookEndpointCreate
+         * @description Подключение ATS: адрес и события, на которые компания подписывается.
+         */
+        WebhookEndpointCreate: {
+            /**
+             * Description
+             * @default
+             */
+            description: string;
+            /** Events */
+            events: components["schemas"]["WebhookEvent"][];
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+        };
+        /**
+         * WebhookEndpointRead
+         * @description Получатель вебхуков. Секрет показывается подсказкой: первые и последние символы.
+         */
+        WebhookEndpointRead: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Description */
+            description: string;
+            /** Events */
+            events: components["schemas"]["WebhookEvent"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Active */
+            is_active: boolean;
+            /** Is Sandbox */
+            is_sandbox: boolean;
+            /** Secret Hint */
+            secret_hint: string;
+            /** Url */
+            url: string;
+        };
+        /**
+         * WebhookEndpointSecretRead
+         * @description Получатель с полным секретом — только сразу после создания или смены секрета.
+         */
+        WebhookEndpointSecretRead: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Description */
+            description: string;
+            /** Events */
+            events: components["schemas"]["WebhookEvent"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Active */
+            is_active: boolean;
+            /** Is Sandbox */
+            is_sandbox: boolean;
+            /** Secret */
+            secret: string;
+            /** Secret Hint */
+            secret_hint: string;
+            /** Url */
+            url: string;
+        };
+        /**
+         * WebhookEndpointUpdate
+         * @description Изменение подписки: события, описание, включение и отключение.
+         */
+        WebhookEndpointUpdate: {
+            /** Description */
+            description?: string | null;
+            /** Events */
+            events?: components["schemas"]["WebhookEvent"][] | null;
+            /** Is Active */
+            is_active?: boolean | null;
+        };
+        /**
+         * WebhookEvent
+         * @description События, о которых платформа сообщает ATS работодателя.
+         * @enum {string}
+         */
+        WebhookEvent: "invitation.accepted" | "invitation.declined" | "application.created" | "application.withdrawn" | "ping";
+        /**
+         * WebhookEventInfo
+         * @description Описание события для каталога.
+         */
+        WebhookEventInfo: {
+            /** Contains Contacts */
+            contains_contacts: boolean;
+            /** Description */
+            description: string;
+            /** Title */
+            title: string;
+            type: components["schemas"]["WebhookEvent"];
         };
         /**
          * WorkExperienceInput
@@ -8922,6 +9312,695 @@ export interface operations {
             };
         };
     };
+    deliveries_api_v1_employer_integrations_deliveries_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookDeliveryRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    redeliver_api_v1_employer_integrations_deliveries__delivery_id__retry_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                delivery_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookDeliveryRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    events_api_v1_employer_integrations_events_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEventInfo"][];
+                };
+            };
+        };
+    };
+    export_api_v1_employer_integrations_export_get: {
+        parameters: {
+            query?: {
+                format?: "csv" | "json";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Файл с кандидатами, открывшими компании контакты */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                    "text/csv": unknown;
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    connect_sandbox_api_v1_employer_integrations_sandbox_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEndpointSecretRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    endpoints_api_v1_employer_integrations_webhooks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEndpointRead"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_endpoint_api_v1_employer_integrations_webhooks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookEndpointCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEndpointSecretRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    delete_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                endpoint_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                endpoint_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WebhookEndpointUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEndpointRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    rotate_secret_api_v1_employer_integrations_webhooks__endpoint_id__secret_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                endpoint_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookEndpointSecretRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    test_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                endpoint_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WebhookDeliveryRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     list_invitations_api_v1_employer_invitations_get: {
         parameters: {
             query?: {
@@ -10951,6 +12030,53 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+        };
+    };
+    sandbox_receive_api_v1_integrations_sandbox_receive_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SandboxReceipt"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };

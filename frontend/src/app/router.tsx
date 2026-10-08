@@ -281,6 +281,13 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: 'integrations',
+        lazy: page(
+          () => import('@/pages/employer/IntegrationsPage'),
+          (module) => module.IntegrationsPage,
+        ),
+      },
+      {
         path: 'invitations',
         lazy: page(
           () => import('@/pages/employer/InvitationsPage'),

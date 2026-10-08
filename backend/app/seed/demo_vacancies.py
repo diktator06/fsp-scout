@@ -99,7 +99,7 @@ async def seed_demo_vacancies(session_factory: SessionFactory, settings: Setting
             )
             vacancy_ids.append(vacancy.id)
 
-        board = VacancyBoardService(session)
+        board = VacancyBoardService(session, settings)
         applied = 0
         for plan in data.get("applications", []):
             vacancy_id = vacancy_ids[plan["vacancy"]]

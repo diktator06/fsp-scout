@@ -22,6 +22,7 @@ import {
   IconHome,
   IconLogout,
   IconMailOpened,
+  IconPlugConnected,
   IconPuzzle,
   IconRadar,
   IconSend,
@@ -67,6 +68,7 @@ const NAVIGATION: Record<UserRole, NavItem[]> = {
     { to: '/e/invitations', label: 'Приглашения', icon: IconMailOpened },
     { to: '/e/vacancies', label: 'Вакансии', icon: IconBriefcase },
     { to: '/e/tasks', label: 'Микрозадачи', icon: IconPuzzle },
+    { to: '/e/integrations', label: 'Интеграции', icon: IconPlugConnected },
     { to: '/e/company', label: 'Компания', icon: IconBuildingSkyscraper },
   ],
   methodist: [

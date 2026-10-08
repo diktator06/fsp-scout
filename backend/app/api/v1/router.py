@@ -5,6 +5,7 @@ from app.api.v1 import (
     auth,
     complaints,
     dictionaries,
+    integrations,
     moderation,
     notifications,
     system,
@@ -37,4 +38,6 @@ api_router.include_router(employer_tasks.router)
 api_router.include_router(candidate_tasks.router)
 api_router.include_router(complaints.router)
 api_router.include_router(moderation.router)
+api_router.include_router(integrations.router)
+api_router.include_router(integrations.sandbox_router)
 api_router.include_router(notifications.router)

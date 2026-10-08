@@ -24,6 +24,7 @@ class NotificationKind(StrEnum):
     MICROTASK_SUBMITTED = "microtask_submitted"
     MICROTASK_GRADED = "microtask_graded"
     COMPANY_RESTRICTED = "company_restricted"
+    WEBHOOK_FAILED = "webhook_failed"
 
 
 class Notification(UUIDPrimaryKeyMixin, CreatedAtMixin, Base):

@@ -24,6 +24,8 @@ from app.services.dictionary_service import DictionaryService
 from app.services.employer.company_service import CompanyService
 from app.services.fsp.fsp_login import FspLoginService
 from app.services.fsp.fsp_service import FspService
+from app.services.integrations.integration_service import IntegrationService
+from app.services.integrations.sandbox import SandboxReceiver
 from app.services.invitations.invitation_service import InvitationService
 from app.services.matching.bank_service import BankService
 from app.services.matching.need_service import NeedService
@@ -171,9 +173,19 @@ def get_vacancy_service(session: SessionDep) -> VacancyService:
     return VacancyService(session)
 
 
-def get_vacancy_board_service(session: SessionDep) -> VacancyBoardService:
+def get_integration_service(session: SessionDep, settings: SettingsDep) -> IntegrationService:
+    """Сервис интеграции с ATS на время запроса."""
+    return IntegrationService(session, settings)
+
+
+def get_sandbox_receiver(session: SessionDep, settings: SettingsDep) -> SandboxReceiver:
+    """Песочница ATS на время запроса."""
+    return SandboxReceiver(session, settings)
+
+
+def get_vacancy_board_service(session: SessionDep, settings: SettingsDep) -> VacancyBoardService:
     """Сервис вакансий для кандидата на время запроса."""
-    return VacancyBoardService(session)
+    return VacancyBoardService(session, settings)
 
 
 def get_candidate_task_service(session: SessionDep, settings: SettingsDep) -> CandidateTaskService:
@@ -215,6 +227,8 @@ ModerationServiceDep = Annotated[ModerationService, Depends(get_moderation_servi
 CandidateTaskServiceDep = Annotated[CandidateTaskService, Depends(get_candidate_task_service)]
 EmployerTaskServiceDep = Annotated[EmployerTaskService, Depends(get_employer_task_service)]
 VacancyBoardServiceDep = Annotated[VacancyBoardService, Depends(get_vacancy_board_service)]
+IntegrationServiceDep = Annotated[IntegrationService, Depends(get_integration_service)]
+SandboxReceiverDep = Annotated[SandboxReceiver, Depends(get_sandbox_receiver)]
 FspLoginServiceDep = Annotated[FspLoginService, Depends(get_fsp_login_service)]
 ProfileServiceDep = Annotated[CandidateProfileService, Depends(get_profile_service)]
 ResumeImportServiceDep = Annotated[ResumeImportService, Depends(get_resume_import_service)]

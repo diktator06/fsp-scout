@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './client';
 import { unwrap } from './errors';
 import type { CandidateProfileUpdate, PrivacySettingsUpdate, ResumeDraft } from './types';
+import { saveBlob } from '@/shared/lib/download';
 
 export const candidateKeys = {
   all: ['candidate'] as const,
@@ -75,17 +76,8 @@ export function useBankPublication() {
 }
 
 export async function downloadProfilePdf(alias: string): Promise<void> {
-  // PDF отдаётся только с токеном доступа, поэтому обычная ссылка не подойдёт:
-  // скачиваем файл запросом и сохраняем через временную ссылку на Blob.
   const blob = await unwrap(api.GET('/api/v1/candidates/me/profile.pdf', { parseAs: 'blob' }));
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `scout-profile-${alias}.pdf`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  saveBlob(blob, `scout-profile-${alias}.pdf`);
 }
 
 export async function parseResume(file: File): Promise<ResumeDraft> {

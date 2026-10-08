@@ -47,6 +47,7 @@ from app.services.contact_access import ContactAccessPolicy
 from app.services.employer.company_service import CompanyService
 from app.services.employer.company_views import company_brief
 from app.services.employer.company_views import employer_contacts as build_employer_contacts
+from app.services.integrations.publisher import WebhookPublisher
 from app.services.invitations.state_machine import Actor, ensure_transition
 from app.services.matching.candidate_pool import CandidatePoolService, members_by_id
 from app.services.notifications import NotificationService
@@ -99,6 +100,7 @@ class InvitationService:
         self._contacts = ContactAccessPolicy(session)
         self._notifications = NotificationService(session, clock)
         self._pool = CandidatePoolService(session, clock)
+        self._webhooks = WebhookPublisher(session, settings, clock)
 
     async def create(self, user: User, payload: InvitationCreate) -> EmployerInvitationRead:
         """Отправляет приглашение кандидату из банка.
@@ -255,6 +257,7 @@ class InvitationService:
             title=f"Кандидат {profile.public_alias} принял приглашение",
             text=f"{invitation.title}. Контакты открыты.",
         )
+        await self._webhooks.invitation_accepted(invitation)
         await self._session.commit()
         await self._email_company_accepted(invitation, profile)
         return (await self._candidate_views(profile, [invitation]))[0]
@@ -280,6 +283,9 @@ class InvitationService:
             NotificationKind.INVITATION_DECLINED,
             title=f"Кандидат {profile.public_alias} отклонил приглашение",
             text=invitation.title,
+        )
+        await self._webhooks.invitation_declined(
+            invitation, profile.public_alias, payload.reason, payload.comment
         )
         await self._session.commit()
         return (await self._candidate_views(profile, [invitation]))[0]

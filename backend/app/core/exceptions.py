@@ -203,3 +203,17 @@ class CompanyRestrictedError(PermissionDeniedError):
         "Компания на проверке модератора после жалоб кандидатов: приглашения, вакансии "
         "и задачи временно недоступны"
     )
+
+
+class UnsafeWebhookUrlError(DomainValidationError):
+    """Адрес вебхука ведёт во внутреннюю сеть или не разрешается — отправлять туда нельзя."""
+
+    code = "unsafe_webhook_url"
+    default_message = "Адрес получателя недоступен из интернета или указан неверно"
+
+
+class WebhookSignatureError(AuthenticationError):
+    """Подпись вебхука не сошлась или устарела."""
+
+    code = "invalid_signature"
+    default_message = "Подпись события не прошла проверку"

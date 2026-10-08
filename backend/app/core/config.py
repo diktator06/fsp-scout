@@ -62,6 +62,13 @@ class Settings(BaseSettings):
     microtask_weekly_limit: int = Field(default=3, ge=1, le=20)
     microtask_due_days: int = Field(default=3, ge=1, le=30)
 
+    webhook_dispatcher_enabled: bool = True
+    webhook_dispatch_interval_seconds: float = Field(default=2.0, gt=0, le=60)
+    webhook_timeout_seconds: float = Field(default=5.0, gt=0, le=30)
+    webhook_allow_private_urls: bool = False
+    webhook_sandbox_url: str = "http://127.0.0.1:8000/api/v1/integrations/sandbox/receive"
+    webhook_endpoints_per_company: int = Field(default=5, ge=1, le=50)
+
     fsp_enabled: bool = True
     fsp_oidc_issuer: str = "http://localhost:8090"
     fsp_internal_url: str = ""

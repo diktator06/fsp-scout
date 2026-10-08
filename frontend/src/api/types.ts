@@ -125,3 +125,12 @@ export type SalaryCheck = Schemas['SalaryCheckRead'];
 export type ModerationComplaint = Schemas['ModerationComplaintRead'];
 export type ModerationCompany = Schemas['ModerationCompanyRead'];
 export type TrustLevel = ModerationCompany['trust_level'];
+
+export type WebhookEventInfo = Schemas['WebhookEventInfo'];
+export type WebhookEventType = WebhookEventInfo['type'];
+export type WebhookEndpoint = Schemas['WebhookEndpointRead'];
+export type WebhookEndpointWithSecret = Schemas['WebhookEndpointSecretRead'];
+export type WebhookEndpointCreate = Schemas['WebhookEndpointCreate'];
+export type WebhookEndpointUpdate = Schemas['WebhookEndpointUpdate'];
+export type WebhookDelivery = Schemas['WebhookDeliveryRead'];
+export type DeliveryStatus = WebhookDelivery['status'];

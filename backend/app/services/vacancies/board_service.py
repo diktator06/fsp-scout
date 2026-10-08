@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import Settings
 from app.core.exceptions import ConflictError, ConsentRequiredError, NotFoundError
 from app.crud import (
     application_crud,
@@ -40,6 +41,7 @@ from app.schemas.vacancy import (
 from app.services.candidate.profile_service import CandidateProfileService
 from app.services.contact_access import ContactAccessPolicy
 from app.services.employer.company_views import company_brief, employer_contacts
+from app.services.integrations.publisher import WebhookPublisher
 from app.services.matching.candidate_pool import CandidatePoolService, PoolMember
 from app.services.matching.engine import MatchingEngine
 from app.services.matching.views import match_read, match_snapshot
@@ -64,10 +66,13 @@ class VacancyBoardService:
     работодателя, поэтому обе стороны видят одну и ту же картину соответствия.
     """
 
-    def __init__(self, session: AsyncSession, clock: Callable[[], datetime] = _now) -> None:
-        """Получает сессию БД и источник времени."""
+    def __init__(
+        self, session: AsyncSession, settings: Settings, clock: Callable[[], datetime] = _now
+    ) -> None:
+        """Получает сессию БД, настройки и источник времени."""
         self._session = session
         self._clock = clock
+        self._webhooks = WebhookPublisher(session, settings, clock)
         self._profiles = CandidateProfileService(session)
         self._pool = CandidatePoolService(session, clock)
         self._engine = MatchingEngine(session)
@@ -165,6 +170,7 @@ class VacancyBoardService:
                 text=f"Кандидат {profile.public_alias} откликнулся на «{vacancy.title}»",
                 link=f"/e/vacancies/{vacancy.id}",
             )
+        await self._webhooks.application_created(application, vacancy)
         await self._session.commit()
         return (await self._application_views([application], profile.user_id))[0]
 
@@ -190,6 +196,9 @@ class VacancyBoardService:
         )
         application.status = ApplicationStatus.WITHDRAWN
         application.responded_at = self._clock()
+        vacancy = await vacancy_crud.get(self._session, application.vacancy_id)
+        assert vacancy is not None
+        await self._webhooks.application_withdrawn(application, vacancy, profile.public_alias)
         await self._session.commit()
         return (await self._application_views([application], profile.user_id))[0]
 

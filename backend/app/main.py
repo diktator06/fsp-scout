@@ -1,3 +1,4 @@
+import asyncio
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -12,7 +13,8 @@ from app.api.openapi import install_openapi
 from app.api.v1.router import api_router
 from app.core.config import Settings, get_settings
 from app.core.logging import configure_logging
-from app.db.session import engine
+from app.db.session import SessionFactory, engine
+from app.services.integrations.dispatcher import WebhookDispatcher
 
 OPENAPI_URL = "/api/openapi.json"
 DOCS_URL = "/api/docs"
@@ -51,13 +53,39 @@ OPENAPI_TAGS = [
         "description": "Опрос и адаптивное тестирование: уникальные экземпляры заданий из "
         "калиброванного банка, оценка θ по IRT, присвоение категории",
     },
+    {
+        "name": "trust",
+        "description": "Жалобы кандидатов на недобросовестных работодателей",
+    },
+    {
+        "name": "moderation",
+        "description": "Модерация: решения по жалобам, ограничение компаний, уровень доверия",
+    },
+    {
+        "name": "integrations",
+        "description": "Интеграция с ATS работодателя: подписанные вебхуки (HMAC-SHA256) "
+        "с повторами, журнал доставок, песочница-получатель и выгрузка кандидатов в CSV/JSON",
+    },
 ]
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    """Жизненный цикл приложения: при остановке аккуратно закрываем пул соединений с БД."""
+    """Жизненный цикл приложения.
+
+    При старте запускается фоновый диспетчер вебхуков для ATS работодателей, при
+    остановке он доотправляет текущую пачку, и пул соединений с БД закрывается.
+    """
+    settings = get_settings()
+    stop = asyncio.Event()
+    dispatcher_task: asyncio.Task[None] | None = None
+    if settings.webhook_dispatcher_enabled:
+        dispatcher = WebhookDispatcher(SessionFactory, settings)
+        dispatcher_task = asyncio.create_task(dispatcher.run_forever(stop))
     yield
+    stop.set()
+    if dispatcher_task is not None:
+        await dispatcher_task
     await engine.dispose()
 
 

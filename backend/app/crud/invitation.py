@@ -212,6 +212,17 @@ class ContactDisclosureCRUD(CRUDBase[ContactDisclosure]):
         )
         return {item.candidate_id: item for item in result.all()}
 
+    async def list_for_company(
+        self, session: AsyncSession, company_id: uuid.UUID
+    ) -> Sequence[ContactDisclosure]:
+        """Все кандидаты, открывшие компании контакты, — от недавних к давним."""
+        result = await session.scalars(
+            select(ContactDisclosure)
+            .where(ContactDisclosure.company_id == company_id)
+            .order_by(ContactDisclosure.disclosed_at.desc())
+        )
+        return result.all()
+
 
 invitation_crud = InvitationCRUD(Invitation)
 invitation_event_crud = InvitationEventCRUD(InvitationEvent)
