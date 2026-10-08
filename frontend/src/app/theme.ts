@@ -8,6 +8,7 @@ import {
   type MantineColorsTuple,
   Paper,
   PasswordInput,
+  rem,
   SegmentedControl,
   TextInput,
   NumberInput,
@@ -68,6 +69,19 @@ const neutral: MantineColorsTuple = [
 
 const FONT_STACK = 'Montserrat, "Segoe UI", system-ui, -apple-system, sans-serif';
 
+const BADGE_SIZES: Record<string, { fz: string; height: string }> = {
+  xs: { fz: rem(10), height: rem(18) },
+  sm: { fz: rem(11), height: rem(20) },
+  md: { fz: rem(12), height: rem(23) },
+  lg: { fz: rem(14), height: rem(28) },
+  xl: { fz: rem(16), height: rem(32) },
+};
+
+const BUTTON_HEIGHTS: Record<string, string> = {
+  xs: rem(32),
+  sm: rem(38),
+};
+
 export const theme = createTheme({
   primaryColor: 'fsp',
   primaryShade: { light: 7, dark: 4 },
@@ -76,14 +90,18 @@ export const theme = createTheme({
   white: '#ffffff',
   fontFamily: FONT_STACK,
   fontFamilyMonospace: '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace',
+  fontSizes: { xs: rem(13), sm: rem(15), md: rem(16), lg: rem(18), xl: rem(21) },
+  lineHeights: { xs: '1.45', sm: '1.5', md: '1.6', lg: '1.6', xl: '1.55' },
   headings: {
     fontFamily: FONT_STACK,
     fontWeight: '800',
     sizes: {
-      h1: { fontSize: 'clamp(2.1rem, 2.4vw + 1.4rem, 3.6rem)', lineHeight: '1.06' },
-      h2: { fontSize: 'clamp(1.6rem, 1.2vw + 1.2rem, 2.4rem)', lineHeight: '1.12' },
-      h3: { fontSize: '1.375rem', lineHeight: '1.25', fontWeight: '700' },
-      h4: { fontSize: '1.125rem', lineHeight: '1.3', fontWeight: '700' },
+      h1: { fontSize: 'clamp(2rem, 1.4rem + 2.2vw, 3.25rem)', lineHeight: '1.08' },
+      h2: { fontSize: 'clamp(1.625rem, 1.2rem + 1.4vw, 2.25rem)', lineHeight: '1.15' },
+      h3: { fontSize: '1.4375rem', lineHeight: '1.25', fontWeight: '700' },
+      h4: { fontSize: '1.1875rem', lineHeight: '1.3', fontWeight: '700' },
+      h5: { fontSize: '1.0625rem', lineHeight: '1.35', fontWeight: '700' },
+      h6: { fontSize: '1rem', lineHeight: '1.4', fontWeight: '700' },
     },
   },
   radius: { xs: '6px', sm: '10px', md: '14px', lg: '20px', xl: '28px' },
@@ -99,7 +117,15 @@ export const theme = createTheme({
   focusRing: 'auto',
   respectReducedMotion: true,
   components: {
-    Button: Button.extend({ defaultProps: { radius: 'md' } }),
+    Button: Button.extend({
+      defaultProps: { radius: 'md' },
+      vars: (_theme, props) => {
+        // Кнопки xs и sm на пару пикселей выше стандартных: при крупном кегле
+        // стандартная высота делает подпись тесной.
+        const height = BUTTON_HEIGHTS[String(props.size ?? 'sm')];
+        return { root: height ? { '--button-height': height } : {} };
+      },
+    }),
     Card: Card.extend({ defaultProps: { radius: 'lg', withBorder: true, padding: 'xl' } }),
     Paper: Paper.extend({ defaultProps: { radius: 'lg' } }),
     TextInput: TextInput.extend({ defaultProps: { size: 'md' } }),
@@ -107,7 +133,15 @@ export const theme = createTheme({
     NumberInput: NumberInput.extend({ defaultProps: { size: 'md' } }),
     SegmentedControl: SegmentedControl.extend({ defaultProps: { radius: 'md' } }),
     Checkbox: Checkbox.extend({ defaultProps: { radius: 'xs' } }),
-    Badge: Badge.extend({ defaultProps: { radius: 'xl' } }),
+    Badge: Badge.extend({
+      defaultProps: { radius: 'xl' },
+      vars: (_theme, props) => {
+        // Стандартные бейджи Mantine набраны 9–11 px: навыки и статусы в карточках
+        // читаются с трудом, поэтому каждая ступень крупнее на 1–2 px.
+        const size = BADGE_SIZES[String(props.size ?? 'md')];
+        return { root: size ? { '--badge-fz': size.fz, '--badge-height': size.height } : {} };
+      },
+    }),
     Tooltip: Tooltip.extend({ defaultProps: { withArrow: true, color: 'fsp.9' } }),
   },
 });

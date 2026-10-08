@@ -52,7 +52,7 @@ function Dashboard() {
           </Text>
         </Card>
       ) : (
-        <SimpleGrid cols={{ base: 1, md: 2, xl: 3 }} spacing="lg">
+        <SimpleGrid type="container" cols={{ base: 1, '640px': 2, '1150px': 3 }} spacing="lg">
           {active.map((need) => (
             <NeedCard key={need.id} need={need} />
           ))}

@@ -47,7 +47,7 @@
 
 .time,
 .description {
-  font-size: rem(12px);
+  font-size: rem(13px);
   color: #5b5e6b;
 }
 
@@ -155,7 +155,7 @@
 
 @media (max-width: $mantine-breakpoint-xs) {
   .root[data-orientation='horizontal'] .label {
-    font-size: rem(12px);
+    font-size: rem(13px);
   }
 
   .root[data-orientation='horizontal'] .time {

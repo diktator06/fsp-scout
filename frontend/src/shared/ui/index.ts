@@ -4,6 +4,7 @@ export { CategoryBadge, GradeMeter } from './CategoryBadge';
 export { ConstellationBackdrop } from './ConstellationBackdrop';
 export { CountdownRing } from './CountdownRing';
 export { DataTablePreview } from './DataTablePreview';
+export { FilterChips } from './FilterChips';
 export { FspLogo } from './FspLogo';
 export { GradeScale, type GradeCut } from './GradeScale';
 export { InvitationStatusBadge } from './InvitationStatusBadge';

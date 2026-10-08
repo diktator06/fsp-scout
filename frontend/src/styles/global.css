@@ -7,7 +7,32 @@
 }
 
 html {
+  font-size: 100%;
   scroll-behavior: smooth;
+}
+
+@media (min-width: 75em) {
+  html {
+    font-size: 106.25%;
+  }
+}
+
+@media (min-width: 100em) {
+  html {
+    font-size: 112.5%;
+  }
+}
+
+@media (min-width: 120em) {
+  html {
+    font-size: 118.75%;
+  }
+}
+
+@media (min-width: 160em) {
+  html {
+    font-size: 137.5%;
+  }
 }
 
 body {

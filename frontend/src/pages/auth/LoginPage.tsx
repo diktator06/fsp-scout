@@ -3,7 +3,7 @@ import {
   Anchor,
   Button,
   Divider,
-  Group,
+  SimpleGrid,
   Paper,
   PasswordInput,
   Stack,
@@ -149,14 +149,14 @@ export function LoginPage() {
       {env.showDemoAccounts && (
         <>
           <Divider my="xl" label="Демо-доступ для проверки" labelPosition="center" />
-          <Group gap="xs" grow>
+          <SimpleGrid cols={{ base: 1, xs: 3 }} spacing="xs">
             {DEMO_ACCOUNTS.map((account) => (
               <UnstyledButton
                 key={account.email}
                 className={classes.demoAccount}
                 onClick={() => form.setValues({ email: account.email, password: DEMO_PASSWORD })}
               >
-                <Text size="sm" fw={700}>
+                <Text size="sm" fw={700} truncate>
                   {account.label}
                 </Text>
                 <Text size="xs" c="dimmed" truncate>
@@ -164,7 +164,7 @@ export function LoginPage() {
                 </Text>
               </UnstyledButton>
             ))}
-          </Group>
+          </SimpleGrid>
         </>
       )}
     </Paper>

@@ -1,4 +1,4 @@
-import { Card, Chip, Group, SimpleGrid, Stack, Tabs, Text, Title } from '@mantine/core';
+import { Card, SimpleGrid, Stack, Tabs, Text, Title } from '@mantine/core';
 import { IconBuildingSkyscraper, IconFlag } from '@tabler/icons-react';
 import { useState } from 'react';
 import { errorMessage } from '@/api/errors';
@@ -6,7 +6,7 @@ import { useModerationComplaints, useModerationCompanies } from '@/api/trust';
 import type { ComplaintStatus } from '@/api/types';
 import { CompanyModerationCard } from '@/features/moderation/CompanyModerationCard';
 import { ComplaintCard } from '@/features/moderation/ComplaintCard';
-import { ErrorState, LoadingState, PageHeader } from '@/shared/ui';
+import { ErrorState, FilterChips, LoadingState, PageHeader } from '@/shared/ui';
 
 const STATUS_FILTERS: { value: ComplaintStatus | 'all'; label: string }[] = [
   { value: 'open', label: 'Ждут решения' },
@@ -20,19 +20,7 @@ function ComplaintsTab() {
   const complaints = useModerationComplaints(status === 'all' ? null : status);
   return (
     <Stack gap="md">
-      <Chip.Group
-        multiple={false}
-        value={status}
-        onChange={(value) => setStatus(value as ComplaintStatus | 'all')}
-      >
-        <Group gap="xs">
-          {STATUS_FILTERS.map((item) => (
-            <Chip key={item.value} value={item.value} variant="light">
-              {item.label}
-            </Chip>
-          ))}
-        </Group>
-      </Chip.Group>
+      <FilterChips value={status} onChange={setStatus} options={STATUS_FILTERS} />
       {complaints.isPending ? (
         <LoadingState blocks={2} height={180} />
       ) : complaints.isError ? (

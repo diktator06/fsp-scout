@@ -19,7 +19,7 @@
 }
 
 .badge[data-size='sm'] {
-  font-size: rem(12px);
+  font-size: rem(13px);
   padding: rem(5px) rem(11px) rem(5px) rem(8px);
   gap: rem(6px);
 }

@@ -6,7 +6,7 @@
 }
 
 .label {
-  font-size: rem(11px);
+  font-size: rem(12px);
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -28,7 +28,7 @@
 }
 
 .caption {
-  font-size: rem(12px);
+  font-size: rem(13px);
   color: #5b5e6b;
 }
 

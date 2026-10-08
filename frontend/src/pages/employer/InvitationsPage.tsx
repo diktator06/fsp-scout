@@ -1,4 +1,4 @@
-import { SegmentedControl, Stack, Text } from '@mantine/core';
+import { Stack, Text } from '@mantine/core';
 import { useState } from 'react';
 import { useParams } from 'react-router';
 import { errorMessage } from '@/api/errors';
@@ -6,31 +6,30 @@ import { useEmployerInvitation, useEmployerInvitations } from '@/api/invitations
 import type { InvitationStatusCode } from '@/api/types';
 import { CompanyGate } from '@/features/employer/CompanyGate';
 import { EmployerInvitationCard } from '@/features/invitations/EmployerInvitationCard';
-import { ErrorState, LoadingState, PageHeader } from '@/shared/ui';
+import { ErrorState, FilterChips, LoadingState, PageHeader } from '@/shared/ui';
 
-const FILTERS: Record<string, InvitationStatusCode[]> = {
+type InvitationFilter = 'all' | 'active' | 'accepted' | 'closed';
+
+const FILTERS: Record<InvitationFilter, InvitationStatusCode[]> = {
   all: [],
   active: ['sent', 'viewed'],
   accepted: ['accepted'],
   closed: ['declined', 'withdrawn', 'expired'],
 };
 
+const FILTER_OPTIONS: { value: InvitationFilter; label: string }[] = [
+  { value: 'all', label: 'Все' },
+  { value: 'active', label: 'Ждут ответа' },
+  { value: 'accepted', label: 'Приняты' },
+  { value: 'closed', label: 'Закрыты' },
+];
+
 function InvitationList() {
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState<InvitationFilter>('all');
   const invitations = useEmployerInvitations(FILTERS[filter]);
   return (
     <Stack gap="md">
-      <SegmentedControl
-        value={filter}
-        onChange={setFilter}
-        data={[
-          { value: 'all', label: 'Все' },
-          { value: 'active', label: 'Ждут ответа' },
-          { value: 'accepted', label: 'Приняты' },
-          { value: 'closed', label: 'Закрыты' },
-        ]}
-        style={{ alignSelf: 'flex-start' }}
-      />
+      <FilterChips value={filter} onChange={setFilter} options={FILTER_OPTIONS} />
       {invitations.isPending ? (
         <LoadingState blocks={2} height={160} />
       ) : invitations.isError ? (

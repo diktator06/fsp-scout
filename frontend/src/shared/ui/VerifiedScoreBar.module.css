@@ -88,7 +88,7 @@
 }
 
 .legendWeight {
-  font-size: rem(12px);
+  font-size: rem(13px);
   color: #5b5e6b;
   min-width: rem(54px);
   text-align: right;
@@ -96,7 +96,7 @@
 
 .legendHint {
   grid-column: 2 / -1;
-  font-size: rem(12px);
+  font-size: rem(13px);
   color: #5b5e6b;
 }
 

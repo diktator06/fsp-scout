@@ -5,6 +5,7 @@ import {
   Input,
   Modal,
   SegmentedControl,
+  SimpleGrid,
   Stack,
   Text,
   TextInput,
@@ -143,7 +144,7 @@ function InviteForm({
           description="Обязательна. Не шире чем вдвое"
           error={form.errors.salary_to as string | undefined}
         />
-        <Group grow align="flex-start">
+        <SimpleGrid cols={{ base: 1, xs: 2 }} spacing="md">
           <Input.Wrapper label="Сумма указана">
             <SegmentedControl
               mt={6}
@@ -165,7 +166,7 @@ function InviteForm({
               onChange={(value) => form.setFieldValue('work_format', value)}
             />
           </Input.Wrapper>
-        </Group>
+        </SimpleGrid>
         {warning && (
           <Alert color="yellow" variant="light" icon={<IconAlertTriangle size={18} />}>
             {warning}. Отказ вероятен — возможно, стоит поднять верхнюю границу.

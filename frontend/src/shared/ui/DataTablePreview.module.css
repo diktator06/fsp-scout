@@ -24,7 +24,7 @@
 }
 
 .count {
-  font-size: rem(12px);
+  font-size: rem(13px);
   color: var(--mantine-color-dimmed);
   font-variant-numeric: tabular-nums;
 }
