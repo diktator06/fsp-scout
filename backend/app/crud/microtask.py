@@ -48,6 +48,21 @@ class MicroTaskCRUD(CRUDBase[MicroTask]):
         )
         return result.all()
 
+    async def active_for_company(
+        self, session: AsyncSession, company_id: uuid.UUID, specialization_id: int
+    ) -> Sequence[MicroTask]:
+        """Активные задачи компании по специализации — блок вакансии у методиста."""
+        result = await session.scalars(
+            select(MicroTask)
+            .where(
+                MicroTask.company_id == company_id,
+                MicroTask.specialization_id == specialization_id,
+                MicroTask.status == MicroTaskStatus.ACTIVE,
+            )
+            .order_by(MicroTask.created_at.desc())
+        )
+        return result.all()
+
     async def offerable(
         self,
         session: AsyncSession,

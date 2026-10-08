@@ -102,6 +102,10 @@ class CategoryCRUD(CRUDBase[Category]):
         result = await session.scalars(statement)
         return result.all()
 
+    async def get_with_relations(self, session: AsyncSession, category_id: int) -> Category | None:
+        """Категория по идентификатору вместе со специализацией и грейдом."""
+        return await session.scalar(self._with_relations().where(Category.id == category_id))
+
     async def get_by_code(self, session: AsyncSession, code: str) -> Category | None:
         """Категория по коду вместе со связями."""
         return await session.scalar(self._with_relations().where(Category.code == code))

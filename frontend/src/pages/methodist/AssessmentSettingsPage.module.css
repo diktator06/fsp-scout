@@ -1,0 +1,33 @@
+.scale {
+  position: relative;
+  height: rem(34px);
+  margin: rem(6px) 0 rem(18px);
+  border-radius: rem(8px);
+  background: linear-gradient(90deg, #f1eff6, #e6dff2);
+}
+
+.cut {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--mantine-color-fsp-7);
+}
+
+.cutLabel {
+  position: absolute;
+  top: calc(100% + 2px);
+  transform: translateX(-50%);
+  font-size: rem(11px);
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--mantine-color-fsp-8);
+}
+
+.default {
+  position: absolute;
+  top: rem(6px);
+  bottom: rem(6px);
+  width: 0;
+  border-left: 2px dashed #9a92b5;
+}

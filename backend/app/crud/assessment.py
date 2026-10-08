@@ -99,6 +99,32 @@ class ItemFamilyCRUD(CRUDBase[ItemFamily]):
         )
         return result.all()
 
+    async def list_bank(
+        self, session: AsyncSession, competency_ids: Iterable[int] | None = None
+    ) -> Sequence[ItemFamily]:
+        """Семейства банка во всех статусах с компетенцией и номинальным грейдом.
+
+        Без фильтра — весь банк; с фильтром — семейства перечисленных компетенций.
+        """
+        statement = select(ItemFamily).options(
+            selectinload(ItemFamily.competency), selectinload(ItemFamily.nominal_grade)
+        )
+        if competency_ids is not None:
+            ids = list(competency_ids)
+            if not ids:
+                return []
+            statement = statement.where(ItemFamily.competency_id.in_(ids))
+        result = await session.scalars(statement.order_by(ItemFamily.irt_b, ItemFamily.code))
+        return result.all()
+
+    async def get_with_relations(self, session: AsyncSession, family_id: int) -> ItemFamily | None:
+        """Семейство с компетенцией и номинальным грейдом."""
+        return await session.scalar(
+            select(ItemFamily)
+            .options(selectinload(ItemFamily.competency), selectinload(ItemFamily.nominal_grade))
+            .where(ItemFamily.id == family_id)
+        )
+
     async def count_by_competency(
         self, session: AsyncSession, statuses: Iterable[ItemFamilyStatus]
     ) -> dict[int, int]:
@@ -188,6 +214,24 @@ class AssessmentSessionCRUD(CRUDBase[AssessmentSession]):
                 AssessmentSession.status == SessionStatus.IN_PROGRESS,
             )
         )
+
+    async def count_by_competency(
+        self, session: AsyncSession, codes: Iterable[str]
+    ) -> dict[str, int]:
+        """Сколько сессий включали каждую компетенцию в свой blueprint.
+
+        Это знаменатель доли показов семейства. Компетенции общие для специализаций
+        (SQL — у бэкендеров и аналитиков), а языковые входят в тест не всем, поэтому
+        число сессий одной специализации даёт неверную долю.
+        """
+        values = list(set(codes))
+        if not values:
+            return {}
+        keys = select(func.jsonb_object_keys(AssessmentSession.blueprint).label("code")).subquery()
+        result = await session.execute(
+            select(keys.c.code, func.count()).where(keys.c.code.in_(values)).group_by(keys.c.code)
+        )
+        return {str(code): int(count) for code, count in result.all()}
 
     async def count_for_specialization(self, session: AsyncSession, specialization_id: int) -> int:
         """Сколько сессий начато по специализации — знаменатель доли показов семейства."""

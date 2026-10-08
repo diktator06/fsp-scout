@@ -140,7 +140,7 @@ function ItemStage({ session, item, receivedAt }: ItemStageProps) {
         </div>
 
         <div className={classes.stageBody}>
-          <ItemPrompt item={item} />
+          <ItemPrompt item={item} promptId={`item-${item.id}-prompt`} />
 
           {choice ? (
             <div role="radiogroup" aria-label="Варианты ответа" className={classes.options}>

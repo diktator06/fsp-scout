@@ -155,6 +155,55 @@
         "title": "AssessmentMode",
         "type": "string"
       },
+      "AssessmentSettingsRead": {
+        "description": "Настройки оценки: алгоритм, правила и пороги категорий.",
+        "properties": {
+          "algorithm_version": {
+            "title": "Algorithm Version",
+            "type": "string"
+          },
+          "express": {
+            "$ref": "#/components/schemas/EngineSettingsRead"
+          },
+          "express_enabled": {
+            "title": "Express Enabled",
+            "type": "boolean"
+          },
+          "final_estimator": {
+            "title": "Final Estimator",
+            "type": "string"
+          },
+          "full": {
+            "$ref": "#/components/schemas/EngineSettingsRead"
+          },
+          "interim_estimator": {
+            "title": "Interim Estimator",
+            "type": "string"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/PolicySettingsRead"
+          },
+          "scales": {
+            "items": {
+              "$ref": "#/components/schemas/SpecializationScale"
+            },
+            "title": "Scales",
+            "type": "array"
+          }
+        },
+        "required": [
+          "algorithm_version",
+          "interim_estimator",
+          "final_estimator",
+          "full",
+          "express",
+          "express_enabled",
+          "policy",
+          "scales"
+        ],
+        "title": "AssessmentSettingsRead",
+        "type": "object"
+      },
       "AssignedTaskRead": {
         "description": "Задача глазами кандидата: эталона здесь нет физически.",
         "properties": {
@@ -351,6 +400,71 @@
           "invitation"
         ],
         "title": "BankCandidateRead",
+        "type": "object"
+      },
+      "BankCompetencyRead": {
+        "description": "Компетенция в банке: вес в специализации и размер банка.",
+        "properties": {
+          "active_families": {
+            "title": "Active Families",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "gate_skills": {
+            "description": "Без одного из этих навыков компетенции нет в тесте",
+            "items": {
+              "type": "string"
+            },
+            "title": "Gate Skills",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "total_families": {
+            "title": "Total Families",
+            "type": "integer"
+          },
+          "verifies_skills": {
+            "description": "Какие навыки подтверждает компетенция",
+            "items": {
+              "type": "string"
+            },
+            "title": "Verifies Skills",
+            "type": "array"
+          },
+          "weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Вес в blueprint выбранной специализации",
+            "title": "Weight"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "description",
+          "weight",
+          "gate_skills",
+          "verifies_skills",
+          "active_families",
+          "total_families"
+        ],
+        "title": "BankCompetencyRead",
         "type": "object"
       },
       "BankPage": {
@@ -2158,6 +2272,25 @@
         "title": "CompanyUpdate",
         "type": "object"
       },
+      "CompetencyBrief": {
+        "description": "Компетенция теста.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "name"
+        ],
+        "title": "CompetencyBrief",
+        "type": "object"
+      },
       "CompetencyResult": {
         "description": "Результат по компетенции.",
         "properties": {
@@ -3020,6 +3153,50 @@
         "title": "EmployerProfileRead",
         "type": "object"
       },
+      "EngineSettingsRead": {
+        "description": "Параметры адаптивного алгоритма.",
+        "properties": {
+          "confidence_z": {
+            "title": "Confidence Z",
+            "type": "number"
+          },
+          "max_exposure_rate": {
+            "title": "Max Exposure Rate",
+            "type": "number"
+          },
+          "max_items": {
+            "title": "Max Items",
+            "type": "integer"
+          },
+          "min_items": {
+            "title": "Min Items",
+            "type": "integer"
+          },
+          "pilot_items": {
+            "title": "Pilot Items",
+            "type": "integer"
+          },
+          "randomesque": {
+            "title": "Randomesque",
+            "type": "integer"
+          },
+          "target_se": {
+            "title": "Target Se",
+            "type": "number"
+          }
+        },
+        "required": [
+          "min_items",
+          "max_items",
+          "confidence_z",
+          "target_se",
+          "randomesque",
+          "max_exposure_rate",
+          "pilot_items"
+        ],
+        "title": "EngineSettingsRead",
+        "type": "object"
+      },
       "ErrorBody": {
         "description": "Тело ошибки: машинный код для фронтенда и текст для человека.",
         "properties": {
@@ -3089,6 +3266,33 @@
           "text"
         ],
         "title": "ExplanationItemRead",
+        "type": "object"
+      },
+      "FamilyStatusUpdate": {
+        "description": "Смена статуса семейства методистом.",
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "pilot",
+              "retired",
+              "compromised"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "reason"
+        ],
+        "title": "FamilyStatusUpdate",
         "type": "object"
       },
       "FreshnessRead": {
@@ -3742,6 +3946,67 @@
         "title": "GradeChangeReason",
         "type": "string"
       },
+      "GradeFocus": {
+        "description": "Тест на грейд вакансии: порог и самые информативные около него семейства.",
+        "properties": {
+          "category_code": {
+            "title": "Category Code",
+            "type": "string"
+          },
+          "families": {
+            "items": {
+              "$ref": "#/components/schemas/GradeFocusFamily"
+            },
+            "title": "Families",
+            "type": "array"
+          },
+          "grade": {
+            "$ref": "#/components/schemas/GradeBrief"
+          },
+          "theta_cut": {
+            "title": "Theta Cut",
+            "type": "number"
+          }
+        },
+        "required": [
+          "grade",
+          "category_code",
+          "theta_cut",
+          "families"
+        ],
+        "title": "GradeFocus",
+        "type": "object"
+      },
+      "GradeFocusFamily": {
+        "description": "Семейство, которое тест на этот грейд будет показывать чаще других.",
+        "properties": {
+          "family": {
+            "$ref": "#/components/schemas/ItemFamilyRead"
+          },
+          "information": {
+            "description": "Информация Фишера около порога грейда",
+            "title": "Information",
+            "type": "number"
+          },
+          "sample": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ItemInstanceRead"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "family",
+          "information",
+          "sample"
+        ],
+        "title": "GradeFocusFamily",
+        "type": "object"
+      },
       "GradeHistoryRead": {
         "description": "Смена категории.",
         "properties": {
@@ -3952,6 +4217,146 @@
           "name"
         ],
         "title": "IndustryRead",
+        "type": "object"
+      },
+      "InstanceAnswer": {
+        "description": "Ключ ответа: вариант для выбора или число с допуском.",
+        "properties": {
+          "correct": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Ключ верного варианта a–d",
+            "title": "Correct"
+          },
+          "kind": {
+            "enum": [
+              "choice",
+              "numeric"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Текст верного варианта",
+            "title": "Text"
+          },
+          "tolerance": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tolerance"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "InstanceAnswer",
+        "type": "object"
+      },
+      "InstancePayload": {
+        "description": "Условие экземпляра — ровно то, что получит кандидат.",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "code_language": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code Language"
+          },
+          "input_hint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Input Hint"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/ItemOption"
+            },
+            "title": "Options",
+            "type": "array"
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string"
+          },
+          "response_format": {
+            "$ref": "#/components/schemas/ResponseFormat"
+          },
+          "tables": {
+            "items": {
+              "$ref": "#/components/schemas/ItemTable"
+            },
+            "title": "Tables",
+            "type": "array"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          }
+        },
+        "required": [
+          "prompt",
+          "response_format"
+        ],
+        "title": "InstancePayload",
         "type": "object"
       },
       "IntegrityEventCreate": {
@@ -4198,6 +4603,227 @@
         "title": "InvitationStatus",
         "type": "string"
       },
+      "ItemBankRead": {
+        "description": "Банк заданий: компетенции и семейства, при фильтре — одной специализации.",
+        "properties": {
+          "competencies": {
+            "items": {
+              "$ref": "#/components/schemas/BankCompetencyRead"
+            },
+            "title": "Competencies",
+            "type": "array"
+          },
+          "families": {
+            "items": {
+              "$ref": "#/components/schemas/ItemFamilyRead"
+            },
+            "title": "Families",
+            "type": "array"
+          },
+          "sessions_total": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sessions Total"
+          },
+          "specialization": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SpecializationBrief"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "specialization",
+          "sessions_total",
+          "competencies",
+          "families"
+        ],
+        "title": "ItemBankRead",
+        "type": "object"
+      },
+      "ItemFamilyRead": {
+        "description": "Семейство заданий банка: параметры модели, статус и статистика показов.",
+        "properties": {
+          "calibrated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calibrated At"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "competency": {
+            "$ref": "#/components/schemas/CompetencyBrief"
+          },
+          "correct_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correct Rate"
+          },
+          "exposure_count": {
+            "title": "Exposure Count",
+            "type": "integer"
+          },
+          "exposure_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Доля сессий с компетенцией семейства, где оно было показано",
+            "title": "Exposure Rate"
+          },
+          "has_generator": {
+            "description": "Есть генератор экземпляров в коде",
+            "title": "Has Generator",
+            "type": "boolean"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "irt_a": {
+            "description": "Дискриминативность",
+            "title": "Irt A",
+            "type": "number"
+          },
+          "irt_b": {
+            "description": "Сложность по шкале θ",
+            "title": "Irt B",
+            "type": "number"
+          },
+          "irt_c": {
+            "description": "Угадывание",
+            "title": "Irt C",
+            "type": "number"
+          },
+          "nominal_grade": {
+            "$ref": "#/components/schemas/GradeBrief"
+          },
+          "origin": {
+            "$ref": "#/components/schemas/ItemOrigin"
+          },
+          "response_format": {
+            "$ref": "#/components/schemas/ResponseFormat"
+          },
+          "responses_count": {
+            "title": "Responses Count",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ItemFamilyStatus"
+          },
+          "time_limit_sec": {
+            "title": "Time Limit Sec",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "title",
+          "competency",
+          "nominal_grade",
+          "response_format",
+          "irt_a",
+          "irt_b",
+          "irt_c",
+          "time_limit_sec",
+          "status",
+          "origin",
+          "exposure_count",
+          "exposure_rate",
+          "responses_count",
+          "correct_rate",
+          "calibrated_at",
+          "version",
+          "has_generator"
+        ],
+        "title": "ItemFamilyRead",
+        "type": "object"
+      },
+      "ItemFamilyStatus": {
+        "description": "Жизненный цикл семейства заданий.\n\n`pilot` — показывается без влияния на результат, копит ответы для калибровки.\n`active` — участвует в оценке. `compromised` — отключено детектором утечек.",
+        "enum": [
+          "draft",
+          "pilot",
+          "active",
+          "compromised",
+          "retired"
+        ],
+        "title": "ItemFamilyStatus",
+        "type": "string"
+      },
+      "ItemInstanceRead": {
+        "description": "Экземпляр семейства так, как его увидит кандидат, плюс ключ и разбор.",
+        "properties": {
+          "answer": {
+            "$ref": "#/components/schemas/InstanceAnswer"
+          },
+          "explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "params": {
+            "additionalProperties": true,
+            "description": "Что генератор выбрал случайно для экземпляра",
+            "title": "Params",
+            "type": "object"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/InstancePayload"
+          },
+          "seed": {
+            "description": "По seed экземпляр воспроизводится точно",
+            "title": "Seed",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "seed",
+          "payload",
+          "answer",
+          "explanation",
+          "params"
+        ],
+        "title": "ItemInstanceRead",
+        "type": "object"
+      },
       "ItemOption": {
         "description": "Вариант ответа.",
         "properties": {
@@ -4215,6 +4841,36 @@
           "text"
         ],
         "title": "ItemOption",
+        "type": "object"
+      },
+      "ItemOrigin": {
+        "description": "Кто подготовил семейство: эксперт или эксперт вместе с LLM-черновиком.",
+        "enum": [
+          "expert",
+          "llm_assisted"
+        ],
+        "title": "ItemOrigin",
+        "type": "string"
+      },
+      "ItemSamplesRead": {
+        "description": "Несколько экземпляров одного семейства — видно, чем они отличаются.",
+        "properties": {
+          "family": {
+            "$ref": "#/components/schemas/ItemFamilyRead"
+          },
+          "instances": {
+            "items": {
+              "$ref": "#/components/schemas/ItemInstanceRead"
+            },
+            "title": "Instances",
+            "type": "array"
+          }
+        },
+        "required": [
+          "family",
+          "instances"
+        ],
+        "title": "ItemSamplesRead",
         "type": "object"
       },
       "ItemTable": {
@@ -4468,6 +5124,90 @@
           "message"
         ],
         "title": "MessageResponse",
+        "type": "object"
+      },
+      "MethodistVacancyRow": {
+        "description": "Опубликованная вакансия в списке методиста.",
+        "properties": {
+          "company_name": {
+            "title": "Company Name",
+            "type": "string"
+          },
+          "grades": {
+            "items": {
+              "$ref": "#/components/schemas/GradeBrief"
+            },
+            "title": "Grades",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "published_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Published At"
+          },
+          "skills_count": {
+            "title": "Skills Count",
+            "type": "integer"
+          },
+          "specialization": {
+            "$ref": "#/components/schemas/SpecializationBrief"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "company_name",
+          "specialization",
+          "grades",
+          "skills_count",
+          "published_at"
+        ],
+        "title": "MethodistVacancyRow",
+        "type": "object"
+      },
+      "MicroTaskBrief": {
+        "description": "Активная микрозадача компании по специализации вакансии.",
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/MicroTaskKind"
+          },
+          "time_limit_minutes": {
+            "title": "Time Limit Minutes",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "title",
+          "time_limit_minutes"
+        ],
+        "title": "MicroTaskBrief",
         "type": "object"
       },
       "MicroTaskCreate": {
@@ -5513,6 +6253,35 @@
         "title": "Page[SkillRead]",
         "type": "object"
       },
+      "PolicySettingsRead": {
+        "description": "Правила пересдачи и смены грейда.",
+        "properties": {
+          "confident_upgrade_window_hours": {
+            "title": "Confident Upgrade Window Hours",
+            "type": "integer"
+          },
+          "grade_change_cooldown_days": {
+            "title": "Grade Change Cooldown Days",
+            "type": "integer"
+          },
+          "onboarding_retry_hours": {
+            "title": "Onboarding Retry Hours",
+            "type": "integer"
+          },
+          "upgrade_retry_days": {
+            "title": "Upgrade Retry Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "grade_change_cooldown_days",
+          "upgrade_retry_days",
+          "onboarding_retry_hours",
+          "confident_upgrade_window_hours"
+        ],
+        "title": "PolicySettingsRead",
+        "type": "object"
+      },
       "PrivacySettingsRead": {
         "description": "Что видит работодатель до раскрытия контактов.",
         "properties": {
@@ -6045,6 +6814,39 @@
           "message"
         ],
         "title": "SandboxReceipt",
+        "type": "object"
+      },
+      "ScaleCategory": {
+        "description": "Категория на шкале специализации.",
+        "properties": {
+          "category_id": {
+            "title": "Category Id",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "default_theta_cut": {
+            "title": "Default Theta Cut",
+            "type": "number"
+          },
+          "grade": {
+            "$ref": "#/components/schemas/GradeBrief"
+          },
+          "theta_cut": {
+            "title": "Theta Cut",
+            "type": "number"
+          }
+        },
+        "required": [
+          "category_id",
+          "code",
+          "grade",
+          "theta_cut",
+          "default_theta_cut"
+        ],
+        "title": "ScaleCategory",
         "type": "object"
       },
       "ScoreComponentRead": {
@@ -6968,6 +7770,27 @@
         "title": "SpecializationRead",
         "type": "object"
       },
+      "SpecializationScale": {
+        "description": "Пороги грейдов одной специализации.",
+        "properties": {
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/ScaleCategory"
+            },
+            "title": "Categories",
+            "type": "array"
+          },
+          "specialization": {
+            "$ref": "#/components/schemas/SpecializationBrief"
+          }
+        },
+        "required": [
+          "specialization",
+          "categories"
+        ],
+        "title": "SpecializationScale",
+        "type": "object"
+      },
       "SpecializationUpdate": {
         "description": "Изменение специализации. Код неизменяем: на него ссылаются категории и задания.",
         "properties": {
@@ -7370,6 +8193,29 @@
           "next_offer_at"
         ],
         "title": "TasksOverviewRead",
+        "type": "object"
+      },
+      "ThetaCutUpdate": {
+        "description": "Новый порог категории на шкале θ.",
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          },
+          "theta_cut": {
+            "maximum": 3.0,
+            "minimum": -3.0,
+            "title": "Theta Cut",
+            "type": "number"
+          }
+        },
+        "required": [
+          "theta_cut",
+          "reason"
+        ],
+        "title": "ThetaCutUpdate",
         "type": "object"
       },
       "TokenResponse": {
@@ -7923,6 +8769,43 @@
         "title": "VacancyRead",
         "type": "object"
       },
+      "VacancySkillCoverage": {
+        "description": "Навык вакансии и то, чем платформа его подтверждает.",
+        "properties": {
+          "importance": {
+            "$ref": "#/components/schemas/SkillImportance"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "skill_id": {
+            "title": "Skill Id",
+            "type": "integer"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "verified_by": {
+            "description": "Компетенции теста, подтверждающие навык",
+            "items": {
+              "type": "string"
+            },
+            "title": "Verified By",
+            "type": "array"
+          }
+        },
+        "required": [
+          "skill_id",
+          "slug",
+          "name",
+          "importance",
+          "verified_by"
+        ],
+        "title": "VacancySkillCoverage",
+        "type": "object"
+      },
       "VacancyStatus": {
         "description": "Статус вакансии: черновик не виден кандидатам, закрытая остаётся в истории откликов.",
         "enum": [
@@ -7932,6 +8815,116 @@
         ],
         "title": "VacancyStatus",
         "type": "string"
+      },
+      "VacancyTestCompetency": {
+        "description": "Компетенция теста для стека вакансии.",
+        "properties": {
+          "active_families": {
+            "title": "Active Families",
+            "type": "integer"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "covers_skills": {
+            "description": "Навыки вакансии, которые подтверждает",
+            "items": {
+              "type": "string"
+            },
+            "title": "Covers Skills",
+            "type": "array"
+          },
+          "expected_items": {
+            "description": "Ожидаемое число заданий при средней длине теста",
+            "title": "Expected Items",
+            "type": "number"
+          },
+          "included": {
+            "title": "Included",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "weight": {
+            "title": "Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "code",
+          "name",
+          "weight",
+          "included",
+          "expected_items",
+          "active_families",
+          "covers_skills"
+        ],
+        "title": "VacancyTestCompetency",
+        "type": "object"
+      },
+      "VacancyTestRead": {
+        "description": "Как кандидат со стеком вакансии подтверждает категорию и навыки.\n\nТест единый для категории (ответ организаторов VS.5), но состав зависит от стека:\nязыково-зависимые компетенции включаются по навыкам. Навыки вакансии, которых\nтест не покрывает, проверяют микрозадачи работодателя.",
+        "properties": {
+          "competencies": {
+            "items": {
+              "$ref": "#/components/schemas/VacancyTestCompetency"
+            },
+            "title": "Competencies",
+            "type": "array"
+          },
+          "coverage": {
+            "description": "Доля обязательных навыков, подтверждаемых тестом",
+            "title": "Coverage",
+            "type": "number"
+          },
+          "grades": {
+            "items": {
+              "$ref": "#/components/schemas/GradeFocus"
+            },
+            "title": "Grades",
+            "type": "array"
+          },
+          "max_items": {
+            "title": "Max Items",
+            "type": "integer"
+          },
+          "microtasks": {
+            "items": {
+              "$ref": "#/components/schemas/MicroTaskBrief"
+            },
+            "title": "Microtasks",
+            "type": "array"
+          },
+          "min_items": {
+            "title": "Min Items",
+            "type": "integer"
+          },
+          "skills": {
+            "items": {
+              "$ref": "#/components/schemas/VacancySkillCoverage"
+            },
+            "title": "Skills",
+            "type": "array"
+          },
+          "vacancy": {
+            "$ref": "#/components/schemas/MethodistVacancyRow"
+          }
+        },
+        "required": [
+          "vacancy",
+          "min_items",
+          "max_items",
+          "competencies",
+          "grades",
+          "skills",
+          "coverage",
+          "microtasks"
+        ],
+        "title": "VacancyTestRead",
+        "type": "object"
       },
       "VerifiedScoreRead": {
         "description": "Индекс подтверждённого профиля (0–100) — ранг внутри категории.",
@@ -17174,6 +18167,665 @@
         "summary": "Песочница ATS: приём вебхука",
         "tags": [
           "integrations"
+        ]
+      }
+    },
+    "/api/v1/methodist/assessment-settings": {
+      "get": {
+        "description": "Параметры алгоритма, правила пересдачи и пороги категорий.",
+        "operationId": "assessment_settings_api_v1_methodist_assessment_settings_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssessmentSettingsRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Настройки оценки",
+        "tags": [
+          "methodist"
+        ]
+      }
+    },
+    "/api/v1/methodist/categories/{category_id}/theta-cut": {
+      "put": {
+        "description": "Новый порог действует для тестов, завершённых после изменения.",
+        "operationId": "theta_cut_api_v1_methodist_categories__category_id__theta_cut_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "category_id",
+            "required": true,
+            "schema": {
+              "title": "Category Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ThetaCutUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecializationScale"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Порог категории",
+        "tags": [
+          "methodist"
+        ]
+      }
+    },
+    "/api/v1/methodist/item-bank": {
+      "get": {
+        "description": "Семейства заданий с параметрами модели, статусом и статистикой показов.",
+        "operationId": "item_bank_api_v1_methodist_item_bank_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "specialization_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Specialization Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBankRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Банк заданий",
+        "tags": [
+          "methodist"
+        ]
+      }
+    },
+    "/api/v1/methodist/item-bank/{family_id}/samples": {
+      "get": {
+        "description": "Свежие экземпляры тем же генератором, что в тесте, — с ключом и разбором.",
+        "operationId": "samples_api_v1_methodist_item_bank__family_id__samples_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "required": false,
+            "schema": {
+              "default": 3,
+              "maximum": 5,
+              "minimum": 1,
+              "title": "Count",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Воспроизвести экземпляры",
+            "in": "query",
+            "name": "seed",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "integer"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Воспроизвести экземпляры",
+              "title": "Seed"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSamplesRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Экземпляры семейства",
+        "tags": [
+          "methodist"
+        ]
+      }
+    },
+    "/api/v1/methodist/item-bank/{family_id}/status": {
+      "put": {
+        "description": "Включить в оценку, перевести в пилот или вывести из ротации; пишется в аудит.",
+        "operationId": "family_status_api_v1_methodist_item_bank__family_id__status_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FamilyStatusUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemFamilyRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Статус семейства",
+        "tags": [
+          "methodist"
+        ]
+      }
+    },
+    "/api/v1/methodist/vacancies": {
+      "get": {
+        "description": "Вакансии, для которых можно посмотреть тест.",
+        "operationId": "vacancies_api_v1_methodist_vacancies_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MethodistVacancyRow"
+                  },
+                  "title": "Response Vacancies Api V1 Methodist Vacancies Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Опубликованные вакансии",
+        "tags": [
+          "methodist"
+        ]
+      }
+    },
+    "/api/v1/methodist/vacancies/{vacancy_id}/test": {
+      "get": {
+        "description": "Категория вакансии, состав теста под её стек, экземпляры и микрозадачи.",
+        "operationId": "vacancy_test_api_v1_methodist_vacancies__vacancy_id__test_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "vacancy_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Vacancy Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VacancyTestRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Вакансия → тест",
+        "tags": [
+          "methodist"
         ]
       }
     },

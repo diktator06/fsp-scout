@@ -719,17 +719,16 @@ class AssessmentService:
 
         Семейства из прошлых попыток кандидата помечаются `seen_before` и получают
         пониженный приоритет, а доля показов семейства передаётся контролю экспозиции.
+        Доля считается от сессий, в тест которых входила компетенция семейства, —
+        не от сессий специализации: компетенции общие для нескольких специализаций.
         """
         competency_ids = await self._competency_ids(assessment.blueprint)
         families = await item_family_crud.list_for_competencies(
             self._session, competency_ids, [ItemFamilyStatus.ACTIVE]
         )
         seen = await assessment_item_crud.families_seen_by_candidate(self._session, profile.id)
-        sessions_total = max(
-            1,
-            await assessment_session_crud.count_for_specialization(
-                self._session, assessment.specialization_id
-            ),
+        sessions = await assessment_session_crud.count_by_competency(
+            self._session, assessment.blueprint.keys()
         )
         return [
             (
@@ -738,7 +737,8 @@ class AssessmentService:
                     code=family.code,
                     competency=family.competency.code,
                     params=ItemParameters(a=family.irt_a, b=family.irt_b, c=family.irt_c),
-                    exposure_rate=family.exposure_count / sessions_total,
+                    exposure_rate=family.exposure_count
+                    / max(1, sessions.get(family.competency.code, 0)),
                     seen_before=family.id in seen,
                 ),
                 family,

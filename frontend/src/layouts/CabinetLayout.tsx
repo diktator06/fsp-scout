@@ -25,6 +25,7 @@ import {
   IconPlugConnected,
   IconPuzzle,
   IconRadar,
+  IconRoute,
   IconSend,
   IconSettings,
   IconShieldCheck,
@@ -46,7 +47,6 @@ interface NavItem {
   to: string;
   label: string;
   icon: Icon;
-  soon?: boolean;
 }
 
 const NAVIGATION: Record<UserRole, NavItem[]> = {
@@ -74,8 +74,9 @@ const NAVIGATION: Record<UserRole, NavItem[]> = {
   methodist: [
     { to: '/m', label: 'Справочники', icon: IconBook2 },
     { to: '/m/moderation', label: 'Модерация', icon: IconShieldCheck },
-    { to: '/m/item-bank', label: 'Банк заданий', icon: IconChecklist, soon: true },
-    { to: '/m/settings', label: 'Настройки оценки', icon: IconSettings, soon: true },
+    { to: '/m/item-bank', label: 'Банк заданий', icon: IconChecklist },
+    { to: '/m/vacancy-test', label: 'Вакансия → тест', icon: IconRoute },
+    { to: '/m/settings', label: 'Настройки оценки', icon: IconSettings },
   ],
 };
 
@@ -120,8 +121,6 @@ function UserMenu() {
 }
 
 export function CabinetLayout({ role }: { role: UserRole }) {
-  // Навигация кабинета показывает и разделы следующих этапов с пометкой «скоро»:
-  // структура продукта видна сразу, а неготовые пункты недоступны для клика.
   const [opened, { toggle, close }] = useDisclosure(false);
   const location = useLocation();
 
@@ -165,16 +164,8 @@ export function CabinetLayout({ role }: { role: UserRole }) {
                   to={item.to}
                   label={item.label}
                   leftSection={<item.icon size={20} stroke={1.7} />}
-                  rightSection={
-                    item.soon ? (
-                      <Badge size="xs" variant="outline" color="gray">
-                        скоро
-                      </Badge>
-                    ) : null
-                  }
                   active={active}
                   noWrap
-                  disabled={item.soon}
                   onClick={close}
                   className={classes.navLink}
                 />

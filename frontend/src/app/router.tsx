@@ -327,6 +327,27 @@ export const router = createBrowserRouter([
           (module) => module.ModerationPage,
         ),
       },
+      {
+        path: 'item-bank',
+        lazy: page(
+          () => import('@/pages/methodist/ItemBankPage'),
+          (module) => module.ItemBankPage,
+        ),
+      },
+      {
+        path: 'vacancy-test',
+        lazy: page(
+          () => import('@/pages/methodist/VacancyTestPage'),
+          (module) => module.VacancyTestPage,
+        ),
+      },
+      {
+        path: 'settings',
+        lazy: page(
+          () => import('@/pages/methodist/AssessmentSettingsPage'),
+          (module) => module.AssessmentSettingsPage,
+        ),
+      },
     ],
   },
 ]);

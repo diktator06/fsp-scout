@@ -1855,6 +1855,146 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/methodist/assessment-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Настройки оценки
+         * @description Параметры алгоритма, правила пересдачи и пороги категорий.
+         */
+        get: operations["assessment_settings_api_v1_methodist_assessment_settings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/methodist/categories/{category_id}/theta-cut": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Порог категории
+         * @description Новый порог действует для тестов, завершённых после изменения.
+         */
+        put: operations["theta_cut_api_v1_methodist_categories__category_id__theta_cut_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/methodist/item-bank": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Банк заданий
+         * @description Семейства заданий с параметрами модели, статусом и статистикой показов.
+         */
+        get: operations["item_bank_api_v1_methodist_item_bank_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/methodist/item-bank/{family_id}/samples": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Экземпляры семейства
+         * @description Свежие экземпляры тем же генератором, что в тесте, — с ключом и разбором.
+         */
+        get: operations["samples_api_v1_methodist_item_bank__family_id__samples_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/methodist/item-bank/{family_id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Статус семейства
+         * @description Включить в оценку, перевести в пилот или вывести из ротации; пишется в аудит.
+         */
+        put: operations["family_status_api_v1_methodist_item_bank__family_id__status_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/methodist/vacancies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Опубликованные вакансии
+         * @description Вакансии, для которых можно посмотреть тест.
+         */
+        get: operations["vacancies_api_v1_methodist_vacancies_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/methodist/vacancies/{vacancy_id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Вакансия → тест
+         * @description Категория вакансии, состав теста под её стек, экземпляры и микрозадачи.
+         */
+        get: operations["vacancy_test_api_v1_methodist_vacancies__vacancy_id__test_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/moderation/companies": {
         parameters: {
             query?: never;
@@ -2192,6 +2332,25 @@ export interface components {
          */
         AssessmentMode: "full" | "express";
         /**
+         * AssessmentSettingsRead
+         * @description Настройки оценки: алгоритм, правила и пороги категорий.
+         */
+        AssessmentSettingsRead: {
+            /** Algorithm Version */
+            algorithm_version: string;
+            express: components["schemas"]["EngineSettingsRead"];
+            /** Express Enabled */
+            express_enabled: boolean;
+            /** Final Estimator */
+            final_estimator: string;
+            full: components["schemas"]["EngineSettingsRead"];
+            /** Interim Estimator */
+            interim_estimator: string;
+            policy: components["schemas"]["PolicySettingsRead"];
+            /** Scales */
+            scales: components["schemas"]["SpecializationScale"][];
+        };
+        /**
          * AssignedTaskRead
          * @description Задача глазами кандидата: эталона здесь нет физически.
          */
@@ -2270,6 +2429,37 @@ export interface components {
             /** Contacts Disclosed */
             contacts_disclosed: boolean;
             invitation: components["schemas"]["InvitationBrief"] | null;
+        };
+        /**
+         * BankCompetencyRead
+         * @description Компетенция в банке: вес в специализации и размер банка.
+         */
+        BankCompetencyRead: {
+            /** Active Families */
+            active_families: number;
+            /** Code */
+            code: string;
+            /** Description */
+            description: string;
+            /**
+             * Gate Skills
+             * @description Без одного из этих навыков компетенции нет в тесте
+             */
+            gate_skills: string[];
+            /** Name */
+            name: string;
+            /** Total Families */
+            total_families: number;
+            /**
+             * Verifies Skills
+             * @description Какие навыки подтверждает компетенция
+             */
+            verifies_skills: string[];
+            /**
+             * Weight
+             * @description Вес в blueprint выбранной специализации
+             */
+            weight: number | null;
         };
         /**
          * BankPage
@@ -2901,6 +3091,16 @@ export interface components {
             website?: string | null;
         };
         /**
+         * CompetencyBrief
+         * @description Компетенция теста.
+         */
+        CompetencyBrief: {
+            /** Code */
+            code: string;
+            /** Name */
+            name: string;
+        };
+        /**
          * CompetencyResult
          * @description Результат по компетенции.
          */
@@ -3235,6 +3435,26 @@ export interface components {
             recruiter: components["schemas"]["RecruiterRead"] | null;
         };
         /**
+         * EngineSettingsRead
+         * @description Параметры адаптивного алгоритма.
+         */
+        EngineSettingsRead: {
+            /** Confidence Z */
+            confidence_z: number;
+            /** Max Exposure Rate */
+            max_exposure_rate: number;
+            /** Max Items */
+            max_items: number;
+            /** Min Items */
+            min_items: number;
+            /** Pilot Items */
+            pilot_items: number;
+            /** Randomesque */
+            randomesque: number;
+            /** Target Se */
+            target_se: number;
+        };
+        /**
          * ErrorBody
          * @description Тело ошибки: машинный код для фронтенда и текст для человека.
          */
@@ -3273,6 +3493,19 @@ export interface components {
             kind: string;
             /** Text */
             text: string;
+        };
+        /**
+         * FamilyStatusUpdate
+         * @description Смена статуса семейства методистом.
+         */
+        FamilyStatusUpdate: {
+            /** Reason */
+            reason: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "active" | "pilot" | "retired" | "compromised";
         };
         /**
          * FreshnessRead
@@ -3533,6 +3766,32 @@ export interface components {
          */
         GradeChangeReason: "initial" | "upgrade" | "downgrade_voluntary" | "accepted_lower";
         /**
+         * GradeFocus
+         * @description Тест на грейд вакансии: порог и самые информативные около него семейства.
+         */
+        GradeFocus: {
+            /** Category Code */
+            category_code: string;
+            /** Families */
+            families: components["schemas"]["GradeFocusFamily"][];
+            grade: components["schemas"]["GradeBrief"];
+            /** Theta Cut */
+            theta_cut: number;
+        };
+        /**
+         * GradeFocusFamily
+         * @description Семейство, которое тест на этот грейд будет показывать чаще других.
+         */
+        GradeFocusFamily: {
+            family: components["schemas"]["ItemFamilyRead"];
+            /**
+             * Information
+             * @description Информация Фишера около порога грейда
+             */
+            information: number;
+            sample: components["schemas"]["ItemInstanceRead"] | null;
+        };
+        /**
          * GradeHistoryRead
          * @description Смена категории.
          */
@@ -3631,6 +3890,52 @@ export interface components {
             id: number;
             /** Name */
             name: string;
+        };
+        /**
+         * InstanceAnswer
+         * @description Ключ ответа: вариант для выбора или число с допуском.
+         */
+        InstanceAnswer: {
+            /**
+             * Correct
+             * @description Ключ верного варианта a–d
+             */
+            correct?: string | null;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "choice" | "numeric";
+            /**
+             * Text
+             * @description Текст верного варианта
+             */
+            text?: string | null;
+            /** Tolerance */
+            tolerance?: number | null;
+            /** Value */
+            value?: number | null;
+        };
+        /**
+         * InstancePayload
+         * @description Условие экземпляра — ровно то, что получит кандидат.
+         */
+        InstancePayload: {
+            /** Code */
+            code?: string | null;
+            /** Code Language */
+            code_language?: string | null;
+            /** Input Hint */
+            input_hint?: string | null;
+            /** Options */
+            options?: components["schemas"]["ItemOption"][];
+            /** Prompt */
+            prompt: string;
+            response_format: components["schemas"]["ResponseFormat"];
+            /** Tables */
+            tables?: components["schemas"]["ItemTable"][];
+            /** Unit */
+            unit?: string | null;
         };
         /**
          * IntegrityEventCreate
@@ -3757,6 +4062,104 @@ export interface components {
          */
         InvitationStatus: "sent" | "viewed" | "accepted" | "declined" | "withdrawn" | "expired";
         /**
+         * ItemBankRead
+         * @description Банк заданий: компетенции и семейства, при фильтре — одной специализации.
+         */
+        ItemBankRead: {
+            /** Competencies */
+            competencies: components["schemas"]["BankCompetencyRead"][];
+            /** Families */
+            families: components["schemas"]["ItemFamilyRead"][];
+            /** Sessions Total */
+            sessions_total: number | null;
+            specialization: components["schemas"]["SpecializationBrief"] | null;
+        };
+        /**
+         * ItemFamilyRead
+         * @description Семейство заданий банка: параметры модели, статус и статистика показов.
+         */
+        ItemFamilyRead: {
+            /** Calibrated At */
+            calibrated_at: string | null;
+            /** Code */
+            code: string;
+            competency: components["schemas"]["CompetencyBrief"];
+            /** Correct Rate */
+            correct_rate: number | null;
+            /** Exposure Count */
+            exposure_count: number;
+            /**
+             * Exposure Rate
+             * @description Доля сессий с компетенцией семейства, где оно было показано
+             */
+            exposure_rate: number | null;
+            /**
+             * Has Generator
+             * @description Есть генератор экземпляров в коде
+             */
+            has_generator: boolean;
+            /** Id */
+            id: number;
+            /**
+             * Irt A
+             * @description Дискриминативность
+             */
+            irt_a: number;
+            /**
+             * Irt B
+             * @description Сложность по шкале θ
+             */
+            irt_b: number;
+            /**
+             * Irt C
+             * @description Угадывание
+             */
+            irt_c: number;
+            nominal_grade: components["schemas"]["GradeBrief"];
+            origin: components["schemas"]["ItemOrigin"];
+            response_format: components["schemas"]["ResponseFormat"];
+            /** Responses Count */
+            responses_count: number;
+            status: components["schemas"]["ItemFamilyStatus"];
+            /** Time Limit Sec */
+            time_limit_sec: number;
+            /** Title */
+            title: string;
+            /** Version */
+            version: number;
+        };
+        /**
+         * ItemFamilyStatus
+         * @description Жизненный цикл семейства заданий.
+         *
+         *     `pilot` — показывается без влияния на результат, копит ответы для калибровки.
+         *     `active` — участвует в оценке. `compromised` — отключено детектором утечек.
+         * @enum {string}
+         */
+        ItemFamilyStatus: "draft" | "pilot" | "active" | "compromised" | "retired";
+        /**
+         * ItemInstanceRead
+         * @description Экземпляр семейства так, как его увидит кандидат, плюс ключ и разбор.
+         */
+        ItemInstanceRead: {
+            answer: components["schemas"]["InstanceAnswer"];
+            /** Explanation */
+            explanation: string;
+            /**
+             * Params
+             * @description Что генератор выбрал случайно для экземпляра
+             */
+            params: {
+                [key: string]: unknown;
+            };
+            payload: components["schemas"]["InstancePayload"];
+            /**
+             * Seed
+             * @description По seed экземпляр воспроизводится точно
+             */
+            seed: number;
+        };
+        /**
          * ItemOption
          * @description Вариант ответа.
          */
@@ -3765,6 +4168,21 @@ export interface components {
             key: string;
             /** Text */
             text: string;
+        };
+        /**
+         * ItemOrigin
+         * @description Кто подготовил семейство: эксперт или эксперт вместе с LLM-черновиком.
+         * @enum {string}
+         */
+        ItemOrigin: "expert" | "llm_assisted";
+        /**
+         * ItemSamplesRead
+         * @description Несколько экземпляров одного семейства — видно, чем они отличаются.
+         */
+        ItemSamplesRead: {
+            family: components["schemas"]["ItemFamilyRead"];
+            /** Instances */
+            instances: components["schemas"]["ItemInstanceRead"][];
         };
         /**
          * ItemTable
@@ -3871,6 +4289,44 @@ export interface components {
         MessageResponse: {
             /** Message */
             message: string;
+        };
+        /**
+         * MethodistVacancyRow
+         * @description Опубликованная вакансия в списке методиста.
+         */
+        MethodistVacancyRow: {
+            /** Company Name */
+            company_name: string;
+            /** Grades */
+            grades: components["schemas"]["GradeBrief"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Published At */
+            published_at: string | null;
+            /** Skills Count */
+            skills_count: number;
+            specialization: components["schemas"]["SpecializationBrief"];
+            /** Title */
+            title: string;
+        };
+        /**
+         * MicroTaskBrief
+         * @description Активная микрозадача компании по специализации вакансии.
+         */
+        MicroTaskBrief: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            kind: components["schemas"]["MicroTaskKind"];
+            /** Time Limit Minutes */
+            time_limit_minutes: number;
+            /** Title */
+            title: string;
         };
         /**
          * MicroTaskCreate
@@ -4303,6 +4759,20 @@ export interface components {
             total: number;
         };
         /**
+         * PolicySettingsRead
+         * @description Правила пересдачи и смены грейда.
+         */
+        PolicySettingsRead: {
+            /** Confident Upgrade Window Hours */
+            confident_upgrade_window_hours: number;
+            /** Grade Change Cooldown Days */
+            grade_change_cooldown_days: number;
+            /** Onboarding Retry Hours */
+            onboarding_retry_hours: number;
+            /** Upgrade Retry Days */
+            upgrade_retry_days: number;
+        };
+        /**
          * PrivacySettingsRead
          * @description Что видит работодатель до раскрытия контактов.
          */
@@ -4514,6 +4984,21 @@ export interface components {
             received: boolean;
             /** Signature Valid */
             signature_valid: boolean;
+        };
+        /**
+         * ScaleCategory
+         * @description Категория на шкале специализации.
+         */
+        ScaleCategory: {
+            /** Category Id */
+            category_id: number;
+            /** Code */
+            code: string;
+            /** Default Theta Cut */
+            default_theta_cut: number;
+            grade: components["schemas"]["GradeBrief"];
+            /** Theta Cut */
+            theta_cut: number;
         };
         /**
          * ScoreComponentRead
@@ -4924,6 +5409,15 @@ export interface components {
             sort_order: number;
         };
         /**
+         * SpecializationScale
+         * @description Пороги грейдов одной специализации.
+         */
+        SpecializationScale: {
+            /** Categories */
+            categories: components["schemas"]["ScaleCategory"][];
+            specialization: components["schemas"]["SpecializationBrief"];
+        };
+        /**
          * SpecializationUpdate
          * @description Изменение специализации. Код неизменяем: на него ссылаются категории и задания.
          */
@@ -5059,6 +5553,16 @@ export interface components {
             next_offer_at: string | null;
             /** Requests Left */
             requests_left: number;
+        };
+        /**
+         * ThetaCutUpdate
+         * @description Новый порог категории на шкале θ.
+         */
+        ThetaCutUpdate: {
+            /** Reason */
+            reason: string;
+            /** Theta Cut */
+            theta_cut: number;
         };
         /**
          * TokenResponse
@@ -5285,11 +5789,83 @@ export interface components {
             work_formats: components["schemas"]["WorkFormat"][];
         };
         /**
+         * VacancySkillCoverage
+         * @description Навык вакансии и то, чем платформа его подтверждает.
+         */
+        VacancySkillCoverage: {
+            importance: components["schemas"]["SkillImportance"];
+            /** Name */
+            name: string;
+            /** Skill Id */
+            skill_id: number;
+            /** Slug */
+            slug: string;
+            /**
+             * Verified By
+             * @description Компетенции теста, подтверждающие навык
+             */
+            verified_by: string[];
+        };
+        /**
          * VacancyStatus
          * @description Статус вакансии: черновик не виден кандидатам, закрытая остаётся в истории откликов.
          * @enum {string}
          */
         VacancyStatus: "draft" | "published" | "closed";
+        /**
+         * VacancyTestCompetency
+         * @description Компетенция теста для стека вакансии.
+         */
+        VacancyTestCompetency: {
+            /** Active Families */
+            active_families: number;
+            /** Code */
+            code: string;
+            /**
+             * Covers Skills
+             * @description Навыки вакансии, которые подтверждает
+             */
+            covers_skills: string[];
+            /**
+             * Expected Items
+             * @description Ожидаемое число заданий при средней длине теста
+             */
+            expected_items: number;
+            /** Included */
+            included: boolean;
+            /** Name */
+            name: string;
+            /** Weight */
+            weight: number;
+        };
+        /**
+         * VacancyTestRead
+         * @description Как кандидат со стеком вакансии подтверждает категорию и навыки.
+         *
+         *     Тест единый для категории (ответ организаторов VS.5), но состав зависит от стека:
+         *     языково-зависимые компетенции включаются по навыкам. Навыки вакансии, которых
+         *     тест не покрывает, проверяют микрозадачи работодателя.
+         */
+        VacancyTestRead: {
+            /** Competencies */
+            competencies: components["schemas"]["VacancyTestCompetency"][];
+            /**
+             * Coverage
+             * @description Доля обязательных навыков, подтверждаемых тестом
+             */
+            coverage: number;
+            /** Grades */
+            grades: components["schemas"]["GradeFocus"][];
+            /** Max Items */
+            max_items: number;
+            /** Microtasks */
+            microtasks: components["schemas"]["MicroTaskBrief"][];
+            /** Min Items */
+            min_items: number;
+            /** Skills */
+            skills: components["schemas"]["VacancySkillCoverage"][];
+            vacancy: components["schemas"]["MethodistVacancyRow"];
+        };
         /**
          * VerifiedScoreRead
          * @description Индекс подтверждённого профиля (0–100) — ранг внутри категории.
@@ -12078,6 +12654,483 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    assessment_settings_api_v1_methodist_assessment_settings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssessmentSettingsRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    theta_cut_api_v1_methodist_categories__category_id__theta_cut_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                category_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ThetaCutUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpecializationScale"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    item_bank_api_v1_methodist_item_bank_get: {
+        parameters: {
+            query?: {
+                specialization_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemBankRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    samples_api_v1_methodist_item_bank__family_id__samples_get: {
+        parameters: {
+            query?: {
+                count?: number;
+                /** @description Воспроизвести экземпляры */
+                seed?: number[] | null;
+            };
+            header?: never;
+            path: {
+                family_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemSamplesRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    family_status_api_v1_methodist_item_bank__family_id__status_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                family_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FamilyStatusUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemFamilyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    vacancies_api_v1_methodist_vacancies_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MethodistVacancyRow"][];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    vacancy_test_api_v1_methodist_vacancies__vacancy_id__test_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vacancy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VacancyTestRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
