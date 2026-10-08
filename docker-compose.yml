@@ -29,6 +29,7 @@ x-backend-environment: &backend-environment
   FSP_CLIENT_SECRET: ${FSP_CLIENT_SECRET:-dev-only-fsp-client-secret}
   WEBHOOK_ALLOW_PRIVATE_URLS: ${WEBHOOK_ALLOW_PRIVATE_URLS:-false}
   ASSESSMENT_SECRET: ${ASSESSMENT_SECRET:-dev-only-assessment-secret-change-me}
+  WEB_CONCURRENCY: ${WEB_CONCURRENCY:-2}
 
 services:
   db:
@@ -50,7 +51,9 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
+          # shared_buffers 128 МБ плюс до 20 соединений на процесс API: при 256 МБ
+          # нагрузочный тест довёл базу до OOM-killer.
+          memory: 512M
 
   mailpit:
     image: axllent/mailpit:v1.31

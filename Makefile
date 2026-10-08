@@ -12,7 +12,7 @@ EVAL_DATABASE_URL ?= postgresql+asyncpg://fsp:fsp@localhost:5432/fsp_scout_eval
 .PHONY: help up up-keycloak down-keycloak keycloak-smoke vps-up vps-down vps-logs vps-check down restart logs ps reset db install install-backend install-frontend install-mock \
         dev-backend dev-frontend dev-mock test test-backend test-frontend test-mock lint \
         lint-backend lint-frontend lint-mock style format migrate revision seed openapi simulate \
-        eval-matching validate-assessment validation-report libraries check
+        eval-matching validate-assessment validation-report libraries load-stand load-test submission check
 
 help: ## Показать список команд
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -132,6 +132,20 @@ eval-matching: ## Оценка подбора на размеченных пар
 
 validation-report: ## Собрать docs/VALIDATION.md из отчётов docs/validation
 	$(BACKEND) uv run python -m evaluation.report
+
+load-stand: ## Стенд для нагрузочного теста: 1050 кандидатов, лимиты частоты выключены
+	$(COMPOSE) up --build -d
+	$(COMPOSE) run --rm --no-deps --entrypoint python -e DEMO_POPULATION_PER_SPECIALIZATION=150 backend -m app.seed.population
+	RATE_LIMIT_ENABLED=false $(COMPOSE) up -d backend
+
+load-test: ## Нагрузочный тест по живому стенду (make load-stand) и docs/LOAD_TEST.md
+	$(BACKEND) uv run python -m scripts.load_test
+
+submission: ## Сопроводительная документация в PDF и DOCX из docs/SUBMISSION.md (нужен pandoc)
+	pandoc docs/SUBMISSION.md --standalone --css style.css -o docs/submission/scout-documentation.html
+	$(BACKEND) uv run python -c "import weasyprint; weasyprint.HTML('../docs/submission/scout-documentation.html').write_pdf('../docs/submission/scout-documentation.pdf')"
+	pandoc docs/SUBMISSION.md -o docs/submission/scout-documentation.docx
+	rm docs/submission/scout-documentation.html
 
 libraries: ## Собрать docs/LIBRARIES.md из манифестов и lock-файлов
 	$(BACKEND) uv run python ../tools/libraries.py

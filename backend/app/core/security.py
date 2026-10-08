@@ -1,6 +1,9 @@
+import asyncio
 import hashlib
 import secrets
+import threading
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -14,6 +17,8 @@ from app.core.exceptions import InvalidTokenError
 
 _password_hasher = PasswordHasher()
 _DUMMY_PASSWORD_HASH = _password_hasher.hash("timing-equalizer-not-a-real-password")
+PASSWORD_HASH_CONCURRENCY = 2
+_password_slots = threading.BoundedSemaphore(PASSWORD_HASH_CONCURRENCY)
 
 
 @dataclass(frozen=True, slots=True)
@@ -30,6 +35,28 @@ class AccessTokenClaims:
 def hash_password(password: str) -> str:
     """Хеширует пароль алгоритмом argon2id (параметры по умолчанию argon2-cffi)."""
     return _password_hasher.hash(password)
+
+
+def _bounded[Result](func: Callable[..., Result], *args: Any) -> Result:
+    """Выполняет функцию argon2, заняв один из слотов процесса."""
+    with _password_slots:
+        return func(*args)
+
+
+async def hash_password_async(password: str) -> str:
+    """Хеш argon2id в отдельном потоке, не больше двух одновременно на процесс.
+
+    argon2id нарочно дорогой: десятки миллисекунд CPU и 64 МБ памяти на хеш. В цикле
+    событий он остановил бы все остальные запросы процесса, а без ограничения всплеск
+    входов занял бы все ядра и память контейнера. argon2-cffi отпускает GIL, поэтому
+    поток считает хеш параллельно с обработкой других запросов; лишние ждут слота.
+    """
+    return await asyncio.to_thread(_bounded, hash_password, password)
+
+
+async def verify_password_async(password: str, password_hash: str | None) -> bool:
+    """Проверка пароля в отдельном потоке с тем же ограничением, что и хеширование."""
+    return await asyncio.to_thread(_bounded, verify_password, password, password_hash)
 
 
 def verify_password(password: str, password_hash: str | None) -> bool:

@@ -1,0 +1,355 @@
+{
+  "generated_at": "2026-10-08T17:30:38+00:00",
+  "host": "arm64, 8 ядер, Darwin 25.6.0",
+  "virtual_users": 50,
+  "employers": 30,
+  "candidates": 20,
+  "duration_s": 150.0,
+  "bank_size": 944,
+  "profiles": [
+    {
+      "key": "working",
+      "title": "Рабочая нагрузка",
+      "think": [
+        2.0,
+        6.0
+      ],
+      "summary": {
+        "requests": 2249,
+        "errors": 0,
+        "error_rate": 0.0,
+        "throughput_rps": 10.9,
+        "p50_ms": 48.2,
+        "p95_ms": 165.7,
+        "operations": {
+          "bank": {
+            "kind": "read",
+            "count": 321,
+            "errors": 0,
+            "p50_ms": 71.4,
+            "p95_ms": 191.4,
+            "p99_ms": 288.2,
+            "max_ms": 370.6,
+            "within_budget": true
+          },
+          "candidate_status": {
+            "kind": "read",
+            "count": 64,
+            "errors": 0,
+            "p50_ms": 10.9,
+            "p95_ms": 23.2,
+            "p99_ms": 221.3,
+            "max_ms": 304.1,
+            "within_budget": true
+          },
+          "card": {
+            "kind": "read",
+            "count": 203,
+            "errors": 0,
+            "p50_ms": 32.6,
+            "p95_ms": 95.7,
+            "p99_ms": 172.9,
+            "max_ms": 294.9,
+            "within_budget": true
+          },
+          "categories": {
+            "kind": "read",
+            "count": 102,
+            "errors": 0,
+            "p50_ms": 144.0,
+            "p95_ms": 268.4,
+            "p99_ms": 307.6,
+            "max_ms": 308.2,
+            "within_budget": true
+          },
+          "refine": {
+            "kind": "write",
+            "count": 89,
+            "errors": 0,
+            "p50_ms": 113.2,
+            "p95_ms": 268.0,
+            "p99_ms": 298.6,
+            "max_ms": 398.5,
+            "within_budget": true
+          },
+          "register": {
+            "kind": "write",
+            "count": 64,
+            "errors": 0,
+            "p50_ms": 104.0,
+            "p95_ms": 143.5,
+            "p99_ms": 179.5,
+            "max_ms": 190.7,
+            "within_budget": true
+          },
+          "shortlist": {
+            "kind": "read",
+            "count": 338,
+            "errors": 0,
+            "p50_ms": 65.5,
+            "p95_ms": 162.8,
+            "p99_ms": 297.6,
+            "max_ms": 393.4,
+            "within_budget": true
+          },
+          "survey": {
+            "kind": "write",
+            "count": 64,
+            "errors": 0,
+            "p50_ms": 13.4,
+            "p95_ms": 41.8,
+            "p99_ms": 68.6,
+            "max_ms": 103.8,
+            "within_budget": true
+          },
+          "test_answer": {
+            "kind": "write",
+            "count": 812,
+            "errors": 0,
+            "p50_ms": 31.3,
+            "p95_ms": 78.2,
+            "p99_ms": 143.1,
+            "max_ms": 288.6,
+            "within_budget": true
+          },
+          "test_start": {
+            "kind": "write",
+            "count": 64,
+            "errors": 0,
+            "p50_ms": 24.7,
+            "p95_ms": 48.9,
+            "p99_ms": 82.5,
+            "max_ms": 101.3,
+            "within_budget": true
+          },
+          "vacancies_feed": {
+            "kind": "read",
+            "count": 64,
+            "errors": 0,
+            "p50_ms": 30.3,
+            "p95_ms": 68.8,
+            "p99_ms": 95.6,
+            "max_ms": 120.4,
+            "within_budget": true
+          },
+          "verify_email": {
+            "kind": "write",
+            "count": 64,
+            "errors": 0,
+            "p50_ms": 10.7,
+            "p95_ms": 37.7,
+            "p99_ms": 50.9,
+            "max_ms": 76.3,
+            "within_budget": true
+          }
+        },
+        "candidate_journeys": 64,
+        "mean_test_length": 12.7
+      },
+      "docker_stats": [
+        {
+          "name": "fsp-scout-backend-1",
+          "cpu": "75.45%",
+          "memory": "311.7MiB / 640MiB"
+        },
+        {
+          "name": "fsp-scout-fsp-registry-mock-1",
+          "cpu": "20.24%",
+          "memory": "48.06MiB / 96MiB"
+        },
+        {
+          "name": "fsp-scout-db-1",
+          "cpu": "18.72%",
+          "memory": "241.8MiB / 512MiB"
+        },
+        {
+          "name": "fsp-scout-frontend-1",
+          "cpu": "1.08%",
+          "memory": "8.547MiB / 32MiB"
+        },
+        {
+          "name": "fsp-scout-mailpit-1",
+          "cpu": "0.00%",
+          "memory": "45.32MiB / 64MiB"
+        },
+        {
+          "name": "fsp-scout-keycloak-1",
+          "cpu": "0.17%",
+          "memory": "603.7MiB / 768MiB"
+        }
+      ]
+    },
+    {
+      "key": "stress",
+      "title": "Стресс",
+      "think": [
+        0.2,
+        0.6
+      ],
+      "summary": {
+        "requests": 5117,
+        "errors": 0,
+        "error_rate": 0.0,
+        "throughput_rps": 32.6,
+        "p50_ms": 1008.3,
+        "p95_ms": 2206.3,
+        "operations": {
+          "bank": {
+            "kind": "read",
+            "count": 788,
+            "errors": 0,
+            "p50_ms": 1028.2,
+            "p95_ms": 1995.4,
+            "p99_ms": 2558.7,
+            "max_ms": 3055.9,
+            "within_budget": false
+          },
+          "candidate_status": {
+            "kind": "read",
+            "count": 134,
+            "errors": 0,
+            "p50_ms": 618.6,
+            "p95_ms": 1327.3,
+            "p99_ms": 1722.1,
+            "max_ms": 1990.3,
+            "within_budget": false
+          },
+          "card": {
+            "kind": "read",
+            "count": 488,
+            "errors": 0,
+            "p50_ms": 922.6,
+            "p95_ms": 1787.9,
+            "p99_ms": 2513.6,
+            "max_ms": 2866.5,
+            "within_budget": false
+          },
+          "categories": {
+            "kind": "read",
+            "count": 266,
+            "errors": 0,
+            "p50_ms": 1251.6,
+            "p95_ms": 2405.8,
+            "p99_ms": 2845.1,
+            "max_ms": 3244.2,
+            "within_budget": false
+          },
+          "refine": {
+            "kind": "write",
+            "count": 277,
+            "errors": 0,
+            "p50_ms": 2038.1,
+            "p95_ms": 4186.4,
+            "p99_ms": 5592.5,
+            "max_ms": 6268.1,
+            "within_budget": false
+          },
+          "register": {
+            "kind": "write",
+            "count": 134,
+            "errors": 0,
+            "p50_ms": 891.5,
+            "p95_ms": 1933.1,
+            "p99_ms": 2323.7,
+            "max_ms": 2329.1,
+            "within_budget": false
+          },
+          "shortlist": {
+            "kind": "read",
+            "count": 813,
+            "errors": 0,
+            "p50_ms": 1123.5,
+            "p95_ms": 2156.3,
+            "p99_ms": 2653.9,
+            "max_ms": 3608.1,
+            "within_budget": false
+          },
+          "survey": {
+            "kind": "write",
+            "count": 134,
+            "errors": 0,
+            "p50_ms": 620.0,
+            "p95_ms": 1493.6,
+            "p99_ms": 2345.3,
+            "max_ms": 2849.7,
+            "within_budget": false
+          },
+          "test_answer": {
+            "kind": "write",
+            "count": 1681,
+            "errors": 0,
+            "p50_ms": 939.4,
+            "p95_ms": 1709.3,
+            "p99_ms": 2324.4,
+            "max_ms": 3231.1,
+            "within_budget": false
+          },
+          "test_start": {
+            "kind": "write",
+            "count": 134,
+            "errors": 0,
+            "p50_ms": 1068.2,
+            "p95_ms": 2433.9,
+            "p99_ms": 2905.5,
+            "max_ms": 3213.7,
+            "within_budget": false
+          },
+          "vacancies_feed": {
+            "kind": "read",
+            "count": 134,
+            "errors": 0,
+            "p50_ms": 1065.7,
+            "p95_ms": 2175.8,
+            "p99_ms": 2890.7,
+            "max_ms": 3080.3,
+            "within_budget": false
+          },
+          "verify_email": {
+            "kind": "write",
+            "count": 134,
+            "errors": 0,
+            "p50_ms": 622.9,
+            "p95_ms": 1604.3,
+            "p99_ms": 2109.2,
+            "max_ms": 2150.3,
+            "within_budget": false
+          }
+        },
+        "candidate_journeys": 134,
+        "mean_test_length": 12.5
+      },
+      "docker_stats": [
+        {
+          "name": "fsp-scout-backend-1",
+          "cpu": "231.67%",
+          "memory": "403.4MiB / 640MiB"
+        },
+        {
+          "name": "fsp-scout-fsp-registry-mock-1",
+          "cpu": "0.16%",
+          "memory": "48.06MiB / 96MiB"
+        },
+        {
+          "name": "fsp-scout-db-1",
+          "cpu": "62.06%",
+          "memory": "502.6MiB / 512MiB"
+        },
+        {
+          "name": "fsp-scout-frontend-1",
+          "cpu": "3.22%",
+          "memory": "9.648MiB / 32MiB"
+        },
+        {
+          "name": "fsp-scout-mailpit-1",
+          "cpu": "2.40%",
+          "memory": "48.11MiB / 64MiB"
+        },
+        {
+          "name": "fsp-scout-keycloak-1",
+          "cpu": "0.22%",
+          "memory": "603.7MiB / 768MiB"
+        }
+      ]
+    }
+  ]
+}

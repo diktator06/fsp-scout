@@ -2,8 +2,11 @@ import math
 import re
 from collections import Counter
 from collections.abc import Mapping, Sequence
+from functools import lru_cache
 
 _TOKEN = re.compile(r"[a-zа-яё][a-zа-яё0-9+#]*|\d+[a-zа-я]+", re.IGNORECASE)
+_CYRILLIC = re.compile("[а-я]")
+STEM_CACHE_SIZE = 65_536
 
 _STOP_WORDS = frozenset(
     re.split(
@@ -33,15 +36,18 @@ _RUSSIAN_ENDINGS = tuple(
 )
 
 
+@lru_cache(maxsize=STEM_CACHE_SIZE)
 def stem(token: str) -> str:
     """Лёгкая нормализация слова для сравнения текстов.
 
     Полноценный морфологический анализ для подбора избыточен: достаточно отрезать
     типичное окончание, чтобы «платёжного», «платёжный» и «платёжные» совпали.
     Основа короче трёх букв не укорачивается, иначе слишком много слов склеится.
+    Слова в анкетах повторяются, поэтому результат кешируется: под нагрузкой стемминг
+    был самой дорогой частью подборки.
     """
     word = token.lower().replace("ё", "е")
-    if not re.search("[а-я]", word):
+    if not _CYRILLIC.search(word):
         return word
     for ending in _RUSSIAN_ENDINGS:
         if word.endswith(ending) and len(word) - len(ending) >= 3:
@@ -80,28 +86,45 @@ class TfidfIndex:
     """
 
     def __init__(self, documents: Sequence[str], synonyms: Mapping[str, str] | None = None) -> None:
-        """Считает документную частоту слов по коллекции."""
+        """Считает документную частоту слов по коллекции.
+
+        Токены и векторы текстов кешируются на время жизни индекса: один и тот же текст
+        потребности сравнивается с каждым кандидатом пула, а текст кандидата нужен и для
+        частот, и для близости, и для объяснения.
+        """
         self._synonyms = synonyms
+        self._tokens: dict[str, list[str]] = {}
+        self._vectors: dict[str, dict[str, float]] = {}
         frequency: Counter[str] = Counter()
         for document in documents:
-            frequency.update(set(tokenize(document, synonyms)))
+            frequency.update(set(self._tokenize(document)))
         total = max(1, len(documents))
         self._idf = {
             term: math.log((1 + total) / (1 + count)) + 1.0 for term, count in frequency.items()
         }
         self._default_idf = math.log(1 + total) + 1.0
 
+    def _tokenize(self, text: str) -> list[str]:
+        """Токены текста, посчитанные один раз за жизнь индекса."""
+        cached = self._tokens.get(text)
+        if cached is None:
+            cached = self._tokens[text] = tokenize(text, self._synonyms)
+        return cached
+
     def vector(self, text: str) -> dict[str, float]:
         """Нормированный TF-IDF-вектор текста с логарифмической частотой слов."""
-        counts = Counter(tokenize(text, self._synonyms))
+        cached = self._vectors.get(text)
+        if cached is not None:
+            return cached
+        counts = Counter(self._tokenize(text))
         weights = {
             term: (1.0 + math.log(count)) * self._idf.get(term, self._default_idf)
             for term, count in counts.items()
         }
         norm = math.sqrt(sum(value * value for value in weights.values()))
-        if norm == 0:
-            return {}
-        return {term: value / norm for term, value in weights.items()}
+        result = {term: value / norm for term, value in weights.items()} if norm else {}
+        self._vectors[text] = result
+        return result
 
     def similarity(self, left: str, right: str) -> float:
         """Близость двух текстов от 0 до 1."""

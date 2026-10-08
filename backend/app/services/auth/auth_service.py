@@ -16,9 +16,9 @@ from app.core.exceptions import (
 )
 from app.core.security import (
     hash_opaque_token,
-    hash_password,
+    hash_password_async,
     password_needs_rehash,
-    verify_password,
+    verify_password_async,
 )
 from app.crud import consent_crud, email_verification_token_crud, refresh_session_crud, user_crud
 from app.integrations.mailer import Mailer
@@ -73,12 +73,13 @@ class AuthService:
         now = datetime.now(UTC)
         if await user_crud.get_by_email(self._session, payload.email):
             raise EmailAlreadyRegisteredError()
+        password_hash = await hash_password_async(payload.password)
 
         try:
             user = await user_crud.create_local(
                 self._session,
                 email=payload.email,
-                password_hash=hash_password(payload.password),
+                password_hash=password_hash,
                 role=payload.role,
             )
             await consent_crud.grant(
@@ -160,7 +161,8 @@ class AuthService:
         now = datetime.now(UTC)
         user = await user_crud.get_by_email(self._session, payload.email)
         password_hash = user.password_hash if user else None
-        if user is None or not verify_password(payload.password, password_hash):
+        verified = await verify_password_async(payload.password, password_hash)
+        if user is None or not verified:
             raise InvalidCredentialsError()
         if not user.is_active:
             raise AccountDisabledError()
@@ -169,7 +171,7 @@ class AuthService:
 
         rehashed = None
         if password_hash and password_needs_rehash(password_hash):
-            rehashed = hash_password(payload.password)
+            rehashed = await hash_password_async(payload.password)
         await user_crud.register_login(self._session, user, now, new_password_hash=rehashed)
         tokens, _ = await issue_session_tokens(
             self._session, user, self._settings, client=client, now=now
