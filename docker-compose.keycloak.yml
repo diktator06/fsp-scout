@@ -19,8 +19,10 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
     volumes:
       - ./keycloak/realm-fsp.json:/opt/keycloak/data/import/realm-fsp.json:ro
+    # Только localhost: админка с паролем стенда не должна быть видна в локальной сети,
+    # а издатель токенов всё равно http://localhost:8081.
     ports:
-      - "${KEYCLOAK_HOST_PORT:-8081}:8080"
+      - "127.0.0.1:${KEYCLOAK_HOST_PORT:-8081}:8080"
     healthcheck:
       test:
         - CMD

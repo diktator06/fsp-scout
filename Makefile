@@ -7,7 +7,7 @@ FRONTEND := cd frontend &&
 MOCK := cd fsp-registry-mock &&
 
 .DEFAULT_GOAL := help
-.PHONY: help up up-keycloak down-keycloak down restart logs ps reset db install install-backend install-frontend install-mock \
+.PHONY: help up up-keycloak down-keycloak keycloak-smoke down restart logs ps reset db install install-backend install-frontend install-mock \
         dev-backend dev-frontend dev-mock test test-backend test-frontend test-mock lint \
         lint-backend lint-frontend lint-mock style format migrate revision seed openapi simulate check
 
@@ -22,6 +22,9 @@ up-keycloak: ## Поднять стенд с ФСП ID на полноценно
 
 down-keycloak: ## Остановить стенд с Keycloak (данные БД сохраняются)
 	$(KEYCLOAK_COMPOSE) down
+
+keycloak-smoke: ## Проверить живой стенд с Keycloak: OIDC, токены, claims, привязка и вход
+	$(BACKEND) uv run python -m scripts.keycloak_smoke
 
 down: ## Остановить стенд (данные БД сохраняются)
 	$(COMPOSE) down

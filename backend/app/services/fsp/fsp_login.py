@@ -54,7 +54,7 @@ class FspLoginService:
         if user is None:
             raise FspNotLinkedError(
                 "Этот ФСП ID не привязан к аккаунту «Скаута». Войдите по email "
-                "и привяжите ФСП ID в разделе «ФСП» кабинета кандидата"
+                "и привяжите ФСП ID в разделе «Достижения ФСП» кабинета кандидата"
             )
         if not user.is_active:
             raise AccountDisabledError()

@@ -13,6 +13,7 @@
 | [docs/MATCHING.md](docs/MATCHING.md) | Подбор: разбор потребности, ранжирование, объяснения, приглашения, раскрытие контактов |
 | [docs/ASSESSMENT.md](docs/ASSESSMENT.md) | Тестирование: банк семейств, IRT и CAT, правила пересдачи, валидация, калибровка |
 | [docs/FSP_INTEGRATION.md](docs/FSP_INTEGRATION.md) | ФСП ID и реестр достижений: протокол, данные, балл ФСП, три состояния, полноценный Keycloak |
+| [docs/KEYCLOAK_GUIDE.md](docs/KEYCLOAK_GUIDE.md) | ФСП ID на Keycloak простым языком: устройство, запуск, проверка в браузере |
 | [docs/TRUST_AND_ATS.md](docs/TRUST_AND_ATS.md) | Защита от фиктивных работодателей и интеграция с ATS: вебхуки, повторы, подпись, выгрузка |
 | http://localhost:8080/api/docs | Swagger UI всех методов API (после запуска) |
 
@@ -58,7 +59,9 @@ make up-keycloak
 Это то же самое, что `docker compose -f docker-compose.yml -f docker-compose.keycloak.yml up --build -d`.
 Keycloak поднимается на http://localhost:8081 (админка `admin` / `admin`, только для стенда).
 Участники и пароль те же, что в эмуляторе. Бэкенд и реестр достижений переключаются на него
-переменными окружения, код не меняется. Подробности — в
+переменными окружения, код не меняется. Проверка живого стенда одной командой —
+`make keycloak-smoke`. Пошаговое руководство с проверкой в браузере —
+[docs/KEYCLOAK_GUIDE.md](docs/KEYCLOAK_GUIDE.md). Протокол —
 [docs/FSP_INTEGRATION.md](docs/FSP_INTEGRATION.md#10-полноценный-keycloak). Вернуться к
 эмулятору: `make down-keycloak && make up`.
 

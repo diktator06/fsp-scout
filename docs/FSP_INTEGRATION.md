@@ -212,7 +212,7 @@ make up-keycloak   # то же: docker compose -f docker-compose.yml -f docker-c
 | Что | Адрес и доступ |
 |---|---|
 | Страница входа ФСП ID | открывается сама по «Привязать ФСП ID» или «Войти через ФСП ID», realm `fsp` на http://localhost:8081 |
-| Админка Keycloak | http://localhost:8081/admin, `admin` / `admin` — только для локального стенда |
+| Админка Keycloak | http://localhost:8081/admin, `admin` / `admin` — только для локального стенда, порт открыт только на localhost |
 | Участники | `fsp000021`, `fsp000030`, `fsp000012`, `fsp000007`, пароль `FspDemo2026` |
 
 Вход и токены выдаёт Keycloak. Реестр достижений остаётся в `fsp-registry-mock` и работает как
@@ -264,6 +264,10 @@ ID.
   участника из отдельного claim, ошибка при неверной настройке) и
   `test_registry_trusts_external_keycloak_tokens` в эмуляторе (токены доверенного издателя,
   чужой издатель получает 401).
+
+Проверка живого стенда одной командой: `make keycloak-smoke` (`backend/scripts/keycloak_smoke.py`,
+25 проверок протокола и связки с бэкендом, временная привязка в конце снимается). Пошаговая
+проверка в браузере — в [KEYCLOAK_GUIDE.md](KEYCLOAK_GUIDE.md).
 
 Вернуться к эмулятору: `make down-keycloak && make up`.
 
