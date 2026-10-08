@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Annotated, Any
 from urllib.parse import urlencode
 
+import jwt
 from fastapi import APIRouter, Depends, Form, Header, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from fastapi.templating import Jinja2Templates
@@ -14,6 +15,7 @@ from fastapi.templating import Jinja2Templates
 from app.config import Settings, get_settings
 from app.keys import SigningKey, get_signing_key
 from app.store import AuthorizationCode, CodeStore, Registry, get_code_store, get_registry
+from app.trusted_issuer import TrustedIssuer, get_trusted_issuer
 
 REGISTRY_AUDIENCE = "fsp-registry"
 USER_SCOPE = "openid profile achievements"
@@ -26,6 +28,7 @@ SettingsDep = Annotated[Settings, Depends(get_settings)]
 KeyDep = Annotated[SigningKey, Depends(get_signing_key)]
 RegistryDep = Annotated[Registry, Depends(get_registry)]
 CodesDep = Annotated[CodeStore, Depends(get_code_store)]
+TrustedDep = Annotated[TrustedIssuer | None, Depends(get_trusted_issuer)]
 
 
 def _oauth_error(error: str, description: str, code: int = 400) -> JSONResponse:
@@ -269,13 +272,24 @@ def token(
 
 
 def bearer_claims(
-    settings: SettingsDep, key: KeyDep, authorization: Annotated[str | None, Header()] = None
+    settings: SettingsDep,
+    key: KeyDep,
+    trusted: TrustedDep,
+    authorization: Annotated[str | None, Header()] = None,
 ) -> dict[str, Any]:
-    """Claims access-токена из заголовка Authorization или 401."""
+    """Claims access-токена из заголовка Authorization или 401.
+
+    Токен проверяет тот, кто его выпустил: сам эмулятор или доверенный внешний
+    провайдер (Keycloak) — выбор по claim `iss` до проверки подписи.
+    """
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Нужен Bearer-токен")
+    token = authorization[7:]
     try:
-        return key.verify(authorization[7:], REGISTRY_AUDIENCE, settings.issuer)
+        issuer = str(jwt.decode(token, options={"verify_signature": False}).get("iss", ""))
+        if trusted is not None and issuer.rstrip("/") == trusted.issuer:
+            return trusted.verify(token, REGISTRY_AUDIENCE)
+        return key.verify(token, REGISTRY_AUDIENCE, settings.issuer)
     except Exception as error:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Токен недействителен") from error
 

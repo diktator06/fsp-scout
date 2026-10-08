@@ -3,6 +3,7 @@ import hashlib
 import json
 import secrets
 import time
+import uuid
 from dataclasses import dataclass, field
 from typing import Any
 from urllib.parse import parse_qs, urlparse
@@ -59,6 +60,7 @@ class FakeFsp:
     codes: dict[str, dict[str, Any]] = field(default_factory=dict)
     registry_down: bool = False
     forged_nonce: str | None = None
+    participant_claim: str = "sub"
     calls: list[str] = field(default_factory=list)
 
     def __post_init__(self) -> None:
@@ -155,6 +157,8 @@ class FakeFsp:
             return self._json({"error": "invalid_grant"}, 400)
         participant_id = issued["participant_id"]
         base = {"iss": issuer, "sub": participant_id, "iat": now, "exp": now + 600}
+        if self.participant_claim != "sub":
+            base = {**base, "sub": str(uuid.uuid4()), self.participant_claim: participant_id}
         return self._json(
             {
                 "access_token": self.sign(
@@ -197,7 +201,7 @@ class FakeFsp:
                 }
             )
         participant_id = path.split("/")[2]
-        own = claims["sub"] == participant_id
+        own = claims.get(self.participant_claim) == participant_id
         if not own and claims.get("scope") != "registry:read":
             return self._json({"detail": "forbidden"}, 403)
         if participant_id not in self.participants:

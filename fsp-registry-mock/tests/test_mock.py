@@ -7,10 +7,13 @@ from urllib.parse import parse_qs, urlparse
 import httpx
 import jwt
 import pytest
+from cryptography.hazmat.primitives.asymmetric import rsa
+from jwt.algorithms import RSAAlgorithm
 
 from app.config import get_settings
 from app.main import app
 from app.store import get_registry
+from app.trusted_issuer import TrustedIssuer, get_trusted_issuer
 
 SETTINGS = get_settings()
 REDIRECT = SETTINGS.redirect_uris[0]
@@ -189,3 +192,42 @@ async def test_service_access_to_registry(client: httpx.AsyncClient) -> None:
         },
     )
     assert wrong.status_code == 401
+
+
+async def test_registry_trusts_external_keycloak_tokens(client: httpx.AsyncClient) -> None:
+    """Реестр принимает токены Keycloak по его JWKS; номер участника — из отдельного claim."""
+    issuer = "http://localhost:8081/realms/fsp"
+    private = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    jwk = {**RSAAlgorithm.to_jwk(private.public_key(), as_dict=True), "kid": "kc1", "alg": "RS256"}
+    trusted = TrustedIssuer(
+        issuer, "http://keycloak/certs", "fsp_participant_id", lambda url: {"keys": [jwk]}
+    )
+    app.dependency_overrides[get_trusted_issuer] = lambda: trusted
+
+    def token(**claims: object) -> dict[str, str]:
+        """Bearer-токен «от Keycloak»."""
+        base = {"iss": issuer, "aud": ["fsp-registry", "account"], "exp": 4_102_444_800}
+        signed = jwt.encode({**base, **claims}, private, algorithm="RS256", headers={"kid": "kc1"})
+        return {"Authorization": f"Bearer {signed}"}
+
+    try:
+        user = token(
+            sub="6f1c0f0e-uuid", fsp_participant_id="fsp-000021", scope="openid achievements"
+        )
+        own = await client.get("/participants/fsp-000021/achievements", headers=user)
+        assert own.status_code == 200 and own.json()["participant_id"] == "fsp-000021"
+        foreign = await client.get("/participants/fsp-000030/achievements", headers=user)
+        assert foreign.status_code == 403
+        service = token(sub="service-account", scope="registry:read profile")
+        assert (await client.get("/participants", headers=service)).status_code == 200
+        stranger = jwt.encode(
+            {"iss": "http://evil", "aud": "fsp-registry", "exp": 4_102_444_800},
+            private,
+            algorithm="RS256",
+        )
+        rejected = await client.get(
+            "/participants", headers={"Authorization": f"Bearer {stranger}"}
+        )
+        assert rejected.status_code == 401
+    finally:
+        app.dependency_overrides.pop(get_trusted_issuer, None)

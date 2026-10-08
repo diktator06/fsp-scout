@@ -75,6 +75,7 @@ class Settings(BaseSettings):
     fsp_registry_url: str = ""
     fsp_client_id: str = "fsp-scout"
     fsp_client_secret: str = DEV_FSP_CLIENT_SECRET
+    fsp_participant_claim: str = "sub"
     fsp_link_redirect_path: str = "/c/fsp/callback"
     fsp_login_redirect_path: str = "/auth/fsp/callback"
     fsp_flow_ttl_minutes: int = Field(default=10, ge=1, le=60)

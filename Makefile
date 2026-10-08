@@ -1,12 +1,13 @@
 # Скаут — частые команды разработки. Список целей: make help
 
 COMPOSE := docker compose
+KEYCLOAK_COMPOSE := $(COMPOSE) -f docker-compose.yml -f docker-compose.keycloak.yml
 BACKEND := cd backend &&
 FRONTEND := cd frontend &&
 MOCK := cd fsp-registry-mock &&
 
 .DEFAULT_GOAL := help
-.PHONY: help up down restart logs ps reset db install install-backend install-frontend install-mock \
+.PHONY: help up up-keycloak down-keycloak down restart logs ps reset db install install-backend install-frontend install-mock \
         dev-backend dev-frontend dev-mock test test-backend test-frontend test-mock lint \
         lint-backend lint-frontend lint-mock style format migrate revision seed openapi simulate check
 
@@ -15,6 +16,12 @@ help: ## Показать список команд
 
 up: ## Собрать и поднять весь стенд в фоне
 	$(COMPOSE) up --build -d
+
+up-keycloak: ## Поднять стенд с ФСП ID на полноценном Keycloak (порт 8081)
+	$(KEYCLOAK_COMPOSE) up --build -d
+
+down-keycloak: ## Остановить стенд с Keycloak (данные БД сохраняются)
+	$(KEYCLOAK_COMPOSE) down
 
 down: ## Остановить стенд (данные БД сохраняются)
 	$(COMPOSE) down

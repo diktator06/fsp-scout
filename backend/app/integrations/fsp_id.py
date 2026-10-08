@@ -193,7 +193,12 @@ class FspIdClient:
         raise FspAuthError("Токен ФСП ID подписан неизвестным ключом")
 
     async def verify_id_token(self, id_token: str, nonce: str) -> FspIdentity:
-        """Проверяет подпись RS256, издателя, получателя, срок и nonce id_token."""
+        """Проверяет подпись RS256, издателя, получателя, срок и nonce id_token.
+
+        Идентификатор участника реестра берётся из claim `FSP_PARTICIPANT_CLAIM`. У
+        эмулятора это `sub`, а в Keycloak `sub` — внутренний UUID пользователя, поэтому
+        реестровый номер приходит отдельным claim из атрибута пользователя.
+        """
         try:
             header = jwt.get_unverified_header(id_token)
         except jwt.PyJWTError as error:
@@ -213,8 +218,11 @@ class FspIdClient:
             raise FspAuthError() from error
         if not hmac.compare_digest(str(claims.get("nonce") or ""), nonce):
             raise FspAuthError()
+        participant_id = claims.get(self._settings.fsp_participant_claim)
+        if not participant_id:
+            raise FspAuthError("В токене ФСП ID нет идентификатора участника реестра")
         return FspIdentity(
-            participant_id=str(claims["sub"]),
+            participant_id=str(participant_id),
             name=claims.get("name"),
             username=claims.get("preferred_username"),
             region=claims.get("region"),

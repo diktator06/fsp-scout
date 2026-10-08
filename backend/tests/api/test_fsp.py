@@ -310,3 +310,27 @@ async def test_fsp_unavailable_on_start(
     response = await client.post(f"{FSP}/link", json={"consent": True}, headers=auth_headers(user))
     assert response.status_code == 503
     assert response.json()["error"]["code"] == "fsp_unavailable"
+
+
+async def test_keycloak_tokens_carry_participant_in_separate_claim(
+    client: AsyncClient, db_session: AsyncSession
+) -> None:
+    """Keycloak: `sub` — UUID пользователя, номер участника реестра — в claim из атрибута."""
+    settings = get_settings().model_copy(update={"fsp_participant_claim": "fsp_participant_id"})
+    keycloak = FakeFsp(settings, participant_claim="fsp_participant_id")
+    gateway = build_fsp_gateway(settings, keycloak.transport())
+    app.dependency_overrides[get_fsp_gateway] = lambda: gateway
+    candidate = await make_bank_candidate(db_session)
+    status, body = await link(client, keycloak, candidate.user, keycloak.add("fsp-000102", RICH))
+    assert status == 200, body
+    assert body["participant_id"] == "fsp-000102"
+    assert len(body["achievements"]) == 5
+
+    misconfigured = build_fsp_gateway(
+        settings.model_copy(update={"fsp_participant_claim": "fsp_number"}), keycloak.transport()
+    )
+    app.dependency_overrides[get_fsp_gateway] = lambda: misconfigured
+    other = await make_bank_candidate(db_session, telegram="other_fsp_test")
+    status, body = await link(client, keycloak, other.user, keycloak.add("fsp-000103"))
+    assert status == 400
+    assert body["error"]["code"] == "fsp_auth_failed"

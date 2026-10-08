@@ -1,0 +1,321 @@
+{
+  "realm": "fsp",
+  "enabled": true,
+  "displayName": "ФСП ID",
+  "displayNameHtml": "<b>ФСП ID</b> · Федерация спортивного программирования",
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "resetPasswordAllowed": false,
+  "rememberMe": false,
+  "loginWithEmailAllowed": false,
+  "duplicateEmailsAllowed": false,
+  "bruteForceProtected": true,
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "ru",
+    "en"
+  ],
+  "defaultLocale": "ru",
+  "accessTokenLifespan": 600,
+  "ssoSessionIdleTimeout": 1800,
+  "defaultSignatureAlgorithm": "RS256",
+  "defaultDefaultClientScopes": [
+    "basic",
+    "profile"
+  ],
+  "defaultOptionalClientScopes": [
+    "achievements",
+    "registry:read"
+  ],
+  "clientScopes": [
+    {
+      "name": "basic",
+      "description": "Идентификатор пользователя (sub) и время входа",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "false",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "sub",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-sub-mapper",
+          "consentRequired": false,
+          "config": {
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        },
+        {
+          "name": "auth_time",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "AUTH_TIME",
+            "claim.name": "auth_time",
+            "jsonType.label": "long",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "profile",
+      "description": "Логин участника. Имя платформе не передаётся — минимизация данных",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      },
+      "protocolMappers": [
+        {
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "username",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "achievements",
+      "description": "Чтение своих результатов в реестре достижений ФСП",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true",
+        "consent.screen.text": "Результаты соревнований ФСП"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience fsp-registry",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "fsp-registry",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    },
+    {
+      "name": "registry:read",
+      "description": "Сервисное чтение реестра достижений (client credentials)",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "audience fsp-registry",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "fsp-registry",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "fsp-scout",
+      "name": "Скаут — подбор ИТ-специалистов",
+      "description": "Платформа «Скаут»: вход по ФСП ID и подтверждение результатов соревнований",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "dev-only-fsp-client-secret",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "frontchannelLogout": true,
+      "consentRequired": false,
+      "fullScopeAllowed": false,
+      "redirectUris": [
+        "http://localhost:8080/c/fsp/callback",
+        "http://localhost:8080/auth/fsp/callback",
+        "http://localhost:5173/c/fsp/callback",
+        "http://localhost:5173/auth/fsp/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:8080",
+        "http://localhost:5173"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:8080/*##http://localhost:5173/*"
+      },
+      "defaultClientScopes": [
+        "basic",
+        "profile"
+      ],
+      "optionalClientScopes": [
+        "achievements",
+        "registry:read"
+      ],
+      "protocolMappers": [
+        {
+          "name": "fsp_participant_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "fsp_participant_id",
+            "claim.name": "fsp_participant_id",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        },
+        {
+          "name": "region",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "region",
+            "claim.name": "region",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "service-account-fsp-scout",
+      "enabled": true,
+      "serviceAccountClientId": "fsp-scout"
+    },
+    {
+      "username": "fsp000021",
+      "enabled": true,
+      "emailVerified": false,
+      "firstName": "Тимур",
+      "lastName": "Ким",
+      "attributes": {
+        "fsp_participant_id": [
+          "fsp-000021"
+        ],
+        "region": [
+          "Свердловская область"
+        ]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "FspDemo2026",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "fsp000030",
+      "enabled": true,
+      "emailVerified": false,
+      "firstName": "Тимур",
+      "lastName": "Белов",
+      "attributes": {
+        "fsp_participant_id": [
+          "fsp-000030"
+        ],
+        "region": [
+          "Краснодарский край"
+        ]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "FspDemo2026",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "fsp000012",
+      "enabled": true,
+      "emailVerified": false,
+      "firstName": "Дмитрий",
+      "lastName": "Орлов",
+      "attributes": {
+        "fsp_participant_id": [
+          "fsp-000012"
+        ],
+        "region": [
+          "Краснодарский край"
+        ]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "FspDemo2026",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "fsp000007",
+      "enabled": true,
+      "emailVerified": false,
+      "firstName": "Ксения",
+      "lastName": "Гарипова",
+      "attributes": {
+        "fsp_participant_id": [
+          "fsp-000007"
+        ],
+        "region": [
+          "Томская область"
+        ]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "FspDemo2026",
+          "temporary": false
+        }
+      ]
+    }
+  ],
+  "components": {
+    "org.keycloak.userprofile.UserProfileProvider": [
+      {
+        "providerId": "declarative-user-profile",
+        "subComponents": {},
+        "config": {
+          "kc.user.profile.config": [
+            "{\"attributes\": [{\"name\": \"username\", \"displayName\": \"${username}\", \"validations\": {\"length\": {\"min\": 3, \"max\": 255}, \"username-prohibited-characters\": {}, \"up-username-not-idn-homograph\": {}}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}, {\"name\": \"email\", \"displayName\": \"${email}\", \"validations\": {\"email\": {}, \"length\": {\"max\": 255}}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}, {\"name\": \"firstName\", \"displayName\": \"${firstName}\", \"validations\": {\"length\": {\"max\": 255}, \"person-name-prohibited-characters\": {}}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}, {\"name\": \"lastName\", \"displayName\": \"${lastName}\", \"validations\": {\"length\": {\"max\": 255}, \"person-name-prohibited-characters\": {}}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}, {\"name\": \"fsp_participant_id\", \"displayName\": \"Идентификатор участника в реестре ФСП\", \"validations\": {\"pattern\": {\"pattern\": \"^fsp-\\\\d{6}$\", \"error-message\": \"Формат fsp-000000\"}}, \"permissions\": {\"view\": [\"admin\"], \"edit\": [\"admin\"]}, \"multivalued\": false}, {\"name\": \"region\", \"displayName\": \"Регион\", \"validations\": {\"length\": {\"max\": 120}}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"multivalued\": false}], \"groups\": []}"
+          ]
+        }
+      }
+    ]
+  }
+}

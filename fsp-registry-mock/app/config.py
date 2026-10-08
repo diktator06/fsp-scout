@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     demo_password: str = "FspDemo2026"
     code_ttl_seconds: int = 120
     token_ttl_seconds: int = 600
+    trusted_issuer: str = ""
+    trusted_jwks_url: str = ""
+    trusted_participant_claim: str = "fsp_participant_id"
 
     @property
     def issuer(self) -> str:
