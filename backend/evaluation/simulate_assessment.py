@@ -2,7 +2,7 @@ import argparse
 import json
 import math
 from collections import Counter
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
 from random import Random
@@ -24,6 +24,7 @@ from app.services.assessment.irt import (
     AbilityEstimate,
     ItemParameters,
     estimate_ability,
+    estimate_ability_wle,
     simulate_response,
 )
 from app.services.assessment.item_generators import REGISTRY
@@ -70,6 +71,7 @@ class SpecializationReport:
     grade_within_one: float
     retest_decision_agreement: float
     retest_grade_kappa: float
+    retest_grade_kappa_weighted: float
     retest_theta_correlation: float
     mean_items: float
     mean_se: float
@@ -136,6 +138,29 @@ def build_bank(
     return bank
 
 
+type Responder = Callable[[SimulatedFamily, float], float]
+
+
+@dataclass(frozen=True, slots=True)
+class SessionRun:
+    """Итог сессии: итоговая оценка WLE, оценка EAP по ходу теста, задания и ответы."""
+
+    estimate: AbilityEstimate
+    interim: AbilityEstimate
+    administered: list[str]
+    responses: list[tuple[ItemParameters, float]]
+
+
+def honest_response(theta_true: float, rng: Random) -> Responder:
+    """Честный кандидат: верность ответа разыгрывается по «истинным» параметрам семейства."""
+
+    def respond(family: SimulatedFamily, uniform: float) -> float:
+        """Ответ на задание семейства."""
+        return simulate_response(theta_true, family.true_params, uniform)
+
+    return respond
+
+
 def run_session(
     theta_true: float,
     bank: Sequence[SimulatedFamily],
@@ -145,12 +170,16 @@ def run_session(
     config: EngineConfig,
     tracker: ExposureTracker,
     excluded: set[str] | None = None,
-) -> tuple[AbilityEstimate, list[str]]:
+    responder: Responder | None = None,
+) -> SessionRun:
     """Одна адаптивная сессия виртуального кандидата тем же движком, что и в продукте.
 
+    По ходу теста задания подбираются по EAP, итог и решение — по WLE, как в сервисе.
     Доля показов семейства передаётся движку так же, как в продукте (показы ÷ сессии):
-    без этого контроль экспозиции в симуляции не работал бы.
+    без этого контроль экспозиции в симуляции не работал бы. Модель ответа можно
+    подменить — так моделируются утечки заданий.
     """
+    respond = responder or honest_response(theta_true, rng)
     by_code = {family.item.code: family for family in bank}
     tracker.sessions += 1
     seen_before = set(excluded or ())
@@ -182,12 +211,17 @@ def run_session(
             break
         used.add(chosen.code)
         tracker.shows[chosen.code] += 1
-        score = simulate_response(theta_true, by_code[chosen.code].true_params, rng.random())
+        score = respond(by_code[chosen.code], rng.random())
         responses.append((chosen.params, score))
         administered.append(chosen.code)
         competencies.append(chosen.competency)
         estimate = estimate_ability(responses)
-    return estimate, administered
+    return SessionRun(
+        estimate=estimate_ability_wle(responses),
+        interim=estimate,
+        administered=administered,
+        responses=responses,
+    )
 
 
 def simulate_onboarding(
@@ -214,12 +248,10 @@ def simulate_onboarding(
     seen: set[str] = set()
     sessions = 0
     while sessions < max_sessions:
-        estimate, administered = run_session(
-            theta_true, bank, blueprint, target, rng, config, tracker, seen
-        )
-        seen.update(administered)
+        run = run_session(theta_true, bank, blueprint, target, rng, config, tracker, seen)
+        seen.update(run.administered)
         sessions += 1
-        decision = decide_grade(estimate, target, levels)
+        decision = decide_grade(run.estimate, target, levels)
         if decision.outcome is SessionOutcome.FAILED:
             if assigned is not None:
                 break
@@ -238,7 +270,7 @@ def simulate_onboarding(
     return assigned, sessions
 
 
-def _claimed_rank(true_rank: int, rng: Random, max_rank: int) -> int:
+def claimed_rank(true_rank: int, rng: Random, max_rank: int) -> int:
     """Заявленный грейд: чаще совпадает с истинным, иногда завышен, реже занижен."""
     roll = rng.random()
     if roll < 0.6:
@@ -248,13 +280,31 @@ def _claimed_rank(true_rank: int, rng: Random, max_rank: int) -> int:
     return max(1, true_rank - 1)
 
 
-def _kappa(first: Sequence[str], second: Sequence[str]) -> float:
-    """Каппа Коэна согласия двух классификаций."""
+def cohen_kappa(first: Sequence[str], second: Sequence[str]) -> float:
+    """Каппа Коэна согласия двух классификаций: любое расхождение — одинаковая ошибка."""
     labels = sorted(set(first) | set(second))
     total = len(first)
     observed = sum(1 for a, b in zip(first, second, strict=True) if a == b) / total
     expected = sum((first.count(label) / total) * (second.count(label) / total) for label in labels)
     return (observed - expected) / (1 - expected) if expected < 1 else 1.0
+
+
+def weighted_kappa(first: Sequence[int], second: Sequence[int], categories: int) -> float:
+    """Квадратично взвешенная каппа для упорядоченных грейдов.
+
+    Расхождение на соседний грейд штрафуется слабо, через грейд — сильно. Для
+    порядковой шкалы это стандартная мера согласия при повторном измерении.
+    """
+    total = len(first)
+    observed = np.zeros((categories, categories))
+    for a, b in zip(first, second, strict=True):
+        observed[a - 1, b - 1] += 1
+    observed /= total
+    expected = np.outer(observed.sum(axis=1), observed.sum(axis=0))
+    steps = np.arange(categories)
+    weights = (steps[:, None] - steps[None, :]) ** 2 / (categories - 1) ** 2
+    disagreement = float((weights * expected).sum())
+    return 1.0 - float((weights * observed).sum()) / disagreement if disagreement else 1.0
 
 
 def simulate_specialization(
@@ -288,12 +338,14 @@ def simulate_specialization(
     for _ in range(candidates):
         theta_true = rng.gauss(0, 1)
         true_level = grade_for_theta(theta_true, levels) or levels[0]
-        target = by_rank[_claimed_rank(true_level.rank, rng, max_rank)]
+        target = by_rank[claimed_rank(true_level.rank, rng, max_rank)]
 
-        first, administered = run_session(theta_true, bank, blueprint, target, rng, config, tracker)
-        second, _ = run_session(
+        first_run = run_session(theta_true, bank, blueprint, target, rng, config, tracker)
+        administered = first_run.administered
+        first = first_run.estimate
+        second = run_session(
             theta_true, bank, blueprint, target, rng, config, tracker, set(administered)
-        )
+        ).estimate
 
         truly_passes = theta_true >= target.theta_cut
         first_decision = decide_grade(first, target, levels).outcome is not SessionOutcome.FAILED
@@ -358,7 +410,15 @@ def simulate_specialization(
             3,
         ),
         retest_decision_agreement=round(float(np.mean(retest_agreements)), 3),
-        retest_grade_kappa=round(_kappa(estimated_grades, retest_grades), 3),
+        retest_grade_kappa=round(cohen_kappa(estimated_grades, retest_grades), 3),
+        retest_grade_kappa_weighted=round(
+            weighted_kappa(
+                [rank_of[code] for code in estimated_grades],
+                [rank_of[code] for code in retest_grades],
+                len(levels),
+            ),
+            3,
+        ),
         retest_theta_correlation=round(
             float(np.corrcoef(estimate_array, np.array(retest_estimates))[0, 1]), 3
         ),
@@ -413,7 +473,8 @@ def main() -> None:
             f"r(θ)={report.theta_correlation:.3f} "
             f"RMSE={report.theta_rmse:.3f} решение={report.decision_accuracy:.1%} "
             f"грейд={report.grade_exact:.1%} (±1: {report.grade_within_one:.1%}) "
-            f"ретест κ={report.retest_grade_kappa:.2f} r={report.retest_theta_correlation:.2f} "
+            f"ретест κ={report.retest_grade_kappa:.2f} κw={report.retest_grade_kappa_weighted:.2f} "
+            f"r={report.retest_theta_correlation:.2f} "
             f"онбординг={report.onboarding_exact:.1%} (±1: {report.onboarding_within_one:.1%}) "
             f"заданий={report.mean_items:.1f} SE={report.mean_se:.2f} "
             f"экспозиция max={report.max_exposure_rate:.1%}"

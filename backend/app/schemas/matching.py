@@ -233,6 +233,9 @@ class ShortlistStats(BaseModel):
     pool: int
     after_filters: int
     shown: int
+    autofilled: bool = Field(
+        default=False, description="Точного грейда мало — добавлены соседние грейды"
+    )
 
 
 class ShortlistRead(BaseModel):

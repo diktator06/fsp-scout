@@ -1,0 +1,1121 @@
+{
+  "candidates_per_specialization": 300,
+  "seed": 3030,
+  "estimators": {
+    "backend": {
+      "normal": {
+        "eap": {
+          "grade_exact": 0.623,
+          "grade_within_one": 0.99,
+          "decision_accuracy": 0.8,
+          "retest_kappa": 0.353,
+          "retest_kappa_weighted": 0.695,
+          "bias_by_true_grade": {
+            "intern": 0.247,
+            "junior": -0.015,
+            "middle": -0.192,
+            "senior": -0.326
+          }
+        },
+        "wle": {
+          "grade_exact": 0.643,
+          "grade_within_one": 0.983,
+          "decision_accuracy": 0.81,
+          "retest_kappa": 0.332,
+          "retest_kappa_weighted": 0.678,
+          "bias_by_true_grade": {
+            "intern": 0.09,
+            "junior": -0.003,
+            "middle": -0.092,
+            "senior": -0.047
+          }
+        }
+      },
+      "graded": {
+        "eap": {
+          "grade_exact": 0.613,
+          "grade_within_one": 0.993,
+          "decision_accuracy": 0.833,
+          "retest_kappa": 0.304,
+          "retest_kappa_weighted": 0.646,
+          "bias_by_true_grade": {
+            "intern": 0.247,
+            "junior": 0.043,
+            "middle": -0.12,
+            "senior": -0.32
+          }
+        },
+        "wle": {
+          "grade_exact": 0.627,
+          "grade_within_one": 0.993,
+          "decision_accuracy": 0.853,
+          "retest_kappa": 0.328,
+          "retest_kappa_weighted": 0.664,
+          "bias_by_true_grade": {
+            "intern": 0.132,
+            "junior": 0.062,
+            "middle": -0.003,
+            "senior": -0.04
+          }
+        }
+      }
+    },
+    "frontend": {
+      "normal": {
+        "eap": {
+          "grade_exact": 0.697,
+          "grade_within_one": 0.997,
+          "decision_accuracy": 0.787,
+          "retest_kappa": 0.481,
+          "retest_kappa_weighted": 0.781,
+          "bias_by_true_grade": {
+            "intern": 0.178,
+            "junior": -0.12,
+            "middle": -0.21,
+            "senior": -0.434
+          }
+        },
+        "wle": {
+          "grade_exact": 0.69,
+          "grade_within_one": 0.997,
+          "decision_accuracy": 0.797,
+          "retest_kappa": 0.432,
+          "retest_kappa_weighted": 0.789,
+          "bias_by_true_grade": {
+            "intern": -0.025,
+            "junior": -0.126,
+            "middle": -0.128,
+            "senior": -0.126
+          }
+        }
+      },
+      "graded": {
+        "eap": {
+          "grade_exact": 0.63,
+          "grade_within_one": 0.993,
+          "decision_accuracy": 0.77,
+          "retest_kappa": 0.421,
+          "retest_kappa_weighted": 0.715,
+          "bias_by_true_grade": {
+            "intern": 0.099,
+            "junior": -0.16,
+            "middle": -0.14,
+            "senior": -0.418
+          }
+        },
+        "wle": {
+          "grade_exact": 0.663,
+          "grade_within_one": 0.99,
+          "decision_accuracy": 0.81,
+          "retest_kappa": 0.378,
+          "retest_kappa_weighted": 0.703,
+          "bias_by_true_grade": {
+            "intern": -0.044,
+            "junior": -0.163,
+            "middle": -0.042,
+            "senior": -0.164
+          }
+        }
+      }
+    },
+    "data_analytics": {
+      "normal": {
+        "eap": {
+          "grade_exact": 0.69,
+          "grade_within_one": 1.0,
+          "decision_accuracy": 0.827,
+          "retest_kappa": 0.406,
+          "retest_kappa_weighted": 0.75,
+          "bias_by_true_grade": {
+            "intern": 0.283,
+            "junior": 0.071,
+            "middle": -0.167,
+            "senior": -0.272
+          }
+        },
+        "wle": {
+          "grade_exact": 0.69,
+          "grade_within_one": 0.997,
+          "decision_accuracy": 0.83,
+          "retest_kappa": 0.426,
+          "retest_kappa_weighted": 0.774,
+          "bias_by_true_grade": {
+            "intern": 0.145,
+            "junior": 0.088,
+            "middle": -0.083,
+            "senior": -0.025
+          }
+        }
+      },
+      "graded": {
+        "eap": {
+          "grade_exact": 0.713,
+          "grade_within_one": 1.0,
+          "decision_accuracy": 0.84,
+          "retest_kappa": 0.441,
+          "retest_kappa_weighted": 0.716,
+          "bias_by_true_grade": {
+            "intern": 0.238,
+            "junior": -0.025,
+            "middle": -0.091,
+            "senior": -0.368
+          }
+        },
+        "wle": {
+          "grade_exact": 0.677,
+          "grade_within_one": 0.997,
+          "decision_accuracy": 0.843,
+          "retest_kappa": 0.417,
+          "retest_kappa_weighted": 0.725,
+          "bias_by_true_grade": {
+            "intern": 0.113,
+            "junior": -0.037,
+            "middle": 0.003,
+            "senior": -0.123
+          }
+        }
+      }
+    },
+    "ml": {
+      "normal": {
+        "eap": {
+          "grade_exact": 0.67,
+          "grade_within_one": 0.997,
+          "decision_accuracy": 0.83,
+          "retest_kappa": 0.372,
+          "retest_kappa_weighted": 0.692,
+          "bias_by_true_grade": {
+            "intern": 0.25,
+            "junior": 0.013,
+            "middle": -0.107,
+            "senior": -0.474
+          }
+        },
+        "wle": {
+          "grade_exact": 0.647,
+          "grade_within_one": 0.99,
+          "decision_accuracy": 0.813,
+          "retest_kappa": 0.341,
+          "retest_kappa_weighted": 0.689,
+          "bias_by_true_grade": {
+            "intern": 0.085,
+            "junior": 0.031,
+            "middle": -0.006,
+            "senior": -0.213
+          }
+        }
+      },
+      "graded": {
+        "eap": {
+          "grade_exact": 0.623,
+          "grade_within_one": 0.983,
+          "decision_accuracy": 0.803,
+          "retest_kappa": 0.361,
+          "retest_kappa_weighted": 0.684,
+          "bias_by_true_grade": {
+            "intern": 0.197,
+            "junior": -0.034,
+            "middle": -0.252,
+            "senior": -0.382
+          }
+        },
+        "wle": {
+          "grade_exact": 0.643,
+          "grade_within_one": 0.977,
+          "decision_accuracy": 0.813,
+          "retest_kappa": 0.36,
+          "retest_kappa_weighted": 0.677,
+          "bias_by_true_grade": {
+            "intern": 0.086,
+            "junior": -0.046,
+            "middle": -0.173,
+            "senior": -0.14
+          }
+        }
+      }
+    },
+    "qa": {
+      "normal": {
+        "eap": {
+          "grade_exact": 0.677,
+          "grade_within_one": 0.973,
+          "decision_accuracy": 0.827,
+          "retest_kappa": 0.426,
+          "retest_kappa_weighted": 0.703,
+          "bias_by_true_grade": {
+            "intern": 0.336,
+            "junior": 0.103,
+            "middle": -0.037,
+            "senior": -0.285
+          }
+        },
+        "wle": {
+          "grade_exact": 0.667,
+          "grade_within_one": 0.97,
+          "decision_accuracy": 0.82,
+          "retest_kappa": 0.415,
+          "retest_kappa_weighted": 0.708,
+          "bias_by_true_grade": {
+            "intern": 0.16,
+            "junior": 0.123,
+            "middle": 0.103,
+            "senior": 0.065
+          }
+        }
+      },
+      "graded": {
+        "eap": {
+          "grade_exact": 0.643,
+          "grade_within_one": 0.983,
+          "decision_accuracy": 0.847,
+          "retest_kappa": 0.355,
+          "retest_kappa_weighted": 0.638,
+          "bias_by_true_grade": {
+            "intern": 0.401,
+            "junior": 0.088,
+            "middle": -0.034,
+            "senior": -0.351
+          }
+        },
+        "wle": {
+          "grade_exact": 0.617,
+          "grade_within_one": 0.977,
+          "decision_accuracy": 0.85,
+          "retest_kappa": 0.37,
+          "retest_kappa_weighted": 0.648,
+          "bias_by_true_grade": {
+            "intern": 0.295,
+            "junior": 0.103,
+            "middle": 0.116,
+            "senior": 0.032
+          }
+        }
+      }
+    },
+    "devops": {
+      "normal": {
+        "eap": {
+          "grade_exact": 0.64,
+          "grade_within_one": 0.973,
+          "decision_accuracy": 0.807,
+          "retest_kappa": 0.375,
+          "retest_kappa_weighted": 0.69,
+          "bias_by_true_grade": {
+            "intern": 0.469,
+            "junior": 0.103,
+            "middle": -0.112,
+            "senior": -0.525
+          }
+        },
+        "wle": {
+          "grade_exact": 0.633,
+          "grade_within_one": 0.97,
+          "decision_accuracy": 0.793,
+          "retest_kappa": 0.348,
+          "retest_kappa_weighted": 0.673,
+          "bias_by_true_grade": {
+            "intern": 0.321,
+            "junior": 0.118,
+            "middle": 0.049,
+            "senior": -0.14
+          }
+        }
+      },
+      "graded": {
+        "eap": {
+          "grade_exact": 0.603,
+          "grade_within_one": 0.99,
+          "decision_accuracy": 0.81,
+          "retest_kappa": 0.241,
+          "retest_kappa_weighted": 0.568,
+          "bias_by_true_grade": {
+            "intern": 0.396,
+            "junior": 0.181,
+            "middle": -0.143,
+            "senior": -0.618
+          }
+        },
+        "wle": {
+          "grade_exact": 0.593,
+          "grade_within_one": 0.98,
+          "decision_accuracy": 0.807,
+          "retest_kappa": 0.22,
+          "retest_kappa_weighted": 0.564,
+          "bias_by_true_grade": {
+            "intern": 0.268,
+            "junior": 0.214,
+            "middle": 0.001,
+            "senior": -0.26
+          }
+        }
+      }
+    },
+    "mobile": {
+      "normal": {
+        "eap": {
+          "grade_exact": 0.62,
+          "grade_within_one": 0.98,
+          "decision_accuracy": 0.76,
+          "retest_kappa": 0.33,
+          "retest_kappa_weighted": 0.617,
+          "bias_by_true_grade": {
+            "intern": 0.406,
+            "junior": 0.01,
+            "middle": -0.162,
+            "senior": -0.585
+          }
+        },
+        "wle": {
+          "grade_exact": 0.617,
+          "grade_within_one": 0.98,
+          "decision_accuracy": 0.78,
+          "retest_kappa": 0.332,
+          "retest_kappa_weighted": 0.621,
+          "bias_by_true_grade": {
+            "intern": 0.201,
+            "junior": 0.034,
+            "middle": -0.035,
+            "senior": -0.292
+          }
+        }
+      },
+      "graded": {
+        "eap": {
+          "grade_exact": 0.59,
+          "grade_within_one": 0.983,
+          "decision_accuracy": 0.803,
+          "retest_kappa": 0.317,
+          "retest_kappa_weighted": 0.629,
+          "bias_by_true_grade": {
+            "intern": 0.345,
+            "junior": 0.085,
+            "middle": -0.182,
+            "senior": -0.566
+          }
+        },
+        "wle": {
+          "grade_exact": 0.607,
+          "grade_within_one": 0.973,
+          "decision_accuracy": 0.81,
+          "retest_kappa": 0.264,
+          "retest_kappa_weighted": 0.601,
+          "bias_by_true_grade": {
+            "intern": 0.199,
+            "junior": 0.122,
+            "middle": -0.039,
+            "senior": -0.232
+          }
+        }
+      }
+    }
+  },
+  "discrimination": {
+    "backend": {
+      "bank_size": 36,
+      "a_median": 1.3,
+      "a_share_at_least_0_8": 1.0,
+      "point_biserial_median": 0.441,
+      "point_biserial_acceptable_share": 0.969,
+      "families_measured": 32,
+      "weakest_families": [
+        {
+          "family": "algo.stack_ops",
+          "r_pb": -0.102
+        },
+        {
+          "family": "http.status_basic",
+          "r_pb": 0.292
+        },
+        {
+          "family": "py.finally_mutation",
+          "r_pb": 0.345
+        }
+      ],
+      "auc_by_cut": {
+        "junior": 0.933,
+        "middle": 0.93,
+        "senior": 0.948
+      },
+      "auc_strong_vs_weak": 0.985
+    },
+    "frontend": {
+      "bank_size": 26,
+      "a_median": 1.3,
+      "a_share_at_least_0_8": 1.0,
+      "point_biserial_median": 0.44,
+      "point_biserial_acceptable_share": 0.958,
+      "families_measured": 24,
+      "weakest_families": [
+        {
+          "family": "algo.complexity_loops",
+          "r_pb": 0.101
+        },
+        {
+          "family": "dom.storage_choice",
+          "r_pb": 0.241
+        },
+        {
+          "family": "css.box_model",
+          "r_pb": 0.336
+        }
+      ],
+      "auc_by_cut": {
+        "junior": 0.954,
+        "middle": 0.922,
+        "senior": 0.926
+      },
+      "auc_strong_vs_weak": 0.982
+    },
+    "data_analytics": {
+      "bank_size": 23,
+      "a_median": 1.3,
+      "a_share_at_least_0_8": 1.0,
+      "point_biserial_median": 0.495,
+      "point_biserial_acceptable_share": 1.0,
+      "families_measured": 23,
+      "weakest_families": [
+        {
+          "family": "pandas.value_counts",
+          "r_pb": 0.234
+        },
+        {
+          "family": "metrics.funnel_conversion",
+          "r_pb": 0.249
+        },
+        {
+          "family": "sql.where_count",
+          "r_pb": 0.319
+        }
+      ],
+      "auc_by_cut": {
+        "junior": 0.978,
+        "middle": 0.956,
+        "senior": 0.94
+      },
+      "auc_strong_vs_weak": 0.991
+    },
+    "ml": {
+      "bank_size": 28,
+      "a_median": 1.3,
+      "a_share_at_least_0_8": 1.0,
+      "point_biserial_median": 0.418,
+      "point_biserial_acceptable_share": 0.963,
+      "families_measured": 27,
+      "weakest_families": [
+        {
+          "family": "py.mutable_default",
+          "r_pb": 0.188
+        },
+        {
+          "family": "py.floor_division",
+          "r_pb": 0.227
+        },
+        {
+          "family": "pandas.value_counts",
+          "r_pb": 0.304
+        }
+      ],
+      "auc_by_cut": {
+        "junior": 0.962,
+        "middle": 0.944,
+        "senior": 0.907
+      },
+      "auc_strong_vs_weak": 0.979
+    },
+    "qa": {
+      "bank_size": 18,
+      "a_median": 1.3,
+      "a_share_at_least_0_8": 1.0,
+      "point_biserial_median": 0.463,
+      "point_biserial_acceptable_share": 1.0,
+      "families_measured": 18,
+      "weakest_families": [
+        {
+          "family": "http.status_basic",
+          "r_pb": 0.26
+        },
+        {
+          "family": "tool.semver_range",
+          "r_pb": 0.378
+        },
+        {
+          "family": "qa.equivalence_classes",
+          "r_pb": 0.395
+        }
+      ],
+      "auc_by_cut": {
+        "junior": 0.965,
+        "middle": 0.93,
+        "senior": 0.913
+      },
+      "auc_strong_vs_weak": 0.974
+    },
+    "devops": {
+      "bank_size": 14,
+      "a_median": 1.25,
+      "a_share_at_least_0_8": 1.0,
+      "point_biserial_median": 0.422,
+      "point_biserial_acceptable_share": 1.0,
+      "families_measured": 14,
+      "weakest_families": [
+        {
+          "family": "http.idempotency",
+          "r_pb": 0.223
+        },
+        {
+          "family": "http.status_basic",
+          "r_pb": 0.323
+        },
+        {
+          "family": "tool.semver_range",
+          "r_pb": 0.332
+        }
+      ],
+      "auc_by_cut": {
+        "junior": 0.924,
+        "middle": 0.917,
+        "senior": 0.903
+      },
+      "auc_strong_vs_weak": 0.973
+    },
+    "mobile": {
+      "bank_size": 18,
+      "a_median": 1.2,
+      "a_share_at_least_0_8": 1.0,
+      "point_biserial_median": 0.426,
+      "point_biserial_acceptable_share": 0.944,
+      "families_measured": 18,
+      "weakest_families": [
+        {
+          "family": "algo.collection_complexity",
+          "r_pb": 0.161
+        },
+        {
+          "family": "http.status_basic",
+          "r_pb": 0.336
+        },
+        {
+          "family": "conc.thread_pool_time",
+          "r_pb": 0.346
+        }
+      ],
+      "auc_by_cut": {
+        "junior": 0.936,
+        "middle": 0.955,
+        "senior": 0.901
+      },
+      "auc_strong_vs_weak": 0.985
+    }
+  },
+  "leaks": {
+    "honest": {
+      "scout_cat": 0.203,
+      "fixed_test": 0.192
+    },
+    "pooled": [
+      {
+        "budget": 4,
+        "template_advantage": 0.6,
+        "fixed_test_inflation": 0.716,
+        "scout_cat_inflation": 0.374
+      },
+      {
+        "budget": 8,
+        "template_advantage": 0.3,
+        "fixed_test_inflation": 0.967,
+        "scout_cat_inflation": 0.332
+      },
+      {
+        "budget": 8,
+        "template_advantage": 0.6,
+        "fixed_test_inflation": 0.967,
+        "scout_cat_inflation": 0.508
+      },
+      {
+        "budget": 8,
+        "template_advantage": 1.0,
+        "fixed_test_inflation": 0.967,
+        "scout_cat_inflation": 0.747
+      },
+      {
+        "budget": 12,
+        "template_advantage": 0.6,
+        "fixed_test_inflation": 1.0,
+        "scout_cat_inflation": 0.665
+      }
+    ],
+    "by_specialization": {
+      "backend": {
+        "candidates": 300,
+        "bank_size": 36,
+        "fixed_test_length": 16,
+        "honest": {
+          "scout_cat": {
+            "inflation_rate": 0.213
+          },
+          "fixed_test": {
+            "inflation_rate": 0.18
+          }
+        },
+        "scenarios": [
+          {
+            "budget": 4,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.653
+            },
+            "scout_cat": {
+              "inflation_rate": 0.26
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.3,
+            "fixed_test": {
+              "inflation_rate": 0.967
+            },
+            "scout_cat": {
+              "inflation_rate": 0.307
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.967
+            },
+            "scout_cat": {
+              "inflation_rate": 0.477
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 1.0,
+            "fixed_test": {
+              "inflation_rate": 0.967
+            },
+            "scout_cat": {
+              "inflation_rate": 0.717
+            }
+          },
+          {
+            "budget": 12,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 1.0
+            },
+            "scout_cat": {
+              "inflation_rate": 0.54
+            }
+          }
+        ]
+      },
+      "frontend": {
+        "candidates": 300,
+        "bank_size": 26,
+        "fixed_test_length": 16,
+        "honest": {
+          "scout_cat": {
+            "inflation_rate": 0.193
+          },
+          "fixed_test": {
+            "inflation_rate": 0.18
+          }
+        },
+        "scenarios": [
+          {
+            "budget": 4,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.763
+            },
+            "scout_cat": {
+              "inflation_rate": 0.433
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.3,
+            "fixed_test": {
+              "inflation_rate": 0.963
+            },
+            "scout_cat": {
+              "inflation_rate": 0.383
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.963
+            },
+            "scout_cat": {
+              "inflation_rate": 0.567
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 1.0,
+            "fixed_test": {
+              "inflation_rate": 0.963
+            },
+            "scout_cat": {
+              "inflation_rate": 0.817
+            }
+          },
+          {
+            "budget": 12,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 1.0
+            },
+            "scout_cat": {
+              "inflation_rate": 0.633
+            }
+          }
+        ]
+      },
+      "data_analytics": {
+        "candidates": 300,
+        "bank_size": 23,
+        "fixed_test_length": 16,
+        "honest": {
+          "scout_cat": {
+            "inflation_rate": 0.187
+          },
+          "fixed_test": {
+            "inflation_rate": 0.18
+          }
+        },
+        "scenarios": [
+          {
+            "budget": 4,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.723
+            },
+            "scout_cat": {
+              "inflation_rate": 0.447
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.3,
+            "fixed_test": {
+              "inflation_rate": 0.943
+            },
+            "scout_cat": {
+              "inflation_rate": 0.31
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.943
+            },
+            "scout_cat": {
+              "inflation_rate": 0.507
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 1.0,
+            "fixed_test": {
+              "inflation_rate": 0.943
+            },
+            "scout_cat": {
+              "inflation_rate": 0.747
+            }
+          },
+          {
+            "budget": 12,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 1.0
+            },
+            "scout_cat": {
+              "inflation_rate": 0.647
+            }
+          }
+        ]
+      },
+      "ml": {
+        "candidates": 300,
+        "bank_size": 28,
+        "fixed_test_length": 16,
+        "honest": {
+          "scout_cat": {
+            "inflation_rate": 0.173
+          },
+          "fixed_test": {
+            "inflation_rate": 0.143
+          }
+        },
+        "scenarios": [
+          {
+            "budget": 4,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.727
+            },
+            "scout_cat": {
+              "inflation_rate": 0.283
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.3,
+            "fixed_test": {
+              "inflation_rate": 0.97
+            },
+            "scout_cat": {
+              "inflation_rate": 0.28
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.97
+            },
+            "scout_cat": {
+              "inflation_rate": 0.447
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 1.0,
+            "fixed_test": {
+              "inflation_rate": 0.97
+            },
+            "scout_cat": {
+              "inflation_rate": 0.657
+            }
+          },
+          {
+            "budget": 12,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 1.0
+            },
+            "scout_cat": {
+              "inflation_rate": 0.62
+            }
+          }
+        ]
+      },
+      "qa": {
+        "candidates": 300,
+        "bank_size": 18,
+        "fixed_test_length": 16,
+        "honest": {
+          "scout_cat": {
+            "inflation_rate": 0.2
+          },
+          "fixed_test": {
+            "inflation_rate": 0.2
+          }
+        },
+        "scenarios": [
+          {
+            "budget": 4,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.727
+            },
+            "scout_cat": {
+              "inflation_rate": 0.353
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.3,
+            "fixed_test": {
+              "inflation_rate": 0.99
+            },
+            "scout_cat": {
+              "inflation_rate": 0.25
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.99
+            },
+            "scout_cat": {
+              "inflation_rate": 0.413
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 1.0,
+            "fixed_test": {
+              "inflation_rate": 0.99
+            },
+            "scout_cat": {
+              "inflation_rate": 0.637
+            }
+          },
+          {
+            "budget": 12,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 1.0
+            },
+            "scout_cat": {
+              "inflation_rate": 0.67
+            }
+          }
+        ]
+      },
+      "devops": {
+        "candidates": 300,
+        "bank_size": 14,
+        "fixed_test_length": 16,
+        "honest": {
+          "scout_cat": {
+            "inflation_rate": 0.197
+          },
+          "fixed_test": {
+            "inflation_rate": 0.227
+          }
+        },
+        "scenarios": [
+          {
+            "budget": 4,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.72
+            },
+            "scout_cat": {
+              "inflation_rate": 0.433
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.3,
+            "fixed_test": {
+              "inflation_rate": 0.953
+            },
+            "scout_cat": {
+              "inflation_rate": 0.387
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.953
+            },
+            "scout_cat": {
+              "inflation_rate": 0.59
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 1.0,
+            "fixed_test": {
+              "inflation_rate": 0.953
+            },
+            "scout_cat": {
+              "inflation_rate": 0.837
+            }
+          },
+          {
+            "budget": 12,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 1.0
+            },
+            "scout_cat": {
+              "inflation_rate": 0.767
+            }
+          }
+        ]
+      },
+      "mobile": {
+        "candidates": 300,
+        "bank_size": 18,
+        "fixed_test_length": 16,
+        "honest": {
+          "scout_cat": {
+            "inflation_rate": 0.257
+          },
+          "fixed_test": {
+            "inflation_rate": 0.237
+          }
+        },
+        "scenarios": [
+          {
+            "budget": 4,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.697
+            },
+            "scout_cat": {
+              "inflation_rate": 0.41
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.3,
+            "fixed_test": {
+              "inflation_rate": 0.983
+            },
+            "scout_cat": {
+              "inflation_rate": 0.41
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 0.983
+            },
+            "scout_cat": {
+              "inflation_rate": 0.553
+            }
+          },
+          {
+            "budget": 8,
+            "template_advantage": 1.0,
+            "fixed_test": {
+              "inflation_rate": 0.983
+            },
+            "scout_cat": {
+              "inflation_rate": 0.817
+            }
+          },
+          {
+            "budget": 12,
+            "template_advantage": 0.6,
+            "fixed_test": {
+              "inflation_rate": 1.0
+            },
+            "scout_cat": {
+              "inflation_rate": 0.777
+            }
+          }
+        ]
+      }
+    }
+  },
+  "person_fit": {
+    "threshold": -1.27,
+    "false_positive_rate": 0.05,
+    "recall_cat_cheaters": 0.07,
+    "auc_cat": 0.56,
+    "fixed_test_threshold": -1.39,
+    "recall_fixed_cheaters": 0.134,
+    "auc_fixed": 0.68,
+    "preknowledge_threshold": 1.9,
+    "preknowledge_recall": 0.204,
+    "preknowledge_auc": 0.748,
+    "scenario": {
+      "budget": 8,
+      "template_advantage": 0.6
+    }
+  }
+}

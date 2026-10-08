@@ -6607,6 +6607,12 @@
             "title": "After Filters",
             "type": "integer"
           },
+          "autofilled": {
+            "default": false,
+            "description": "Точного грейда мало — добавлены соседние грейды",
+            "title": "Autofilled",
+            "type": "boolean"
+          },
           "pool": {
             "title": "Pool",
             "type": "integer"

@@ -80,7 +80,12 @@ from app.services.assessment.grade_policy import (
     evaluate_eligibility,
 )
 from app.services.assessment.grading import GradeLevel, decide_grade
-from app.services.assessment.irt import AbilityEstimate, ItemParameters, estimate_ability
+from app.services.assessment.irt import (
+    AbilityEstimate,
+    ItemParameters,
+    estimate_ability,
+    estimate_ability_wle,
+)
 from app.services.assessment.item_generators import REGISTRY, generate_instance, instance_seed
 from app.services.assessment.scoring import score_answer
 from app.services.candidate.profile_service import CandidateProfileService
@@ -631,17 +636,29 @@ class AssessmentService:
         await self._advance(assessment, profile, items, now)
 
     @staticmethod
-    def _estimate(items: Sequence[AssessmentItem]) -> AbilityEstimate:
-        """EAP-оценка θ по засчитываемым ответам сессии."""
-        return estimate_ability(
-            [
-                (
-                    ItemParameters(a=item.family.irt_a, b=item.family.irt_b, c=item.family.irt_c),
-                    item.score or 0.0,
-                )
-                for item in _scored(items)
-            ]
-        )
+    def _responses(items: Sequence[AssessmentItem]) -> list[tuple[ItemParameters, float]]:
+        """Засчитываемые ответы сессии с параметрами семейств."""
+        return [
+            (
+                ItemParameters(a=item.family.irt_a, b=item.family.irt_b, c=item.family.irt_c),
+                item.score or 0.0,
+            )
+            for item in _scored(items)
+        ]
+
+    @classmethod
+    def _estimate(cls, items: Sequence[AssessmentItem]) -> AbilityEstimate:
+        """EAP-оценка θ по ходу теста: устойчива на первых ответах, по ней подбираются задания."""
+        return estimate_ability(cls._responses(items))
+
+    @classmethod
+    def _final_estimate(cls, items: Sequence[AssessmentItem]) -> AbilityEstimate:
+        """Итоговая оценка для решения о грейде — WLE, без стягивания к среднему популяции.
+
+        Почему не EAP, показала валидация: EAP занижала θ сильным кандидатам на
+        0,4–0,6 и переводила часть сеньоров в мидлы (docs/VALIDATION.md).
+        """
+        return estimate_ability_wle(cls._responses(items))
 
     async def _advance(
         self,
@@ -815,7 +832,7 @@ class AssessmentService:
         now: datetime,
     ) -> None:
         """Завершает тест: решение по грейду, присвоение категории, подтверждение навыков."""
-        estimate = self._estimate(items)
+        estimate = self._final_estimate(items)
         levels = await self._levels(assessment.specialization_id)
         target = next(level for level in levels if level.grade_id == assessment.target_grade_id)
         decision = decide_grade(estimate, target, levels)

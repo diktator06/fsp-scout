@@ -104,7 +104,7 @@ def _email(specialization: str, index: int) -> str:
     return f"demo.{specialization.replace('_', '-')}.{index:02d}@example.com"
 
 
-def _true_theta(rng: Random, grade: str, grades: dict[str, tuple[int, int, float]]) -> float:
+def true_theta(rng: Random, grade: str, grades: dict[str, tuple[int, int, float]]) -> float:
     """«Истинная» способность внутри полосы грейда на шкале θ."""
     _, rank, cut = grades[grade]
     higher = sorted(value[2] for value in grades.values() if value[1] == rank + 1)
@@ -219,7 +219,7 @@ def _answer(answer_key: dict[str, Any], correct: bool, rng: Random) -> str:
     return str(value) if correct else str(round(value * 2 + 7))
 
 
-async def _take_test(
+async def take_test(
     session: AsyncSession,
     settings: Settings,
     user: User,
@@ -273,7 +273,7 @@ async def _create_candidate(
     rng = Random(f"{POPULATION_SEED}:{specialization}:{index}")
     data = context.data
     grade = _weighted(rng, list(data["grade_shares"].items()))
-    theta = _true_theta(rng, grade, context.grades)
+    theta = true_theta(rng, grade, context.grades)
     user = await user_crud.create_local(
         session,
         email=email,
@@ -330,7 +330,7 @@ async def _create_candidate(
         ),
     )
     if rng.random() < 0.88:
-        await _take_test(session, settings, user, rng, theta, grade_ids[claimed])
+        await take_test(session, settings, user, rng, theta, grade_ids[claimed])
     return True
 
 

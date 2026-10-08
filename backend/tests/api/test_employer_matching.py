@@ -199,6 +199,35 @@ async def test_shortlist_ranks_explains_and_hides_contacts(
     assert all(entry["contacts"] is None for entry in shortlist["entries"])
 
 
+async def test_small_pool_is_autofilled_with_adjacent_grades(
+    client: AsyncClient, make_user: UserFactory, db_session: AsyncSession
+) -> None:
+    """Точного грейда мало — подборка добирает соседний грейд с пометкой и понижением."""
+    exact = await make_bank_candidate(db_session, full_name="Точный Кандидат")
+    senior = await make_bank_candidate(
+        db_session, grade="senior", full_name="Соседний Кандидат", telegram="senior_fill"
+    )
+    headers = await employer_headers(client, make_user)
+    need = await create_need(client, headers)
+
+    response = await client.get(f"/api/v1/employer/needs/{need['id']}/shortlist", headers=headers)
+    assert response.status_code == 200, response.text
+    shortlist = response.json()
+    by_id = {entry["card"]["candidate_id"]: entry for entry in shortlist["entries"]}
+    assert shortlist["stats"]["autofilled"] is True
+    assert {exact.profile_id, senior.profile_id} <= set(by_id)
+    assert "adjacent_grade" in by_id[senior.profile_id]["match"]["penalties"]
+    assert "adjacent_grade" not in by_id[exact.profile_id]["match"]["penalties"]
+
+    expanded = await client.post(
+        f"/api/v1/employer/needs/{need['id']}/shortlists",
+        json={"expand_grades": True},
+        headers=headers,
+    )
+    assert expanded.status_code == 201, expanded.text
+    assert expanded.json()["stats"]["autofilled"] is False
+
+
 async def test_refinement_keeps_pinned_and_drops_hidden(
     client: AsyncClient, make_user: UserFactory, db_session: AsyncSession
 ) -> None:

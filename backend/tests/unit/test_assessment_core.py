@@ -26,6 +26,7 @@ from app.services.assessment.irt import (
     AbilityEstimate,
     ItemParameters,
     estimate_ability,
+    estimate_ability_wle,
     information,
     probability,
     simulate_response,
@@ -81,6 +82,34 @@ def test_se_shrinks_with_more_answers() -> None:
     long = estimate_ability([(item, 1.0), (item, 0.0)] * 6)
     assert estimate_ability([]).se == pytest.approx(1.0, abs=0.02)
     assert long.se < short.se < 1.0
+
+
+def test_wle_is_less_biased_than_eap_for_strong_candidates() -> None:
+    """WLE не стягивает сильных к среднему: смещение заметно меньше, чем у EAP.
+
+    На коротком тесте EAP с априорным N(0, 1) занижает θ = 1,8; итоговое решение о
+    грейде поэтому принимается по WLE.
+    """
+    rng = Random(3)
+    bank = [ItemParameters(a=rng.uniform(1.0, 1.8), b=rng.uniform(0.5, 2.5)) for _ in range(14)]
+    eap_bias = wle_bias = 0.0
+    runs = 300
+    for _ in range(runs):
+        responses = [(item, simulate_response(1.8, item, rng.random())) for item in bank]
+        eap_bias += estimate_ability(responses).theta - 1.8
+        wle_bias += estimate_ability_wle(responses).theta - 1.8
+    assert abs(wle_bias / runs) < abs(eap_bias / runs) / 2
+    assert eap_bias / runs < -0.15
+
+
+def test_wle_is_finite_on_extreme_patterns() -> None:
+    """При всех верных или всех неверных ответах WLE конечна, без ответов — это EAP."""
+    item = ItemParameters(a=1.5, b=0.0)
+    perfect = estimate_ability_wle([(item, 1.0)] * 6)
+    failed = estimate_ability_wle([(item, 0.0)] * 6)
+    assert 0.5 < perfect.theta < 4.0 and -4.0 < failed.theta < -0.5
+    assert perfect.theta == pytest.approx(-failed.theta, abs=0.02)
+    assert estimate_ability_wle([]) == estimate_ability([])
 
 
 def test_blueprint_gates_language_bound_competencies() -> None:

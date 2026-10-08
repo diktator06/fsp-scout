@@ -4,8 +4,8 @@ from dataclasses import dataclass, field
 from app.models.candidate import SkillSource, WorkFormat
 from app.services.matching.facts import CandidateFacts, NeedFacts
 
-MATCH_ALGORITHM_VERSION = "match-1.0"
-MATCH_WEIGHTS = {"skills": 0.35, "verified": 0.35, "semantic": 0.15, "conditions": 0.15}
+MATCH_ALGORITHM_VERSION = "match-1.1"
+MATCH_WEIGHTS = {"skills": 0.30, "verified": 0.20, "semantic": 0.15, "conditions": 0.35}
 MATCH_LABELS = {
     "skills": "Навыки",
     "verified": "Подтверждённость",
@@ -163,7 +163,11 @@ def score_match(
     typical_weights: Mapping[int, float],
     relations: Mapping[int, Mapping[int, float]],
 ) -> MatchResult:
-    """Match = 0,35·SkillFit + 0,35·VPS/100 + 0,15·Semantic + 0,15·Conditions.
+    """Match = 0,30·SkillFit + 0,20·VPS/100 + 0,15·Semantic + 0,35·Conditions.
+
+    Веса подобраны на размеченных парах «вакансия–кандидат» с кросс-валидацией
+    (версия match-1.1, docs/VALIDATION.md): в каждом фолде условия получали больший
+    вес, а индекс профиля — меньший, чем в экспертной версии match-1.0.
 
     Поверх — понижающие множители: неподтверждённый грейд опускается в выдаче (так
     просили менторы), соседний грейд при расширенном поиске — тоже. Формулы и веса —

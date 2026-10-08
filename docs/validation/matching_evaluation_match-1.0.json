@@ -1,0 +1,1197 @@
+{
+  "generated_at": "2026-10-08T13:35:40+00:00",
+  "vacancies": 21,
+  "replications": 3,
+  "population": {
+    "candidates": 420,
+    "by_specialization": {
+      "backend": 60,
+      "frontend": 60,
+      "data_analytics": 60,
+      "ml": 60,
+      "qa": 60,
+      "devops": 60,
+      "mobile": 60
+    },
+    "seeds": [
+      2027,
+      2028,
+      2029
+    ],
+    "noise": {
+      "omitted_true_skill_rate": 0.08,
+      "inflated_skill_list_share": 0.35,
+      "overclaimed_grade_share": 0.25,
+      "underclaimed_grade_share": 0.1,
+      "tested_share": 0.9,
+      "fsp_linked_share": 0.35,
+      "published_share": 0.95,
+      "not_looking_share": 0.06
+    }
+  },
+  "visible_candidates_per_replication": [
+    366,
+    374,
+    375
+  ],
+  "top_k": 10,
+  "recall_k": 50,
+  "relevance_rule": "Релевантность пары по истинным атрибутам: от 0 (не подходит) до 3 (лучший выбор).\n\n1 — частично: та же специализация, грейд соседний или закрыта хотя бы половина\nобязательных навыков, ожидания не выше вилки больше чем на 30 %, формат совместим.\n2 — подходит: истинный грейд из вакансии, есть все обязательные навыки, ожидания\nне выше вилки больше чем на 10 %, формат совместим.\n3 — подходит и силён: как 2, плюс истинная способность в верхней половине своего\nгрейда. Это требование ТЗ «внутри категории выше те, у кого сильнее подтверждённый\nпрофиль»; силу система не видит, только оценку теста.\nИначе 0. Правило записано до прогона и не подстраивалось под результаты.\n",
+  "mean_ideal_precision_at_10": 0.4254,
+  "systems": {
+    "scout": {
+      "title": "«Скаут»",
+      "description": "Текст вакансии → разбор → жёсткие фильтры по категории → балл соответствия",
+      "precision_at_10": {
+        "mean": 0.2238,
+        "ci95": [
+          0.1571,
+          0.2968
+        ],
+        "replication_sd": 0.0294
+      },
+      "precision_partial_at_10": {
+        "mean": 0.4079,
+        "ci95": [
+          0.3032,
+          0.5079
+        ],
+        "replication_sd": 0.0331
+      },
+      "ndcg_at_10": {
+        "mean": 0.4946,
+        "ci95": [
+          0.424,
+          0.5655
+        ],
+        "replication_sd": 0.0296
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.4954,
+        "ci95": [
+          0.4241,
+          0.5678
+        ],
+        "replication_sd": 0.013
+      },
+      "mrr": {
+        "mean": 0.6614,
+        "ci95": [
+          0.5286,
+          0.7841
+        ],
+        "replication_sd": 0.0754
+      },
+      "recall_at_50": {
+        "mean": 0.5048,
+        "ci95": [
+          0.4176,
+          0.5933
+        ],
+        "replication_sd": 0.0525
+      }
+    },
+    "scout_reviewed": {
+      "title": "«Скаут», потребность выверена",
+      "description": "Поля потребности из разметки: качество ранжирования без ошибок разбора текста",
+      "precision_at_10": {
+        "mean": 0.2238,
+        "ci95": [
+          0.1603,
+          0.2952
+        ],
+        "replication_sd": 0.0294
+      },
+      "precision_partial_at_10": {
+        "mean": 0.4095,
+        "ci95": [
+          0.3048,
+          0.5095
+        ],
+        "replication_sd": 0.0395
+      },
+      "ndcg_at_10": {
+        "mean": 0.5027,
+        "ci95": [
+          0.4311,
+          0.5745
+        ],
+        "replication_sd": 0.0274
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.5026,
+        "ci95": [
+          0.429,
+          0.5763
+        ],
+        "replication_sd": 0.0138
+      },
+      "mrr": {
+        "mean": 0.6912,
+        "ci95": [
+          0.5597,
+          0.8129
+        ],
+        "replication_sd": 0.0638
+      },
+      "recall_at_50": {
+        "mean": 0.5048,
+        "ci95": [
+          0.4176,
+          0.5933
+        ],
+        "replication_sd": 0.0525
+      }
+    },
+    "scout_expanded": {
+      "title": "«Скаут» с соседними грейдами",
+      "description": "Переключатель подборки «соседние грейды»: в выдаче и соседние грейды с понижением",
+      "precision_at_10": {
+        "mean": 0.281,
+        "ci95": [
+          0.2048,
+          0.3603
+        ],
+        "replication_sd": 0.0078
+      },
+      "precision_partial_at_10": {
+        "mean": 0.6032,
+        "ci95": [
+          0.4873,
+          0.7127
+        ],
+        "replication_sd": 0.0162
+      },
+      "ndcg_at_10": {
+        "mean": 0.6233,
+        "ci95": [
+          0.5757,
+          0.67
+        ],
+        "replication_sd": 0.0286
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.6475,
+        "ci95": [
+          0.5942,
+          0.7008
+        ],
+        "replication_sd": 0.0214
+      },
+      "mrr": {
+        "mean": 0.6792,
+        "ci95": [
+          0.5462,
+          0.7994
+        ],
+        "replication_sd": 0.056
+      },
+      "recall_at_50": {
+        "mean": 0.8569,
+        "ci95": [
+          0.7451,
+          0.9435
+        ],
+        "replication_sd": 0.037
+      }
+    },
+    "keyword": {
+      "title": "Ключевые слова (BM25)",
+      "description": "Поиск по самоописанию кандидата по всей базе, как в классических базах резюме",
+      "precision_at_10": {
+        "mean": 0.1746,
+        "ci95": [
+          0.1254,
+          0.2222
+        ],
+        "replication_sd": 0.0292
+      },
+      "precision_partial_at_10": {
+        "mean": 0.373,
+        "ci95": [
+          0.2905,
+          0.4556
+        ],
+        "replication_sd": 0.0125
+      },
+      "ndcg_at_10": {
+        "mean": 0.2779,
+        "ci95": [
+          0.232,
+          0.3272
+        ],
+        "replication_sd": 0.0357
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.3289,
+        "ci95": [
+          0.2726,
+          0.3832
+        ],
+        "replication_sd": 0.0408
+      },
+      "mrr": {
+        "mean": 0.3238,
+        "ci95": [
+          0.2365,
+          0.4066
+        ],
+        "replication_sd": 0.0773
+      },
+      "recall_at_50": {
+        "mean": 0.8694,
+        "ci95": [
+          0.7615,
+          0.9508
+        ],
+        "replication_sd": 0.0178
+      }
+    },
+    "keyword_filters": {
+      "title": "Ключевые слова + фильтры самоописания",
+      "description": "BM25 среди кандидатов с заявленными специализацией и грейдом из вакансии",
+      "precision_at_10": {
+        "mean": 0.2349,
+        "ci95": [
+          0.173,
+          0.3
+        ],
+        "replication_sd": 0.0294
+      },
+      "precision_partial_at_10": {
+        "mean": 0.4206,
+        "ci95": [
+          0.319,
+          0.5238
+        ],
+        "replication_sd": 0.0125
+      },
+      "ndcg_at_10": {
+        "mean": 0.4002,
+        "ci95": [
+          0.3279,
+          0.4757
+        ],
+        "replication_sd": 0.0392
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.4419,
+        "ci95": [
+          0.3635,
+          0.5228
+        ],
+        "replication_sd": 0.0274
+      },
+      "mrr": {
+        "mean": 0.4734,
+        "ci95": [
+          0.3526,
+          0.5913
+        ],
+        "replication_sd": 0.0779
+      },
+      "recall_at_50": {
+        "mean": 0.5773,
+        "ci95": [
+          0.4923,
+          0.6526
+        ],
+        "replication_sd": 0.0796
+      }
+    }
+  },
+  "ablations": {
+    "no_test": {
+      "title": "Без теста",
+      "description": "Категория и навыки только со слов кандидата: фильтр по заявленному грейду, навыки не подтверждены, в индексе профиля нет фактора теста",
+      "precision_at_10": {
+        "mean": 0.2587,
+        "ci95": [
+          0.1905,
+          0.3333
+        ],
+        "replication_sd": 0.0302
+      },
+      "precision_partial_at_10": {
+        "mean": 0.519,
+        "ci95": [
+          0.3968,
+          0.6317
+        ],
+        "replication_sd": 0.0156
+      },
+      "ndcg_at_10": {
+        "mean": 0.5536,
+        "ci95": [
+          0.4936,
+          0.6131
+        ],
+        "replication_sd": 0.0448
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.5932,
+        "ci95": [
+          0.5269,
+          0.6594
+        ],
+        "replication_sd": 0.0309
+      },
+      "mrr": {
+        "mean": 0.6769,
+        "ci95": [
+          0.5587,
+          0.791
+        ],
+        "replication_sd": 0.064
+      },
+      "recall_at_50": {
+        "mean": 0.5773,
+        "ci95": [
+          0.4923,
+          0.6526
+        ],
+        "replication_sd": 0.0796
+      }
+    },
+    "no_test_inflated": {
+      "title": "Без теста, грейд завышает половина",
+      "description": "То же, но заявленный грейд завышает каждый второй: на платформе, где грейд решает попадание в выдачу, у самоописания появляется стимул врать",
+      "precision_at_10": {
+        "mean": 0.1683,
+        "ci95": [
+          0.1254,
+          0.2143
+        ],
+        "replication_sd": 0.0273
+      },
+      "precision_partial_at_10": {
+        "mean": 0.5413,
+        "ci95": [
+          0.4111,
+          0.6683
+        ],
+        "replication_sd": 0.0234
+      },
+      "ndcg_at_10": {
+        "mean": 0.4553,
+        "ci95": [
+          0.4028,
+          0.5067
+        ],
+        "replication_sd": 0.0243
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.5236,
+        "ci95": [
+          0.4665,
+          0.5799
+        ],
+        "replication_sd": 0.0361
+      },
+      "mrr": {
+        "mean": 0.5772,
+        "ci95": [
+          0.4524,
+          0.7016
+        ],
+        "replication_sd": 0.0169
+      },
+      "recall_at_50": {
+        "mean": 0.3761,
+        "ci95": [
+          0.2999,
+          0.4638
+        ],
+        "replication_sd": 0.0395
+      }
+    },
+    "no_verified": {
+      "title": "Без индекса профиля",
+      "description": "Вес индекса подтверждённого профиля обнулён",
+      "precision_at_10": {
+        "mean": 0.2317,
+        "ci95": [
+          0.1667,
+          0.3063
+        ],
+        "replication_sd": 0.0273
+      },
+      "precision_partial_at_10": {
+        "mean": 0.4254,
+        "ci95": [
+          0.3175,
+          0.5286
+        ],
+        "replication_sd": 0.0312
+      },
+      "ndcg_at_10": {
+        "mean": 0.5097,
+        "ci95": [
+          0.4377,
+          0.5785
+        ],
+        "replication_sd": 0.035
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.5184,
+        "ci95": [
+          0.4424,
+          0.5936
+        ],
+        "replication_sd": 0.0137
+      },
+      "mrr": {
+        "mean": 0.6704,
+        "ci95": [
+          0.5524,
+          0.7815
+        ],
+        "replication_sd": 0.0926
+      },
+      "recall_at_50": {
+        "mean": 0.5048,
+        "ci95": [
+          0.4176,
+          0.5933
+        ],
+        "replication_sd": 0.0525
+      }
+    },
+    "no_fsp": {
+      "title": "Без ФСП",
+      "description": "Индекс профиля пересчитан без фактора достижений ФСП",
+      "precision_at_10": {
+        "mean": 0.2222,
+        "ci95": [
+          0.1571,
+          0.2937
+        ],
+        "replication_sd": 0.0273
+      },
+      "precision_partial_at_10": {
+        "mean": 0.4095,
+        "ci95": [
+          0.3048,
+          0.5095
+        ],
+        "replication_sd": 0.0356
+      },
+      "ndcg_at_10": {
+        "mean": 0.4905,
+        "ci95": [
+          0.4201,
+          0.5616
+        ],
+        "replication_sd": 0.0337
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.4903,
+        "ci95": [
+          0.4186,
+          0.5621
+        ],
+        "replication_sd": 0.0174
+      },
+      "mrr": {
+        "mean": 0.664,
+        "ci95": [
+          0.5349,
+          0.7841
+        ],
+        "replication_sd": 0.082
+      },
+      "recall_at_50": {
+        "mean": 0.5048,
+        "ci95": [
+          0.4176,
+          0.5933
+        ],
+        "replication_sd": 0.0525
+      }
+    },
+    "no_semantic": {
+      "title": "Без текстовой близости",
+      "description": "Вес TF-IDF близости описаний обнулён",
+      "precision_at_10": {
+        "mean": 0.2238,
+        "ci95": [
+          0.1571,
+          0.2968
+        ],
+        "replication_sd": 0.0294
+      },
+      "precision_partial_at_10": {
+        "mean": 0.4095,
+        "ci95": [
+          0.3048,
+          0.5095
+        ],
+        "replication_sd": 0.0309
+      },
+      "ndcg_at_10": {
+        "mean": 0.4938,
+        "ci95": [
+          0.4231,
+          0.5655
+        ],
+        "replication_sd": 0.0293
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.4946,
+        "ci95": [
+          0.4234,
+          0.5676
+        ],
+        "replication_sd": 0.0124
+      },
+      "mrr": {
+        "mean": 0.6521,
+        "ci95": [
+          0.5188,
+          0.7778
+        ],
+        "replication_sd": 0.0701
+      },
+      "recall_at_50": {
+        "mean": 0.5048,
+        "ci95": [
+          0.4176,
+          0.5933
+        ],
+        "replication_sd": 0.0525
+      }
+    },
+    "no_conditions": {
+      "title": "Без условий",
+      "description": "Вес вилки, формата и города обнулён",
+      "precision_at_10": {
+        "mean": 0.2,
+        "ci95": [
+          0.1397,
+          0.2667
+        ],
+        "replication_sd": 0.028
+      },
+      "precision_partial_at_10": {
+        "mean": 0.3508,
+        "ci95": [
+          0.2635,
+          0.4349
+        ],
+        "replication_sd": 0.0326
+      },
+      "ndcg_at_10": {
+        "mean": 0.3882,
+        "ci95": [
+          0.3204,
+          0.4572
+        ],
+        "replication_sd": 0.0173
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.3836,
+        "ci95": [
+          0.3132,
+          0.4542
+        ],
+        "replication_sd": 0.0101
+      },
+      "mrr": {
+        "mean": 0.5219,
+        "ci95": [
+          0.3918,
+          0.6511
+        ],
+        "replication_sd": 0.0356
+      },
+      "recall_at_50": {
+        "mean": 0.5048,
+        "ci95": [
+          0.4176,
+          0.5933
+        ],
+        "replication_sd": 0.0525
+      }
+    },
+    "skills_only": {
+      "title": "Только навыки",
+      "description": "Ранжирование только по покрытию стека",
+      "precision_at_10": {
+        "mean": 0.2111,
+        "ci95": [
+          0.1524,
+          0.2762
+        ],
+        "replication_sd": 0.0302
+      },
+      "precision_partial_at_10": {
+        "mean": 0.3587,
+        "ci95": [
+          0.2746,
+          0.4429
+        ],
+        "replication_sd": 0.0348
+      },
+      "ndcg_at_10": {
+        "mean": 0.422,
+        "ci95": [
+          0.3554,
+          0.4874
+        ],
+        "replication_sd": 0.0279
+      },
+      "ndcg_fit_at_10": {
+        "mean": 0.4212,
+        "ci95": [
+          0.3506,
+          0.4914
+        ],
+        "replication_sd": 0.0212
+      },
+      "mrr": {
+        "mean": 0.578,
+        "ci95": [
+          0.4533,
+          0.7021
+        ],
+        "replication_sd": 0.0865
+      },
+      "recall_at_50": {
+        "mean": 0.5048,
+        "ci95": [
+          0.4176,
+          0.5933
+        ],
+        "replication_sd": 0.0525
+      }
+    }
+  },
+  "gain_vs_keyword": {
+    "precision_at_10": 0.2818,
+    "precision_partial_at_10": 0.0936,
+    "ndcg_at_10": 0.7798,
+    "ndcg_fit_at_10": 0.5062,
+    "mrr": 1.0426,
+    "recall_at_50": -0.4194
+  },
+  "gain_vs_keyword_filters": {
+    "precision_at_10": -0.0473,
+    "precision_partial_at_10": -0.0302,
+    "ndcg_at_10": 0.2359,
+    "ndcg_fit_at_10": 0.1211,
+    "mrr": 0.3971,
+    "recall_at_50": -0.1256
+  },
+  "parsing": {
+    "specialization_accuracy": 1.0,
+    "grades_exact": 1.0,
+    "must_recall": 1.0,
+    "must_precision": 0.7657,
+    "skills_recall": 0.9853,
+    "salary_exact": 1.0,
+    "gross_correct": 1.0,
+    "formats_exact": 1.0,
+    "city_correct": 1.0,
+    "vacancies_needing_manual_fields": 0
+  },
+  "shortlist_latency_ms": {
+    "mean": 27.7,
+    "p95": 51.8
+  },
+  "weight_tuning": {
+    "objective": "ndcg_at_10",
+    "bounds": {
+      "skills": [
+        0.2,
+        0.45
+      ],
+      "verified": [
+        0.1,
+        0.4
+      ],
+      "semantic": [
+        0.05,
+        0.2
+      ],
+      "conditions": [
+        0.1,
+        0.35
+      ]
+    },
+    "grid_size": 106,
+    "folds": [
+      {
+        "fold": 0,
+        "weights": {
+          "skills": 0.25,
+          "verified": 0.25,
+          "semantic": 0.15,
+          "conditions": 0.35
+        },
+        "tuned": {
+          "ndcg_at_10": 0.5943,
+          "precision_at_10": 0.3571
+        },
+        "current": {
+          "ndcg_at_10": 0.5785,
+          "precision_at_10": 0.3524
+        }
+      },
+      {
+        "fold": 1,
+        "weights": {
+          "skills": 0.35,
+          "verified": 0.1,
+          "semantic": 0.2,
+          "conditions": 0.35
+        },
+        "tuned": {
+          "ndcg_at_10": 0.4411,
+          "precision_at_10": 0.1571
+        },
+        "current": {
+          "ndcg_at_10": 0.4348,
+          "precision_at_10": 0.1524
+        }
+      },
+      {
+        "fold": 2,
+        "weights": {
+          "skills": 0.3,
+          "verified": 0.2,
+          "semantic": 0.15,
+          "conditions": 0.35
+        },
+        "tuned": {
+          "ndcg_at_10": 0.5075,
+          "precision_at_10": 0.1762
+        },
+        "current": {
+          "ndcg_at_10": 0.4706,
+          "precision_at_10": 0.1667
+        }
+      }
+    ],
+    "cv_tuned": {
+      "ndcg_at_10": 0.5143,
+      "precision_at_10": 0.2301
+    },
+    "cv_current": {
+      "ndcg_at_10": 0.4946,
+      "precision_at_10": 0.2238
+    },
+    "current_weights": {
+      "skills": 0.35,
+      "verified": 0.35,
+      "semantic": 0.15,
+      "conditions": 0.15
+    },
+    "selected_weights": {
+      "skills": 0.3,
+      "verified": 0.2,
+      "semantic": 0.15,
+      "conditions": 0.35
+    }
+  },
+  "per_vacancy": [
+    {
+      "id": "backend-python-fintech",
+      "relevant": 6.3,
+      "pool_after_filters": 16,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.1667,
+          "ndcg_at_10": 0.3699
+        },
+        "keyword": {
+          "precision_at_10": 0.4,
+          "ndcg_at_10": 0.4382
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.2,
+          "ndcg_at_10": 0.4316
+        }
+      }
+    },
+    {
+      "id": "backend-java-bank",
+      "relevant": 0,
+      "pool_after_filters": 11.3,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.0,
+          "ndcg_at_10": 0.12
+        },
+        "keyword": {
+          "precision_at_10": 0.0,
+          "ndcg_at_10": 0.1354
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.0,
+          "ndcg_at_10": 0.2731
+        }
+      }
+    },
+    {
+      "id": "backend-go-logistics",
+      "relevant": 3.3,
+      "pool_after_filters": 34,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.1333,
+          "ndcg_at_10": 0.5198
+        },
+        "keyword": {
+          "precision_at_10": 0.1,
+          "ndcg_at_10": 0.2821
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.2333,
+          "ndcg_at_10": 0.4182
+        }
+      }
+    },
+    {
+      "id": "frontend-react-ecom",
+      "relevant": 9.3,
+      "pool_after_filters": 21,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.6,
+          "ndcg_at_10": 0.8062
+        },
+        "keyword": {
+          "precision_at_10": 0.2333,
+          "ndcg_at_10": 0.2138
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.3333,
+          "ndcg_at_10": 0.4177
+        }
+      }
+    },
+    {
+      "id": "frontend-vue-kazan",
+      "relevant": 0.7,
+      "pool_after_filters": 15.3,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.0667,
+          "ndcg_at_10": 0.5976
+        },
+        "keyword": {
+          "precision_at_10": 0.0333,
+          "ndcg_at_10": 0.1032
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.0667,
+          "ndcg_at_10": 0.2789
+        }
+      }
+    },
+    {
+      "id": "frontend-angular-senior",
+      "relevant": 1.7,
+      "pool_after_filters": 7.3,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.1,
+          "ndcg_at_10": 0.5281
+        },
+        "keyword": {
+          "precision_at_10": 0.1667,
+          "ndcg_at_10": 0.5191
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.1333,
+          "ndcg_at_10": 0.7671
+        }
+      }
+    },
+    {
+      "id": "analytics-product-middle",
+      "relevant": 5,
+      "pool_after_filters": 17,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.2,
+          "ndcg_at_10": 0.4356
+        },
+        "keyword": {
+          "precision_at_10": 0.1667,
+          "ndcg_at_10": 0.3743
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.2,
+          "ndcg_at_10": 0.2848
+        }
+      }
+    },
+    {
+      "id": "analytics-bi-junior",
+      "relevant": 1.7,
+      "pool_after_filters": 14.3,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.0667,
+          "ndcg_at_10": 0.2891
+        },
+        "keyword": {
+          "precision_at_10": 0.1,
+          "ndcg_at_10": 0.2085
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.1,
+          "ndcg_at_10": 0.3295
+        }
+      }
+    },
+    {
+      "id": "analytics-senior",
+      "relevant": 8.3,
+      "pool_after_filters": 9,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.5,
+          "ndcg_at_10": 0.6157
+        },
+        "keyword": {
+          "precision_at_10": 0.2333,
+          "ndcg_at_10": 0.2721
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.5,
+          "ndcg_at_10": 0.6054
+        }
+      }
+    },
+    {
+      "id": "ml-classic-middle",
+      "relevant": 7.3,
+      "pool_after_filters": 16,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.4,
+          "ndcg_at_10": 0.605
+        },
+        "keyword": {
+          "precision_at_10": 0.2333,
+          "ndcg_at_10": 0.282
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.4667,
+          "ndcg_at_10": 0.5349
+        }
+      }
+    },
+    {
+      "id": "ml-nlp-senior",
+      "relevant": 7.3,
+      "pool_after_filters": 8.7,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.4,
+          "ndcg_at_10": 0.6793
+        },
+        "keyword": {
+          "precision_at_10": 0.2667,
+          "ndcg_at_10": 0.2877
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.4667,
+          "ndcg_at_10": 0.5865
+        }
+      }
+    },
+    {
+      "id": "ml-junior",
+      "relevant": 1.3,
+      "pool_after_filters": 28,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.1,
+          "ndcg_at_10": 0.5367
+        },
+        "keyword": {
+          "precision_at_10": 0.0333,
+          "ndcg_at_10": 0.0607
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.1,
+          "ndcg_at_10": 0.1922
+        }
+      }
+    },
+    {
+      "id": "qa-manual-junior",
+      "relevant": 4.7,
+      "pool_after_filters": 17,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.4,
+          "ndcg_at_10": 0.7802
+        },
+        "keyword": {
+          "precision_at_10": 0.3,
+          "ndcg_at_10": 0.3915
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.4333,
+          "ndcg_at_10": 0.6986
+        }
+      }
+    },
+    {
+      "id": "qa-python-aqa",
+      "relevant": 5.3,
+      "pool_after_filters": 19.3,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.2,
+          "ndcg_at_10": 0.4776
+        },
+        "keyword": {
+          "precision_at_10": 0.2333,
+          "ndcg_at_10": 0.4037
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.1667,
+          "ndcg_at_10": 0.2522
+        }
+      }
+    },
+    {
+      "id": "qa-java-senior",
+      "relevant": 1,
+      "pool_after_filters": 9,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.0333,
+          "ndcg_at_10": 0.2285
+        },
+        "keyword": {
+          "precision_at_10": 0.0,
+          "ndcg_at_10": 0.2804
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.0667,
+          "ndcg_at_10": 0.1578
+        }
+      }
+    },
+    {
+      "id": "devops-middle",
+      "relevant": 8.3,
+      "pool_after_filters": 19.7,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.4333,
+          "ndcg_at_10": 0.4888
+        },
+        "keyword": {
+          "precision_at_10": 0.3333,
+          "ndcg_at_10": 0.3045
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.4333,
+          "ndcg_at_10": 0.4498
+        }
+      }
+    },
+    {
+      "id": "devops-junior-spb",
+      "relevant": 3.3,
+      "pool_after_filters": 17.7,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.1667,
+          "ndcg_at_10": 0.4568
+        },
+        "keyword": {
+          "precision_at_10": 0.1667,
+          "ndcg_at_10": 0.2575
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.1667,
+          "ndcg_at_10": 0.3576
+        }
+      }
+    },
+    {
+      "id": "devops-sre-senior",
+      "relevant": 3.3,
+      "pool_after_filters": 5.3,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.0667,
+          "ndcg_at_10": 0.2562
+        },
+        "keyword": {
+          "precision_at_10": 0.0333,
+          "ndcg_at_10": 0.1186
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.1333,
+          "ndcg_at_10": 0.2851
+        }
+      }
+    },
+    {
+      "id": "mobile-ios-middle",
+      "relevant": 6,
+      "pool_after_filters": 15,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.2667,
+          "ndcg_at_10": 0.5636
+        },
+        "keyword": {
+          "precision_at_10": 0.3333,
+          "ndcg_at_10": 0.3704
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.3667,
+          "ndcg_at_10": 0.5098
+        }
+      }
+    },
+    {
+      "id": "mobile-android-junior",
+      "relevant": 2,
+      "pool_after_filters": 17,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.1667,
+          "ndcg_at_10": 0.4233
+        },
+        "keyword": {
+          "precision_at_10": 0.1,
+          "ndcg_at_10": 0.2256
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.1,
+          "ndcg_at_10": 0.1393
+        }
+      }
+    },
+    {
+      "id": "mobile-flutter-middle",
+      "relevant": 4.7,
+      "pool_after_filters": 15,
+      "metrics": {
+        "scout": {
+          "precision_at_10": 0.2333,
+          "ndcg_at_10": 0.6088
+        },
+        "keyword": {
+          "precision_at_10": 0.2,
+          "ndcg_at_10": 0.3072
+        },
+        "keyword_filters": {
+          "precision_at_10": 0.2667,
+          "ndcg_at_10": 0.4349
+        }
+      }
+    }
+  ]
+}

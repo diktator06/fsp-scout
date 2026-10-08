@@ -4752,6 +4752,12 @@ export interface components {
         ShortlistStats: {
             /** After Filters */
             after_filters: number;
+            /**
+             * Autofilled
+             * @description Точного грейда мало — добавлены соседние грейды
+             * @default false
+             */
+            autofilled: boolean;
             /** Pool */
             pool: number;
             /** Shown */

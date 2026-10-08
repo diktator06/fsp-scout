@@ -1,0 +1,283 @@
+# Набор вакансий для оценки подбора. text — как написал бы работодатель, truth —
+# разметка эксперта, по которой считается релевантность кандидатов.
+- id: backend-python-fintech
+  text: >-
+    Ищем бэкенд-разработчика уровня middle в команду платёжного шлюза. Пишем на Python
+    и FastAPI, данные в PostgreSQL. Будет плюсом опыт с Docker и Kafka, знание Redis.
+    Работаем удалённо или в гибридном формате, вилка 230–320 тыс. руб. до вычета НДФЛ.
+  truth:
+    specialization: backend
+    grades: [middle]
+    must: [python, fastapi, postgresql]
+    nice: [docker, kafka, redis]
+    salary: [230000, 320000]
+    gross: true
+    work_formats: [remote, hybrid]
+    city: null
+- id: backend-java-bank
+  text: >-
+    Банку нужен senior Java-разработчик для платформы кредитования. Стек: Java, Spring,
+    PostgreSQL, Kafka. Желательно знание Kubernetes и опыт с микросервисами. Гибрид,
+    офис в Москве, от 380 до 480 тысяч рублей gross.
+  truth:
+    specialization: backend
+    grades: [senior]
+    must: [java, spring, postgresql, kafka]
+    nice: [kubernetes, microservices]
+    salary: [380000, 480000]
+    gross: true
+    work_formats: [hybrid]
+    city: Москва
+- id: backend-go-logistics
+  text: >-
+    Логистический сервис ищет Go-разработчика (junior+ или middle). Сервисы на Go,
+    PostgreSQL и SQL-запросы — каждый день, плюсом будут gRPC и Docker. Полностью
+    удалённо, 170–260 тыс. на руки.
+  truth:
+    specialization: backend
+    grades: [junior, middle]
+    must: [go, postgresql, sql]
+    nice: [grpc, docker]
+    salary: [170000, 260000]
+    gross: false
+    work_formats: [remote]
+    city: null
+- id: frontend-react-ecom
+  text: >-
+    В e-commerce команду нужен фронтенд-разработчик middle: React и TypeScript, вёрстка
+    на HTML и CSS. Плюсом — Redux, Next.js и Jest. Удалёнка, вилка 200–300 тыс. рублей
+    gross.
+  truth:
+    specialization: frontend
+    grades: [middle]
+    must: [react, typescript, html, css]
+    nice: [redux, nextjs, jest]
+    salary: [200000, 300000]
+    gross: true
+    work_formats: [remote]
+    city: null
+- id: frontend-vue-kazan
+  text: >-
+    Студия в Казани ищет junior фронтенд-разработчика на Vue. Нужны JavaScript, HTML,
+    CSS. Знание Nuxt и Vite будет преимуществом. Гибридный формат, Казань, зарплата
+    от 110 до 170 тыс. руб. на руки.
+  truth:
+    specialization: frontend
+    grades: [junior]
+    must: [vue, javascript, html, css]
+    nice: [nuxt, vite]
+    salary: [110000, 170000]
+    gross: false
+    work_formats: [hybrid]
+    city: Казань
+- id: frontend-angular-senior
+  text: >-
+    Ищем сеньора на Angular для корпоративного портала. TypeScript, Angular, RxJS-подход,
+    REST API. Желательно Jest. Удалённая работа, 320–430 тыс. до вычета налогов.
+  truth:
+    specialization: frontend
+    grades: [senior]
+    must: [angular, typescript]
+    nice: [rest-api, jest]
+    salary: [320000, 430000]
+    gross: true
+    work_formats: [remote]
+    city: null
+- id: analytics-product-middle
+  text: >-
+    Продуктовый аналитик (middle) в маркетплейс. Обязательно: SQL, Python и pandas,
+    уверенная статистика. Будут плюсом A/B-тесты, продуктовые метрики и ClickHouse.
+    Удалённо, 190–270 тыс. gross.
+  truth:
+    specialization: data_analytics
+    grades: [middle]
+    must: [sql, python, pandas, statistics]
+    nice: [ab-testing, product-metrics, clickhouse]
+    salary: [190000, 270000]
+    gross: true
+    work_formats: [remote]
+    city: null
+- id: analytics-bi-junior
+  text: >-
+    Ищем junior BI-аналитика: отчёты в Power BI, SQL и Excel каждый день. Tableau —
+    плюс. Гибрид, офис в Москве, от 100 до 150 тысяч на руки.
+  truth:
+    specialization: data_analytics
+    grades: [junior]
+    must: [power-bi, sql, excel]
+    nice: [tableau]
+    salary: [100000, 150000]
+    gross: false
+    work_formats: [hybrid]
+    city: Москва
+- id: analytics-senior
+  text: >-
+    Ведущий аналитик данных (senior) в финтех: SQL, Python, статистика на высоком
+    уровне. Желательно A/B-тестирование и Airflow. Удалённо или гибрид, 300–420 тыс.
+    рублей gross.
+  truth:
+    specialization: data_analytics
+    grades: [senior]
+    must: [sql, python, statistics]
+    nice: [ab-testing, airflow]
+    salary: [300000, 420000]
+    gross: true
+    work_formats: [remote, hybrid]
+    city: null
+- id: ml-classic-middle
+  text: >-
+    ML-инженер middle для скоринговых моделей. Python, pandas, scikit-learn, классическое
+    машинное обучение. Плюсом CatBoost и SQL. Удалённо, 250–350 тыс. до НДФЛ.
+  truth:
+    specialization: ml
+    grades: [middle]
+    must: [python, pandas, scikit-learn, machine-learning]
+    nice: [catboost, sql]
+    salary: [250000, 350000]
+    gross: true
+    work_formats: [remote]
+    city: null
+- id: ml-nlp-senior
+  text: >-
+    Ищем senior ML-инженера в команду NLP: Python, PyTorch, глубокое обучение. Будут
+    плюсом опыт с LLM и MLOps. Гибрид или удалёнка, 400–550 тыс. рублей gross.
+  truth:
+    specialization: ml
+    grades: [senior]
+    must: [python, pytorch, deep-learning]
+    nice: [nlp, llm, mlops]
+    salary: [400000, 550000]
+    gross: true
+    work_formats: [hybrid, remote]
+    city: null
+- id: ml-junior
+  text: >-
+    Стажёр или junior в отдел машинного обучения: Python, pandas, NumPy, базовое
+    машинное обучение. SQL будет плюсом. Гибридный формат в Санкт-Петербурге,
+    120–180 тыс. на руки.
+  truth:
+    specialization: ml
+    grades: [intern, junior]
+    must: [python, pandas, numpy, machine-learning]
+    nice: [sql]
+    salary: [120000, 180000]
+    gross: false
+    work_formats: [hybrid]
+    city: Санкт-Петербург
+- id: qa-manual-junior
+  text: >-
+    Нужен junior тестировщик (ручное тестирование): тест-дизайн, тестирование API,
+    Postman. Знание SQL — плюс. Удалённо, 80–130 тысяч на руки.
+  truth:
+    specialization: qa
+    grades: [junior]
+    must: [manual-testing, test-design, api-testing, postman]
+    nice: [sql]
+    salary: [80000, 130000]
+    gross: false
+    work_formats: [remote]
+    city: null
+- id: qa-python-aqa
+  text: >-
+    Автотестировщик на Python (middle): pytest, тестирование API, тест-дизайн. Желательно
+    Playwright или Selenium, отчёты в Allure. Удалённо, 180–260 тыс. gross.
+  truth:
+    specialization: qa
+    grades: [middle]
+    must: [python, pytest, api-testing]
+    nice: [playwright, selenium, allure]
+    salary: [180000, 260000]
+    gross: true
+    work_formats: [remote]
+    city: null
+- id: qa-java-senior
+  text: >-
+    Senior QA automation на Java: Selenium, JUnit, проектирование тестов. Плюсом Allure
+    и Jenkins. Гибрид, Москва, от 280 до 360 тыс. рублей до вычета НДФЛ.
+  truth:
+    specialization: qa
+    grades: [senior]
+    must: [java, selenium, junit]
+    nice: [allure, jenkins]
+    salary: [280000, 360000]
+    gross: true
+    work_formats: [hybrid]
+    city: Москва
+- id: devops-middle
+  text: >-
+    DevOps-инженер уровня middle: Linux, Docker, Kubernetes в продакшене. Будут плюсом
+    Terraform, Helm, GitLab CI и Prometheus. Удалённо, 250–350 тыс. gross.
+  truth:
+    specialization: devops
+    grades: [middle]
+    must: [linux, docker, kubernetes]
+    nice: [terraform, helm, gitlab-ci, prometheus]
+    salary: [250000, 350000]
+    gross: true
+    work_formats: [remote]
+    city: null
+- id: devops-junior-spb
+  text: >-
+    Junior DevOps / системный администратор в Санкт-Петербурге: Linux, Bash, Docker,
+    Nginx. Ansible — плюс. Гибрид, 110–170 тыс. на руки.
+  truth:
+    specialization: devops
+    grades: [junior]
+    must: [linux, bash, docker, nginx]
+    nice: [ansible]
+    salary: [110000, 170000]
+    gross: false
+    work_formats: [hybrid]
+    city: Санкт-Петербург
+- id: devops-sre-senior
+  text: >-
+    Senior SRE: Kubernetes, Docker, Linux на глубоком уровне. Желательно Terraform,
+    Prometheus и Grafana, Argo CD. Удалённо, 380–500 тыс. рублей gross.
+  truth:
+    specialization: devops
+    grades: [senior]
+    must: [kubernetes, docker, linux]
+    nice: [terraform, prometheus, grafana, argocd]
+    salary: [380000, 500000]
+    gross: true
+    work_formats: [remote]
+    city: null
+- id: mobile-ios-middle
+  text: >-
+    iOS-разработчик middle для банковского приложения: Swift, SwiftUI, iOS SDK.
+    Будет плюсом работа с REST API. Удалённо или гибрид, 230–330 тыс. до вычета налогов.
+  truth:
+    specialization: mobile
+    grades: [middle]
+    must: [swift, swiftui, ios-sdk]
+    nice: [rest-api]
+    salary: [230000, 330000]
+    gross: true
+    work_formats: [remote, hybrid]
+    city: null
+- id: mobile-android-junior
+  text: >-
+    Ищем junior Android-разработчика: Kotlin, Android SDK. Плюсом Jetpack Compose и
+    корутины. Гибридный формат, Москва, 110–170 тыс. на руки.
+  truth:
+    specialization: mobile
+    grades: [junior]
+    must: [kotlin, android-sdk]
+    nice: [jetpack-compose, coroutines]
+    salary: [110000, 170000]
+    gross: false
+    work_formats: [hybrid]
+    city: Москва
+- id: mobile-flutter-middle
+  text: >-
+    Flutter-разработчик middle: Dart, Flutter, кроссплатформенные приложения. Желательно
+    REST API и умение читать макеты в Figma. Удалённо, 200–290 тыс. gross.
+  truth:
+    specialization: mobile
+    grades: [middle]
+    must: [dart, flutter]
+    nice: [rest-api, figma]
+    salary: [200000, 290000]
+    gross: true
+    work_formats: [remote]
+    city: null

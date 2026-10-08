@@ -4,7 +4,7 @@ from random import Random
 
 from app.services.assessment.irt import AbilityEstimate, ItemParameters, information
 
-ALGORITHM_VERSION = "cat-1.0"
+ALGORITHM_VERSION = "cat-1.1"
 
 
 @dataclass(frozen=True, slots=True)

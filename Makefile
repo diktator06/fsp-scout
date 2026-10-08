@@ -5,11 +5,13 @@ KEYCLOAK_COMPOSE := $(COMPOSE) -f docker-compose.yml -f docker-compose.keycloak.
 BACKEND := cd backend &&
 FRONTEND := cd frontend &&
 MOCK := cd fsp-registry-mock &&
+EVAL_DATABASE_URL ?= postgresql+asyncpg://fsp:fsp@localhost:5432/fsp_scout_eval
 
 .DEFAULT_GOAL := help
 .PHONY: help up up-keycloak down-keycloak keycloak-smoke down restart logs ps reset db install install-backend install-frontend install-mock \
         dev-backend dev-frontend dev-mock test test-backend test-frontend test-mock lint \
-        lint-backend lint-frontend lint-mock style format migrate revision seed openapi simulate check
+        lint-backend lint-frontend lint-mock style format migrate revision seed openapi simulate \
+        eval-matching validate-assessment validation-report check
 
 help: ## Показать список команд
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -108,5 +110,14 @@ openapi: ## Выгрузить OpenAPI и перегенерировать ти�
 
 simulate: ## Симуляция адаптивного теста и отчёт в docs/validation
 	$(BACKEND) uv run python -m evaluation.simulate_assessment
+
+validate-assessment: ## Валидация теста: оценщики, разделяющая сила, утечки, списывание
+	$(BACKEND) uv run python -m evaluation.assessment_validation
+
+eval-matching: ## Оценка подбора на размеченных парах (P@10, nDCG@10, MRR) в отдельной базе
+	$(BACKEND) DATABASE_URL=$(EVAL_DATABASE_URL) uv run python -m evaluation.matching_eval
+
+validation-report: ## Собрать docs/VALIDATION.md из отчётов docs/validation
+	$(BACKEND) uv run python -m evaluation.report
 
 check: lint test ## Всё, что проверяет CI

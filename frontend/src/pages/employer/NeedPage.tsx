@@ -150,7 +150,7 @@ export function NeedPage() {
           <Group justify="space-between" wrap="wrap" gap="sm">
             <Text size="sm" c="dimmed">
               {data
-                ? `В пуле ${data.stats.pool}, после фильтров ${data.stats.after_filters}, показано ${data.stats.shown} · ${formatDateTime(data.created_at)}`
+                ? `В пуле ${data.stats.pool}, после фильтров ${data.stats.after_filters}, показано ${data.stats.shown}${data.stats.autofilled ? ' · точного грейда мало, добавлены соседние' : ''} · ${formatDateTime(data.created_at)}`
                 : 'Собираем подборку…'}
             </Text>
             {!wide && (

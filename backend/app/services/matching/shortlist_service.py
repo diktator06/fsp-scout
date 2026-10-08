@@ -102,10 +102,10 @@ class ShortlistService:
         """
         recruiter, need = await self._owned(user, need_id, for_update=True)
         context = await self._engine.context(need)
-        grade_ids = await self._engine.allowed_grade_ids(need, expand=filters.expand_grades)
-        members = await self._pool.load(
-            PoolQuery(specialization_ids=[need.specialization_id], grade_ids=grade_ids)
+        selection = await self._engine.select_pool(
+            self._pool, need.specialization_id, need.grade_ids, expand=filters.expand_grades
         )
+        members = selection.members
         scored = await self._engine.score(context, members)
         marks = await shortlist_mark_crud.list_for_need(self._session, need.id)
         pinned_ids = {
@@ -135,6 +135,7 @@ class ShortlistService:
                 "version": await shortlist_crud.latest_version(self._session, need.id) + 1,
                 "filters": filters.model_dump(mode="json"),
                 "stats": {
+                    "autofilled": selection.autofilled,
                     "pool": len(members),
                     "after_filters": len(passed),
                     "shown": len(ordered),

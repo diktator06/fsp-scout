@@ -8,7 +8,10 @@ THETA_MIN = -4.0
 THETA_MAX = 4.0
 GRID_POINTS = 121
 
+FINE_GRID_POINTS = 801
+
 THETA_GRID: NDArray[np.float64] = np.linspace(THETA_MIN, THETA_MAX, GRID_POINTS)
+FINE_THETA_GRID: NDArray[np.float64] = np.linspace(THETA_MIN, THETA_MAX, FINE_GRID_POINTS)
 _STANDARD_NORMAL = np.exp(-0.5 * THETA_GRID**2)
 PRIOR: NDArray[np.float64] = _STANDARD_NORMAL / _STANDARD_NORMAL.sum()
 
@@ -72,6 +75,33 @@ def estimate_ability(responses: Sequence[tuple[ItemParameters, float]]) -> Abili
     posterior /= posterior.sum()
     theta = float(np.sum(THETA_GRID * posterior))
     se = float(np.sqrt(np.sum((THETA_GRID - theta) ** 2 * posterior)))
+    return AbilityEstimate(theta=theta, se=se)
+
+
+def estimate_ability_wle(responses: Sequence[tuple[ItemParameters, float]]) -> AbilityEstimate:
+    """Итоговая оценка θ взвешенным правдоподобием Уорма (WLE) — для решения о грейде.
+
+    EAP с априорным N(0, 1) стягивает крайние оценки к среднему популяции: сильного
+    кандидата она занижает, слабого — завышает. Для подбора заданий по ходу теста это
+    полезная устойчивость, а для решения о грейде — систематическая несправедливость к
+    сильным. WLE максимизирует правдоподобие с поправкой ½·ln I(θ), почти не смещена и,
+    в отличие от обычного максимального правдоподобия, конечна при всех верных или
+    всех неверных ответах. SE = 1 / √I(θ̂). Без ответов оценки нет — возвращается EAP.
+    """
+    if not responses:
+        return estimate_ability(responses)
+    log_likelihood = np.zeros_like(FINE_THETA_GRID)
+    test_information = np.zeros_like(FINE_THETA_GRID)
+    for item, score in responses:
+        p = np.clip(probability(FINE_THETA_GRID, item), 1e-9, 1 - 1e-9)
+        log_likelihood += score * np.log(p) + (1.0 - score) * np.log(1.0 - p)
+        useful = np.clip((p - item.c) / (1.0 - item.c), 0.0, 1.0)
+        test_information += item.a**2 * useful**2 * (1.0 - p) / p
+    weighted = log_likelihood + 0.5 * np.log(np.maximum(test_information, 1e-12))
+    index = int(np.argmax(weighted))
+    theta = float(FINE_THETA_GRID[index])
+    info = float(test_information[index])
+    se = float(1.0 / np.sqrt(info)) if info > 1e-9 else THETA_MAX - THETA_MIN
     return AbilityEstimate(theta=theta, se=se)
 
 
