@@ -117,9 +117,10 @@ revision: ## Новая миграция: make revision m="описание"
 seed: ## Справочники, демо-аккаунты, демо-популяция и привязки ФСП (нужен эмулятор)
 	$(BACKEND) uv run python -m app.seed && uv run python -m app.seed.population
 
-openapi: ## Выгрузить OpenAPI и перегенерировать типы фронтенда
+openapi: ## Выгрузить OpenAPI, перегенерировать типы фронтенда и docs/API.md
 	$(BACKEND) uv run python -m scripts.export_openapi
 	$(FRONTEND) npm run gen:api
+	python3 tools/api_reference.py
 
 simulate: ## Симуляция адаптивного теста и отчёт в docs/validation
 	$(BACKEND) uv run python -m evaluation.simulate_assessment
