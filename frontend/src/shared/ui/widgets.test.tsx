@@ -2,6 +2,7 @@ import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { renderWithTheme } from '@/test/render';
 import { CategoryBadge } from './CategoryBadge';
+import { GradeScale } from './GradeScale';
 import { SalaryRange } from './SalaryRange';
 import { salaryRangeError } from '@/shared/lib/salary';
 import { computeScore } from '@/shared/lib/score';
@@ -44,5 +45,20 @@ describe('VerifiedScoreBar', () => {
   it('отдаёт значение через role="meter"', () => {
     renderWithTheme(<VerifiedScoreBar factors={factors} />);
     expect(screen.getByRole('meter').getAttribute('aria-valuenow')).toBe('50');
+  });
+});
+
+describe('GradeScale', () => {
+  const cuts = [
+    { code: 'junior', name: 'Junior', cut: -0.6 },
+    { code: 'middle', name: 'Middle', cut: 0.4 },
+    { code: 'senior', name: 'Senior', cut: 1.3 },
+  ];
+
+  it('подписывает оценку и порог словами, а не символом θ', () => {
+    renderWithTheme(<GradeScale cuts={cuts} theta={0.52} se={0.3} targetCode="middle" />);
+    expect(screen.getByText('ваша оценка: 0,52')).toBeTruthy();
+    expect(screen.getByText('порог Middle: 0,40')).toBeTruthy();
+    expect(screen.getByRole('img').getAttribute('aria-label')).toContain('зона грейда Middle');
   });
 });

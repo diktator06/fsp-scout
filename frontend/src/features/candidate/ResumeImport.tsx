@@ -98,7 +98,8 @@ export function ResumeImport({ onApply }: ResumeImportProps) {
           )}
         </FileButton>
         <Text size="xs" c="dimmed">
-          Распознаём ФИО, контакты, стек, роли и стаж. Файл не сохраняется.
+          Распознаём ФИО, контакты, город, стек и софт-скиллы, роли, опыт и подсказку грейда. Файл
+          не сохраняется.
         </Text>
       </Group>
       {parse.isError && (

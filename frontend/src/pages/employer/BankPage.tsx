@@ -125,7 +125,8 @@ export function BankPage() {
             />
             <TextInput
               label="Город"
-              placeholder="Если кандидат его показывает"
+              description="Если кандидат его показывает"
+              placeholder="Любой"
               value={city}
               onChange={(event) => reset(setCity)(event.currentTarget.value)}
             />
@@ -165,7 +166,7 @@ export function BankPage() {
           </Text>
           <Select
             size="xs"
-            w={260}
+            w={{ base: '100%', xs: 300 }}
             data={SORT_OPTIONS}
             value={sort}
             onChange={(value) => value && reset(setSort)(value as BankSort)}

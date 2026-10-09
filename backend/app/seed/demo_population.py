@@ -53,6 +53,7 @@ DEMO_EMPLOYER_EMAIL = "employer@example.com"
 UNIVERSITIES = ("КФУ", "ИТМО", "МФТИ", "НГУ", "УрФУ", "ВШЭ", "МГТУ им. Баумана", "ТГУ", "Иннополис")
 TOP_BAND = 1.1
 CONCURRENCY = 4
+FEMALE_SHARE = 0.4
 
 type SessionFactory = Callable[[], AsyncSession]
 
@@ -85,6 +86,7 @@ class PopulationContext:
     specializations: dict[str, int]
     grades: dict[str, tuple[int, int, float]]
     skills: dict[str, int]
+    names: dict[tuple[str, int], str]
 
 
 def load_population_data() -> dict[str, Any]:
@@ -97,6 +99,39 @@ def load_population_data() -> dict[str, Any]:
 def _weighted(rng: Random, pairs: list[tuple[str, float]]) -> str:
     """Случайный выбор с весами."""
     return rng.choices([value for value, _ in pairs], weights=[weight for _, weight in pairs])[0]
+
+
+def assign_names(data: dict[str, Any], keys: list[tuple[str, int]]) -> dict[tuple[str, int], str]:
+    """Разные ФИО для кандидатов популяции, независимо от порядка их создания.
+
+    Кандидаты создаются параллельно, поэтому имя берётся не из генератора кандидата,
+    а из заранее перемешанного пула сочетаний «имя — фамилия»: совпадения ФИО у двух
+    синтетических людей путают при ручной проверке банка. Если пул исчерпан (стенд
+    нагрузочного теста), имена начинают повторяться.
+    """
+    rng = Random(f"{POPULATION_SEED}:names")
+    pools: dict[bool, list[str]] = {}
+    for female in (False, True):
+        firsts = data["first_names"]["female" if female else "male"]
+        pools[female] = [
+            f"{first} {pair[1] if female else pair[0]}"
+            for first in firsts
+            for pair in data["last_names"]
+        ]
+        rng.shuffle(pools[female])
+    names = {}
+    for position, key in enumerate(keys):
+        female = rng.random() < FEMALE_SHARE
+        pool = pools[female] or pools[not female]
+        names[key] = pool.pop() if pool else _fallback_name(data, position)
+    return names
+
+
+def _fallback_name(data: dict[str, Any], position: int) -> str:
+    """Имя сверх пула уникальных сочетаний — по кругу."""
+    firsts = data["first_names"]["male"]
+    pair = data["last_names"][position % len(data["last_names"])]
+    return f"{firsts[position % len(firsts)]} {pair[0]}"
 
 
 def _email(specialization: str, index: int) -> str:
@@ -117,10 +152,7 @@ def _profile_payload(
 ) -> tuple[CandidateProfileUpdate, list[int]]:
     """Анкета синтетического кандидата и навыки основного стека для опроса."""
     data = context.data
-    female = rng.random() < 0.4
-    first = rng.choice(data["first_names"]["female" if female else "male"])
-    last_pair = rng.choice(data["last_names"])
-    full_name = f"{first} {last_pair[1] if female else last_pair[0]}"
+    full_name = context.names[(specialization, index)]
     low_years, high_years = data["experience_years"][grade]
     years = round(rng.uniform(low_years, high_years) * 2) / 2
     stacks = data["stacks"][specialization]
@@ -411,24 +443,9 @@ async def seed_demo_population(session_factory: SessionFactory, settings: Settin
             for slug in need["skills"][kind]
         }
         skills = await skill_lookup_crud.ids_by_slugs(session, all_slugs)
-        context = PopulationContext(
-            data=data, specializations=specializations, grades=grades, skills=skills
-        )
-        company = await _seed_demo_company(session, context)
-    password_hash = hash_password(settings.demo_password)
-    semaphore = asyncio.Semaphore(CONCURRENCY)
-
-    async def create(specialization: str, index: int) -> bool:
-        """Создаёт кандидата в отдельной сессии, не больше CONCURRENCY одновременно."""
-        async with semaphore, session_factory() as candidate_session:
-            return await _create_candidate(
-                candidate_session, settings, context, password_hash, specialization, index
-            )
-
-    shares = data.get("population_shares", {})
-    results = await asyncio.gather(
-        *(
-            create(specialization, index)
+        shares = data.get("population_shares", {})
+        keys = [
+            (specialization, index)
             for specialization in data["stacks"]
             for index in range(
                 1,
@@ -441,7 +458,27 @@ async def seed_demo_population(session_factory: SessionFactory, settings: Settin
                 )
                 + 1,
             )
+        ]
+        context = PopulationContext(
+            data=data,
+            specializations=specializations,
+            grades=grades,
+            skills=skills,
+            names=assign_names(data, keys),
         )
+        company = await _seed_demo_company(session, context)
+    password_hash = hash_password(settings.demo_password)
+    semaphore = asyncio.Semaphore(CONCURRENCY)
+
+    async def create(specialization: str, index: int) -> bool:
+        """Создаёт кандидата в отдельной сессии, не больше CONCURRENCY одновременно."""
+        async with semaphore, session_factory() as candidate_session:
+            return await _create_candidate(
+                candidate_session, settings, context, password_hash, specialization, index
+            )
+
+    results = await asyncio.gather(
+        *(create(specialization, index) for specialization, index in keys)
     )
     created = sum(results)
     return f"кандидатов +{created}, демо-компания {'создана' if company else 'уже есть'}"

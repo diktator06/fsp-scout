@@ -62,7 +62,9 @@ export function GradeScale({ cuts, theta, se, targetCode }: GradeScaleProps) {
         />
         {target && (
           <div className={classes.target} style={{ left: `${thetaToPercent(target.cut)}%` }}>
-            <span className={classes.targetLabel}>порог {target.name}</span>
+            <span className={classes.targetLabel}>
+              порог {target.name}: {formatTheta(target.cut)}
+            </span>
           </div>
         )}
         <div className={classes.marker} style={{ left: `${thetaToPercent(theta)}%` }}>
@@ -71,7 +73,7 @@ export function GradeScale({ cuts, theta, se, targetCode }: GradeScaleProps) {
       </div>
       <div className={classes.axis} aria-hidden="true">
         <span>ниже</span>
-        <span>θ = {formatTheta(theta)}</span>
+        <span>ваша оценка: {formatTheta(theta)}</span>
         <span>выше</span>
       </div>
     </div>

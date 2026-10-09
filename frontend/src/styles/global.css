@@ -35,6 +35,12 @@ html {
   }
 }
 
+@media (min-width: 210em) {
+  html {
+    font-size: 168.75%;
+  }
+}
+
 body {
   font-feature-settings: 'tnum' 0;
   -webkit-font-smoothing: antialiased;

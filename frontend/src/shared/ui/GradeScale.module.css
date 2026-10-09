@@ -127,7 +127,7 @@
 .axis {
   display: flex;
   justify-content: space-between;
-  margin-top: rem(26px);
+  margin-top: rem(32px);
   font-size: rem(13px);
   color: var(--mantine-color-dimmed);
   font-variant-numeric: tabular-nums;
