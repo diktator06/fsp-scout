@@ -55,7 +55,7 @@ api (FastAPI-роутеры, зависимости, роли)  →  services (�
 | `integrations` | Вебхуки ATS через outbox, подпись, защита от SSRF, выгрузка CSV/JSON |
 | `account` | Права по 152-ФЗ: выгрузка всех данных и удаление аккаунта |
 
-API: 125 методов в 21 группе, OpenAPI — [openapi.json](openapi.json), Swagger UI работает без
+API: 126 методов в 21 группе, OpenAPI — [openapi.json](openapi.json), Swagger UI работает без
 интернета (`/api/docs`). Типы фронтенда генерируются из этой спецификации (`make openapi`).
 
 ## 3. Данные
