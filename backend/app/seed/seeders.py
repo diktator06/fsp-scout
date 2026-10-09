@@ -36,10 +36,15 @@ logger = logging.getLogger(__name__)
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 
+JURY_CANDIDATES = 5
 DEMO_ACCOUNTS: tuple[tuple[str, UserRole], ...] = (
     ("candidate@example.com", UserRole.CANDIDATE),
     ("employer@example.com", UserRole.EMPLOYER),
     ("methodist@example.com", UserRole.METHODIST),
+    *(
+        (f"jury{number}@example.com", UserRole.CANDIDATE)
+        for number in range(1, JURY_CANDIDATES + 1)
+    ),
 )
 
 
@@ -294,6 +299,9 @@ async def seed_demo_accounts(session: AsyncSession, settings: Settings, report: 
 
     Пароль тестовый и берётся из настроек (`DEMO_PASSWORD`). Существующие аккаунты
     не трогаем, чтобы не сбрасывать пароль, который пользователь мог сменить.
+    Аккаунты `jury1…jury5` — чистые кандидаты для жюри: после попытки уровень
+    закрывается на сутки или на 90 дней, а воспроизводимость теста проверяют
+    повторным прохождением, поэтому нужен запас свежих аккаунтов.
     """
     now = datetime.now(UTC)
     password_hash = hash_password(settings.demo_password)

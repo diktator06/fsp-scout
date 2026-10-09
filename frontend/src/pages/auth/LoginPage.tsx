@@ -20,7 +20,7 @@ import { ApiError, errorMessage } from '@/api/errors';
 import { startFspLogin } from '@/api/fsp';
 import { safeNextPath } from '@/features/auth/roles';
 import { useAuth } from '@/features/auth/useAuth';
-import { DEMO_ACCOUNTS, DEMO_PASSWORD, env } from '@/shared/config/env';
+import { DEMO_ACCOUNTS, DEMO_PASSWORD, env, JURY_ACCOUNTS } from '@/shared/config/env';
 import classes from './AuthPages.module.css';
 
 interface LoginValues {
@@ -165,6 +165,23 @@ export function LoginPage() {
               </UnstyledButton>
             ))}
           </SimpleGrid>
+          <Text size="xs" c="dimmed" mt="sm" lh={1.5}>
+            Чтобы пройти тест повторно и проверить воспроизводимость, войдите чистым кандидатом:{' '}
+            {JURY_ACCOUNTS.map((email, index) => (
+              <span key={email}>
+                {index > 0 && ', '}
+                <Anchor
+                  component="button"
+                  type="button"
+                  size="xs"
+                  onClick={() => form.setValues({ email, password: DEMO_PASSWORD })}
+                >
+                  {email.replace('@example.com', '')}
+                </Anchor>
+              </span>
+            ))}{' '}
+            (@example.com, тот же пароль).
+          </Text>
         </>
       )}
     </Paper>

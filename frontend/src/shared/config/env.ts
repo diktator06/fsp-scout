@@ -11,3 +11,7 @@ export const DEMO_ACCOUNTS = [
   { role: 'employer', label: 'Работодатель', email: 'employer@example.com' },
   { role: 'methodist', label: 'Методист', email: 'methodist@example.com' },
 ] as const;
+
+export const JURY_ACCOUNTS = ['jury1', 'jury2', 'jury3', 'jury4', 'jury5'].map(
+  (name) => `${name}@example.com`,
+);

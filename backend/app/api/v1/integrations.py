@@ -25,7 +25,12 @@ export_limiter = RateLimiter(limit=30, window_seconds=3600)
 _errors = error_responses(401, 403, 404, 409, 422)
 
 
-@router.get("/events", response_model=list[WebhookEventInfo], summary="Каталог событий")
+@router.get(
+    "/events",
+    response_model=list[WebhookEventInfo],
+    responses=error_responses(401, 403),
+    summary="Каталог событий",
+)
 async def events(user: EmployerUser, service: IntegrationServiceDep) -> list[WebhookEventInfo]:
     """События, на которые ATS может подписаться, и есть ли в них контакты кандидата."""
     return service.events()

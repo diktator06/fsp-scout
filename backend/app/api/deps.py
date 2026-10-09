@@ -17,6 +17,7 @@ from app.models.user import User, UserRole
 from app.services.account.personal_data_service import PersonalDataService
 from app.services.assessment.assessment_service import AssessmentService
 from app.services.assessment.methodist_service import MethodistService
+from app.services.assessment.vacancy_test_service import VacancyTestService
 from app.services.auth.access import ensure_role, resolve_user_by_access_token
 from app.services.auth.auth_service import AuthService
 from app.services.auth.tokens import ClientContext
@@ -222,6 +223,11 @@ def get_methodist_service(session: SessionDep, settings: SettingsDep) -> Methodi
     return MethodistService(session, settings)
 
 
+def get_vacancy_test_service(session: SessionDep, settings: SettingsDep) -> VacancyTestService:
+    """Сервис «Вакансия → тест» для работодателя."""
+    return VacancyTestService(session, settings)
+
+
 def get_notification_service(session: SessionDep) -> NotificationService:
     """Сервис уведомлений на время запроса."""
     return NotificationService(session)
@@ -239,6 +245,7 @@ VacancyServiceDep = Annotated[VacancyService, Depends(get_vacancy_service)]
 ComplaintServiceDep = Annotated[ComplaintService, Depends(get_complaint_service)]
 ModerationServiceDep = Annotated[ModerationService, Depends(get_moderation_service)]
 MethodistServiceDep = Annotated[MethodistService, Depends(get_methodist_service)]
+VacancyTestServiceDep = Annotated[VacancyTestService, Depends(get_vacancy_test_service)]
 PersonalDataServiceDep = Annotated[PersonalDataService, Depends(get_personal_data_service)]
 CandidateTaskServiceDep = Annotated[CandidateTaskService, Depends(get_candidate_task_service)]
 EmployerTaskServiceDep = Annotated[EmployerTaskService, Depends(get_employer_task_service)]

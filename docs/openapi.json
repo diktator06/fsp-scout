@@ -7728,10 +7728,20 @@
         "type": "object"
       },
       "SpecializationBrief": {
-        "description": "Краткие сведения о специализации внутри других объектов.",
+        "description": "Краткие сведения о специализации внутри других объектов.\n\nВместе со специализацией отдаётся её IT-направление — «отрасль» из ТЗ\n(разработка, качество, инфраструктура, данные и ML).",
         "properties": {
           "code": {
             "title": "Code",
+            "type": "string"
+          },
+          "direction_code": {
+            "default": "",
+            "title": "Direction Code",
+            "type": "string"
+          },
+          "direction_name": {
+            "default": "",
+            "title": "Direction Name",
             "type": "string"
           },
           "id": {
@@ -7817,10 +7827,12 @@
             "type": "string"
           },
           "direction_code": {
+            "default": "",
             "title": "Direction Code",
             "type": "string"
           },
           "direction_name": {
+            "default": "",
             "title": "Direction Name",
             "type": "string"
           },
@@ -7842,9 +7854,7 @@
           "code",
           "name",
           "description",
-          "sort_order",
-          "direction_code",
-          "direction_name"
+          "sort_order"
         ],
         "title": "SpecializationRead",
         "type": "object"
@@ -8965,6 +8975,12 @@
             },
             "title": "Grades",
             "type": "array"
+          },
+          "items_visible": {
+            "default": true,
+            "description": "Семейства и экземпляры заданий видит только методист, не работодатель",
+            "title": "Items Visible",
+            "type": "boolean"
           },
           "max_items": {
             "title": "Max Items",
@@ -14882,6 +14898,26 @@
               }
             },
             "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
           }
         },
         "security": [
@@ -18272,6 +18308,105 @@
         ]
       }
     },
+    "/api/v1/employer/vacancies/{vacancy_id}/test": {
+      "get": {
+        "description": "Категория вакансии, состав теста под её стек, покрытие навыков и микрозадачи.\n\nСами задания и их шаблоны не показываются: работодатель — участник рынка, и знание\nзаданий дало бы его кандидатам преимущество на тесте. `grades[].families` всегда\nпусты, `items_visible` — `false`.",
+        "operationId": "vacancy_test_api_v1_employer_vacancies__vacancy_id__test_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "vacancy_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Vacancy Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VacancyTestRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Требуется вход или токен недействителен"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Объект не найден"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Конфликт с текущим состоянием данных"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Ошибка валидации входных данных"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Превышен лимит запросов"
+          }
+        },
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ],
+        "summary": "Как кандидаты подтверждают требования вакансии",
+        "tags": [
+          "employer: vacancies"
+        ]
+      }
+    },
     "/api/v1/health": {
       "get": {
         "description": "Отвечает 200, если сервис и база работают. Используется healthcheck'ом Docker.",
@@ -20139,8 +20274,60 @@
       "name": "dictionaries"
     },
     {
+      "description": "Права субъекта персональных данных: выгрузка всех своих данных и удаление аккаунта (152-ФЗ)",
+      "name": "account"
+    },
+    {
+      "description": "Уведомления в колокольчике для всех ролей",
+      "name": "notifications"
+    },
+    {
       "description": "Кабинет кандидата: профиль, PDF-профиль, приватность и согласия",
       "name": "candidate"
+    },
+    {
+      "description": "ФСП ID и реестр достижений: привязка по OIDC с согласием, синхронизация, отвязка с удалением данных",
+      "name": "candidate: fsp"
+    },
+    {
+      "description": "Лента вакансий по баллу соответствия и отклики с согласием на раскрытие контактов",
+      "name": "candidate: vacancies"
+    },
+    {
+      "description": "Входящие приглашения работодателей: вилка, компания, принятие и отказ",
+      "name": "candidate: invitations"
+    },
+    {
+      "description": "Микрозадачи работодателей: выдача, ответ, оценка и пропуск",
+      "name": "candidate: tasks"
+    },
+    {
+      "description": "Компания работодателя: профиль с проверкой ИНН и сводка кабинета",
+      "name": "employer"
+    },
+    {
+      "description": "Потребность из свободного текста, рекомендованные категории, подборки с версиями и объяснением балла",
+      "name": "employer: needs"
+    },
+    {
+      "description": "Банк кандидатов с фильтрами и обезличенная карточка с баллом",
+      "name": "employer: bank"
+    },
+    {
+      "description": "Приглашения с обязательной вилкой и квотой; раскрытие контактов после согласия кандидата",
+      "name": "employer: invitations"
+    },
+    {
+      "description": "Вакансии с обязательной вилкой, отклики и состав теста под стек вакансии",
+      "name": "employer: vacancies"
+    },
+    {
+      "description": "Микрозадачи компании: создание, адресная раздача и оценка по рубрике",
+      "name": "employer: tasks"
+    },
+    {
+      "description": "Кабинет методиста: банк семейств заданий, «Вакансия → тест», пороги категорий и настройки оценки",
+      "name": "methodist"
     },
     {
       "description": "Опрос и адаптивное тестирование: уникальные экземпляры заданий из калиброванного банка, оценка θ по IRT, присвоение категории",

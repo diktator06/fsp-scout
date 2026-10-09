@@ -7,6 +7,7 @@ export const vacancyKeys = {
   employerList: ['employer', 'vacancies'] as const,
   employerOne: (id: string) => ['employer', 'vacancies', id] as const,
   applications: (id: string) => ['employer', 'vacancies', id, 'applications'] as const,
+  test: (id: string) => ['employer', 'vacancies', id, 'test'] as const,
   board: (query: BoardQuery) => ['vacancies', 'board', query] as const,
   publicOne: (id: string) => ['vacancies', id] as const,
   myApplications: ['candidate', 'applications'] as const,
@@ -35,6 +36,19 @@ export function useEmployerVacancy(vacancyId: string) {
     queryFn: () =>
       unwrap(
         api.GET('/api/v1/employer/vacancies/{vacancy_id}', {
+          params: { path: { vacancy_id: vacancyId } },
+        }),
+      ),
+    enabled: Boolean(vacancyId),
+  });
+}
+
+export function useEmployerVacancyTest(vacancyId: string) {
+  return useQuery({
+    queryKey: vacancyKeys.test(vacancyId),
+    queryFn: () =>
+      unwrap(
+        api.GET('/api/v1/employer/vacancies/{vacancy_id}/test', {
           params: { path: { vacancy_id: vacancyId } },
         }),
       ),

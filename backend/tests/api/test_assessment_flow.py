@@ -132,6 +132,7 @@ async def test_passing_test_assigns_category_and_verifies_skills(
     status = (await client.get("/api/v1/candidates/me/status", headers=headers)).json()
     assert status["grade_status"] == "confirmed"
     assert status["category"]["code"] == "backend-junior"
+    assert status["category"]["specialization"]["direction_name"] == "Разработка"
     profile = (await client.get("/api/v1/candidates/me/profile", headers=headers)).json()
     assert any(skill["is_verified"] for skill in profile["skills"])
 

@@ -3,8 +3,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Query, status
 
-from app.api.deps import EmployerUser, VacancyServiceDep
+from app.api.deps import EmployerUser, VacancyServiceDep, VacancyTestServiceDep
 from app.api.errors import error_responses
+from app.schemas.methodist import VacancyTestRead
 from app.schemas.vacancy import (
     ApplicationDecision,
     EmployerApplicationRead,
@@ -50,6 +51,24 @@ async def read_vacancy(
 ) -> VacancyRead:
     """Вакансия своей компании; чужая — 404."""
     return await service.get(user, vacancy_id)
+
+
+@router.get(
+    "/vacancies/{vacancy_id}/test",
+    response_model=VacancyTestRead,
+    responses=_errors,
+    summary="Как кандидаты подтверждают требования вакансии",
+)
+async def vacancy_test(
+    vacancy_id: uuid.UUID, user: EmployerUser, service: VacancyTestServiceDep
+) -> VacancyTestRead:
+    """Категория вакансии, состав теста под её стек, покрытие навыков и микрозадачи.
+
+    Сами задания и их шаблоны не показываются: работодатель — участник рынка, и знание
+    заданий дало бы его кандидатам преимущество на тесте. `grades[].families` всегда
+    пусты, `items_visible` — `false`.
+    """
+    return await service.for_employer(user, vacancy_id)
 
 
 @router.put(

@@ -30,11 +30,17 @@ class IndustryRead(ORMModel):
 
 
 class SpecializationBrief(ORMModel):
-    """Краткие сведения о специализации внутри других объектов."""
+    """Краткие сведения о специализации внутри других объектов.
+
+    Вместе со специализацией отдаётся её IT-направление — «отрасль» из ТЗ
+    (разработка, качество, инфраструктура, данные и ML).
+    """
 
     id: int
     code: str
     name: str
+    direction_code: str = ""
+    direction_name: str = ""
 
 
 class SpecializationRead(SpecializationBrief):
@@ -42,8 +48,6 @@ class SpecializationRead(SpecializationBrief):
 
     description: str
     sort_order: int
-    direction_code: str
-    direction_name: str
 
 
 class SpecializationCreate(BaseModel):

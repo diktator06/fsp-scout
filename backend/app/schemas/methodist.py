@@ -198,6 +198,10 @@ class VacancyTestRead(BaseModel):
     skills: list[VacancySkillCoverage]
     coverage: float = Field(description="Доля обязательных навыков, подтверждаемых тестом")
     microtasks: list[MicroTaskBrief]
+    items_visible: bool = Field(
+        default=True,
+        description="Семейства и экземпляры заданий видит только методист, не работодатель",
+    )
 
 
 class EngineSettingsRead(BaseModel):

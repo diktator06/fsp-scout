@@ -281,6 +281,13 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: 'vacancies/:vacancyId/test',
+        lazy: page(
+          () => import('@/pages/employer/VacancyTestPage'),
+          (module) => module.EmployerVacancyTestPage,
+        ),
+      },
+      {
         path: 'vacancies/:vacancyId/edit',
         lazy: page(
           () => import('@/pages/employer/VacancyFormPage'),

@@ -1,5 +1,5 @@
 import { Badge, Button, Card, Group, SimpleGrid, Stack, Text, Title } from '@mantine/core';
-import { IconEdit, IconEyeOff, IconSend } from '@tabler/icons-react';
+import { IconEdit, IconEyeOff, IconListCheck, IconSend } from '@tabler/icons-react';
 import { Link, useParams } from 'react-router';
 import { errorMessage } from '@/api/errors';
 import { useEmployerVacancy, useVacancyApplications, useVacancyPublication } from '@/api/vacancies';
@@ -30,6 +30,14 @@ export function EmployerVacancyPage() {
         title={data.title}
         actions={
           <Group gap="sm">
+            <Button
+              component={Link}
+              to={`/e/vacancies/${data.id}/test`}
+              variant="light"
+              leftSection={<IconListCheck size={16} />}
+            >
+              Как проверяются навыки
+            </Button>
             {data.status !== 'closed' && (
               <Button
                 component={Link}

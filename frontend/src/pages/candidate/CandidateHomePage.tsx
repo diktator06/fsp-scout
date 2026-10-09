@@ -266,12 +266,19 @@ export function CandidateHomePage() {
               </Badge>
             </Group>
             {category ? (
-              <CategoryBadge
-                specialization={category.specialization.name}
-                grade={category.grade.code}
-                gradeLabel={category.grade.name}
-                unconfirmed={data.grade_status !== 'confirmed'}
-              />
+              <Stack gap={6}>
+                <CategoryBadge
+                  specialization={category.specialization.name}
+                  grade={category.grade.code}
+                  gradeLabel={category.grade.name}
+                  unconfirmed={data.grade_status !== 'confirmed'}
+                />
+                {category.specialization.direction_name && (
+                  <Text size="sm" c="dimmed">
+                    Отрасль: {category.specialization.direction_name}
+                  </Text>
+                )}
+              </Stack>
             ) : (
               <Text c="dimmed" size="sm">
                 Категория пока не заявлена. После опроса здесь появится грейд с пометкой «не

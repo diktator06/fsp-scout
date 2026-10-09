@@ -137,6 +137,31 @@ async def test_vacancy_test_shows_blueprint_coverage_and_microtasks(
     assert python["verified_by"]
     assert 0 < test["coverage"] <= 1
     assert {task["kind"] for task in test["microtasks"]} == {"solve", "approach"}
+    assert test["items_visible"] is True
+
+
+async def test_employer_sees_own_vacancy_test_without_items(
+    client: AsyncClient, make_user: UserFactory
+) -> None:
+    """Работодатель видит состав теста и покрытие своей вакансии, но не задания; чужая — 404."""
+    employer = await employer_headers(client, make_user)
+    vacancy = await publish_vacancy(client, employer)
+    url = f"/api/v1/employer/vacancies/{vacancy['id']}/test"
+
+    response = await client.get(url, headers=employer)
+    assert response.status_code == 200, response.text
+    test = response.json()
+    assert test["items_visible"] is False
+    assert [grade["grade"]["code"] for grade in test["grades"]] == ["middle"]
+    assert all(grade["families"] == [] for grade in test["grades"])
+    assert "sample" not in response.text and "answer" not in response.text
+    assert any(item["included"] for item in test["competencies"])
+    assert 0 < test["coverage"] <= 1
+
+    stranger = await employer_headers(client, make_user)
+    assert (await client.get(url, headers=stranger)).status_code == 404
+    candidate = auth_headers(await make_user(UserRole.CANDIDATE))
+    assert (await client.get(url, headers=candidate)).status_code == 403
 
 
 async def test_theta_cut_keeps_grade_order_and_is_audited(

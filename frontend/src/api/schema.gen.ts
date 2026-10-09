@@ -1855,6 +1855,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/employer/vacancies/{vacancy_id}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Как кандидаты подтверждают требования вакансии
+         * @description Категория вакансии, состав теста под её стек, покрытие навыков и микрозадачи.
+         *
+         *     Сами задания и их шаблоны не показываются: работодатель — участник рынка, и знание
+         *     заданий дало бы его кандидатам преимущество на тесте. `grades[].families` всегда
+         *     пусты, `items_visible` — `false`.
+         */
+        get: operations["vacancy_test_api_v1_employer_vacancies__vacancy_id__test_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health": {
         parameters: {
             query?: never;
@@ -5436,10 +5460,23 @@ export interface components {
         /**
          * SpecializationBrief
          * @description Краткие сведения о специализации внутри других объектов.
+         *
+         *     Вместе со специализацией отдаётся её IT-направление — «отрасль» из ТЗ
+         *     (разработка, качество, инфраструктура, данные и ML).
          */
         SpecializationBrief: {
             /** Code */
             code: string;
+            /**
+             * Direction Code
+             * @default
+             */
+            direction_code: string;
+            /**
+             * Direction Name
+             * @default
+             */
+            direction_name: string;
             /** Id */
             id: number;
             /** Name */
@@ -5490,9 +5527,15 @@ export interface components {
             code: string;
             /** Description */
             description: string;
-            /** Direction Code */
+            /**
+             * Direction Code
+             * @default
+             */
             direction_code: string;
-            /** Direction Name */
+            /**
+             * Direction Name
+             * @default
+             */
             direction_name: string;
             /** Id */
             id: number;
@@ -5949,6 +5992,12 @@ export interface components {
             coverage: number;
             /** Grades */
             grades: components["schemas"]["GradeFocus"][];
+            /**
+             * Items Visible
+             * @description Семейства и экземпляры заданий видит только методист, не работодатель
+             * @default true
+             */
+            items_visible: boolean;
             /** Max Items */
             max_items: number;
             /** Microtasks */
@@ -10224,6 +10273,24 @@ export interface operations {
                     "application/json": components["schemas"]["WebhookEventInfo"][];
                 };
             };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     export_api_v1_employer_integrations_export_get: {
@@ -12709,6 +12776,82 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VacancyRead"];
+                };
+            };
+            /** @description Требуется вход или токен недействителен */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Недостаточно прав */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Объект не найден */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Конфликт с текущим состоянием данных */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Ошибка валидации входных данных */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Превышен лимит запросов */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    vacancy_test_api_v1_employer_vacancies__vacancy_id__test_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                vacancy_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VacancyTestRead"];
                 };
             };
             /** @description Требуется вход или токен недействителен */
