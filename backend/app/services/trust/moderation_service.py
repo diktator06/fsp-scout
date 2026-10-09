@@ -74,10 +74,16 @@ class ModerationService:
             raise NotFoundError("Жалоба не найдена")
         if complaint.status is not ComplaintStatus.OPEN:
             raise ConflictError("Жалоба уже рассмотрена")
-        complaint.status = ComplaintStatus(payload.status)
-        complaint.resolution_note = payload.note.strip()
-        complaint.resolved_by = user.id
-        complaint.resolved_at = self._clock()
+        await complaint_crud.update(
+            self._session,
+            complaint,
+            {
+                "status": ComplaintStatus(payload.status),
+                "resolution_note": payload.note.strip(),
+                "resolved_by": user.id,
+                "resolved_at": self._clock(),
+            },
+        )
         await audit_log_crud.record(
             self._session,
             actor_user_id=user.id,
@@ -108,8 +114,11 @@ class ModerationService:
     ) -> ModerationCompanyRead:
         """Ограничивает компанию вручную на время проверки."""
         company = await self._company(company_id)
-        company.restricted_at = self._clock()
-        company.restriction_reason = reason.strip()
+        await company_crud.update(
+            self._session,
+            company,
+            {"restricted_at": self._clock(), "restriction_reason": reason.strip()},
+        )
         await self._audit(user, company, "company_restricted", {"reason": "manual"})
         await self._session.commit()
         return (await self._company_reads([company]))[0]
@@ -117,8 +126,9 @@ class ModerationService:
     async def lift(self, user: User, company_id: uuid.UUID) -> ModerationCompanyRead:
         """Снимает ограничение после проверки."""
         company = await self._company(company_id)
-        company.restricted_at = None
-        company.restriction_reason = ""
+        await company_crud.update(
+            self._session, company, {"restricted_at": None, "restriction_reason": ""}
+        )
         await self._audit(user, company, "company_restriction_lifted", {})
         await self._session.commit()
         return (await self._company_reads([company]))[0]
@@ -129,7 +139,7 @@ class ModerationService:
         """Меняет уровень доверия: от него зависят квоты приглашений и вакансий."""
         company = await self._company(company_id)
         previous = company.trust_level
-        company.trust_level = level
+        await company_crud.update(self._session, company, {"trust_level": level})
         await self._audit(
             user, company, "company_trust_changed", {"from": previous.value, "to": level.value}
         )

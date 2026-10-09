@@ -2,6 +2,7 @@ import random
 import uuid
 from collections.abc import Callable, Sequence
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -148,19 +149,25 @@ class CandidateTaskService:
         if assignment.status is not AssignmentStatus.ASSIGNED:
             raise ConflictError("Ответ на эту задачу уже отправлен или срок истёк")
         if assignment.due_at < now:
-            assignment.status = AssignmentStatus.EXPIRED
+            await microtask_assignment_crud.update(
+                self._session, assignment, {"status": AssignmentStatus.EXPIRED}
+            )
             await self._session.commit()
             raise ConflictError("Срок ответа на задачу истёк")
         task = await microtask_crud.get(self._session, assignment.task_id)
         assert task is not None
-        assignment.answer = answer.strip()
-        assignment.submitted_at = now
+        cleaned = answer.strip()
+        changes: dict[str, Any] = {"answer": cleaned, "submitted_at": now}
         if task.kind is MicroTaskKind.SOLVE:
-            assignment.score = auto_grade(task.answer_key, assignment.answer)
-            assignment.status = AssignmentStatus.GRADED
-            assignment.graded_at = now
+            changes |= {
+                "score": auto_grade(task.answer_key, cleaned),
+                "status": AssignmentStatus.GRADED,
+                "graded_at": now,
+            }
         else:
-            assignment.status = AssignmentStatus.SUBMITTED
+            changes["status"] = AssignmentStatus.SUBMITTED
+        await microtask_assignment_crud.update(self._session, assignment, changes)
+        if task.kind is not MicroTaskKind.SOLVE:
             for recruiter_user_id in await recruiter_crud.user_ids_for_company(
                 self._session, task.company_id
             ):
@@ -185,7 +192,9 @@ class CandidateTaskService:
             raise NotFoundError("Задача не найдена")
         if assignment.status is not AssignmentStatus.ASSIGNED:
             raise ConflictError("Эту задачу уже нельзя пропустить")
-        assignment.status = AssignmentStatus.SKIPPED
+        await microtask_assignment_crud.update(
+            self._session, assignment, {"status": AssignmentStatus.SKIPPED}
+        )
         await self._session.commit()
         task = await microtask_crud.get(self._session, assignment.task_id)
         assert task is not None

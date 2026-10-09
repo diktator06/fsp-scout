@@ -1,14 +1,11 @@
-import enum
 import logging
 import uuid
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
-from datetime import UTC, date, datetime
+from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import inspect
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import InstrumentedAttribute
 
 from app.core.config import Settings
 from app.core.exceptions import DomainValidationError
@@ -57,69 +54,46 @@ def _now() -> datetime:
     return datetime.now(UTC)
 
 
-def _plain(value: Any) -> Any:
-    """Значение колонки в виде, пригодном для JSON."""
-    if isinstance(value, datetime | date):
-        return value.isoformat()
-    if isinstance(value, uuid.UUID):
-        return str(value)
-    if isinstance(value, enum.Enum):
-        return value.value
-    return value
-
-
-def serialize(row: Base) -> dict[str, Any]:
-    """Запись таблицы целиком, кроме секретов. Новая колонка попадёт в выгрузку сама."""
-    mapper = inspect(type(row))
-    return {
-        column.key: _plain(getattr(row, column.key))
-        for column in mapper.column_attrs
-        if column.key not in SECRET_COLUMNS
-    }
-
-
 @dataclass(frozen=True, slots=True)
 class Section:
     """Раздел выгрузки: таблица и колонка, по которой строки принадлежат человеку."""
 
     name: str
     model: type[Base]
-    owner: InstrumentedAttribute[Any]
+    owner: str
     key: str
 
 
 USER_SECTIONS = (
-    Section("account", User, User.id, "user"),
-    Section("consents", Consent, Consent.user_id, "user"),
-    Section("sessions", RefreshSession, RefreshSession.user_id, "user"),
-    Section("notifications", Notification, Notification.user_id, "user"),
-    Section("complaints", Complaint, Complaint.author_user_id, "user"),
-    Section("actions", AuditLog, AuditLog.actor_user_id, "user"),
+    Section("account", User, "id", "user"),
+    Section("consents", Consent, "user_id", "user"),
+    Section("sessions", RefreshSession, "user_id", "user"),
+    Section("notifications", Notification, "user_id", "user"),
+    Section("complaints", Complaint, "author_user_id", "user"),
+    Section("actions", AuditLog, "actor_user_id", "user"),
 )
 CANDIDATE_SECTIONS = (
-    Section("skills", CandidateSkill, CandidateSkill.candidate_id, "candidate"),
-    Section("work_experience", WorkExperience, WorkExperience.candidate_id, "candidate"),
-    Section("education", Education, Education.candidate_id, "candidate"),
-    Section("privacy_settings", PrivacySettings, PrivacySettings.candidate_id, "candidate"),
-    Section("surveys", SurveyResponse, SurveyResponse.candidate_id, "candidate"),
-    Section("assessment_sessions", AssessmentSession, AssessmentSession.candidate_id, "candidate"),
-    Section("assessment_items", AssessmentItem, AssessmentItem.session_id, "session"),
-    Section("grade_history", GradeHistory, GradeHistory.candidate_id, "candidate"),
-    Section("fsp_link", FspLink, FspLink.candidate_id, "candidate"),
-    Section("fsp_achievements", FspAchievement, FspAchievement.candidate_id, "candidate"),
-    Section("fsp_sync_log", FspSyncLog, FspSyncLog.candidate_id, "candidate"),
-    Section("invitations", Invitation, Invitation.candidate_id, "candidate"),
-    Section("invitation_events", InvitationEvent, InvitationEvent.invitation_id, "invitation"),
-    Section("contact_disclosures", ContactDisclosure, ContactDisclosure.candidate_id, "candidate"),
-    Section("applications", Application, Application.candidate_id, "candidate"),
-    Section("application_events", ApplicationEvent, ApplicationEvent.application_id, "application"),
-    Section(
-        "microtask_assignments", MicroTaskAssignment, MicroTaskAssignment.candidate_id, "candidate"
-    ),
+    Section("skills", CandidateSkill, "candidate_id", "candidate"),
+    Section("work_experience", WorkExperience, "candidate_id", "candidate"),
+    Section("education", Education, "candidate_id", "candidate"),
+    Section("privacy_settings", PrivacySettings, "candidate_id", "candidate"),
+    Section("surveys", SurveyResponse, "candidate_id", "candidate"),
+    Section("assessment_sessions", AssessmentSession, "candidate_id", "candidate"),
+    Section("assessment_items", AssessmentItem, "session_id", "session"),
+    Section("grade_history", GradeHistory, "candidate_id", "candidate"),
+    Section("fsp_link", FspLink, "candidate_id", "candidate"),
+    Section("fsp_achievements", FspAchievement, "candidate_id", "candidate"),
+    Section("fsp_sync_log", FspSyncLog, "candidate_id", "candidate"),
+    Section("invitations", Invitation, "candidate_id", "candidate"),
+    Section("invitation_events", InvitationEvent, "invitation_id", "invitation"),
+    Section("contact_disclosures", ContactDisclosure, "candidate_id", "candidate"),
+    Section("applications", Application, "candidate_id", "candidate"),
+    Section("application_events", ApplicationEvent, "application_id", "application"),
+    Section("microtask_assignments", MicroTaskAssignment, "candidate_id", "candidate"),
 )
 EMPLOYER_SECTIONS = (
-    Section("recruiter", Recruiter, Recruiter.user_id, "user"),
-    Section("company", Company, Company.id, "company"),
+    Section("recruiter", Recruiter, "user_id", "user"),
+    Section("company", Company, "id", "company"),
 )
 
 
@@ -217,11 +191,10 @@ class PersonalDataService:
         result: dict[str, list[dict[str, Any]]] = {}
         await self._fill(result, USER_SECTIONS, owners)
         if user.role is UserRole.CANDIDATE:
-            profiles = await personal_data_crud.rows(
-                self._session, CandidateProfile, CandidateProfile.user_id, [user.id]
+            result["profile"] = await personal_data_crud.rows(
+                self._session, CandidateProfile, "user_id", [user.id], SECRET_COLUMNS
             )
-            result["profile"] = [serialize(row) for row in profiles]
-            owners["candidate"] = [row.id for row in profiles if isinstance(row, CandidateProfile)]
+            owners["candidate"] = [uuid.UUID(row["id"]) for row in result["profile"]]
             await self._fill(result, CANDIDATE_SECTIONS, owners)
         if user.role is UserRole.EMPLOYER:
             recruiter = await recruiter_crud.get_by_user_id(self._session, user.id)
@@ -247,10 +220,13 @@ class PersonalDataService:
                 owners[section.key] = [
                     uuid.UUID(row["id"]) for row in result.get(derived[section.key], [])
                 ]
-            rows = await personal_data_crud.rows(
-                self._session, section.model, section.owner, owners.get(section.key, [])
+            result[section.name] = await personal_data_crud.rows(
+                self._session,
+                section.model,
+                section.owner,
+                owners.get(section.key, []),
+                SECRET_COLUMNS,
             )
-            result[section.name] = [serialize(row) for row in rows]
 
     async def _remove_company_if_last(self, user: User) -> bool:
         """Удаляет компанию, если пользователь — её единственный рекрутер."""

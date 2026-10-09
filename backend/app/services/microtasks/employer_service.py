@@ -97,7 +97,7 @@ class EmployerTaskService:
     async def archive(self, user: User, task_id: uuid.UUID) -> MicroTaskRead:
         """Убирает задачу из выдачи. Уже выданные кандидаты дорешивают её."""
         task = await self._own(user, task_id)
-        task.status = MicroTaskStatus.ARCHIVED
+        await microtask_crud.update(self._session, task, {"status": MicroTaskStatus.ARCHIVED})
         await self._session.commit()
         return (await self._views([task]))[0]
 
@@ -158,13 +158,18 @@ class EmployerTaskService:
             raise ConflictError("Задачи «решить» проверяет система по эталону")
         if assignment.status is not AssignmentStatus.SUBMITTED:
             raise ConflictError("Этот ответ уже оценён или ещё не отправлен")
-        now = self._clock()
-        assignment.rating = payload.rating
-        assignment.score = rating_to_score(payload.rating)
-        assignment.feedback = payload.feedback.strip()
-        assignment.status = AssignmentStatus.GRADED
-        assignment.graded_at = now
-        assignment.graded_by = user.id
+        await microtask_assignment_crud.update(
+            self._session,
+            assignment,
+            {
+                "rating": payload.rating,
+                "score": rating_to_score(payload.rating),
+                "feedback": payload.feedback.strip(),
+                "status": AssignmentStatus.GRADED,
+                "graded_at": self._clock(),
+                "graded_by": user.id,
+            },
+        )
         profile = await candidate_profile_crud.get(self._session, assignment.candidate_id)
         if profile is not None:
             await self._notifications.notify(

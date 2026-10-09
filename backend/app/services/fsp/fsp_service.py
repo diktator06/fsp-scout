@@ -269,9 +269,11 @@ class FspService:
             )
         rows = _registry_rows(record.achievements)
         await fsp_achievement_crud.replace_for_candidate(self._session, profile.id, rows, now)
-        link.synced_at = now
-        link.region = record.region
-        link.sport_rank = record.sport_rank
+        await fsp_link_crud.update(
+            self._session,
+            link,
+            {"synced_at": now, "region": record.region, "sport_rank": record.sport_rank},
+        )
         return await fsp_sync_log_crud.create(
             self._session,
             {

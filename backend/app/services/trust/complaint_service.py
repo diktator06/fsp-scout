@@ -114,9 +114,16 @@ class ComplaintService:
         )
         if authors < AUTO_RESTRICT_AUTHORS:
             return
-        company.restricted_at = self._clock()
-        company.restriction_reason = (
-            f"Автоматически: жалобы {authors} кандидатов за 30 дней, ждёт проверки модератора"
+        await company_crud.update(
+            self._session,
+            company,
+            {
+                "restricted_at": self._clock(),
+                "restriction_reason": (
+                    f"Автоматически: жалобы {authors} кандидатов за 30 дней, "
+                    "ждёт проверки модератора"
+                ),
+            },
         )
         await audit_log_crud.record(
             self._session,

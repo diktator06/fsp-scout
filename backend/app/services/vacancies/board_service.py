@@ -194,8 +194,11 @@ class VacancyBoardService:
                 "actor_user_id": user.id,
             },
         )
-        application.status = ApplicationStatus.WITHDRAWN
-        application.responded_at = self._clock()
+        await application_crud.update(
+            self._session,
+            application,
+            {"status": ApplicationStatus.WITHDRAWN, "responded_at": self._clock()},
+        )
         vacancy = await vacancy_crud.get(self._session, application.vacancy_id)
         assert vacancy is not None
         await self._webhooks.application_withdrawn(application, vacancy, profile.public_alias)

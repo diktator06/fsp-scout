@@ -385,7 +385,7 @@ class AssessmentService:
         if score >= 1.0 and elapsed_ms < min(
             FAST_ANSWER_MAX_MS, FAST_ANSWER_SHARE * current.family.time_limit_sec * 1000
         ):
-            self._bump_integrity(assessment, "fast_correct")
+            await self._bump_integrity(assessment, "fast_correct")
         await self._after_answer(assessment, profile, items, now)
         await self._commit()
         return await self._session_view(assessment, profile)
@@ -416,7 +416,7 @@ class AssessmentService:
         profile = await self._profiles.ensure_profile(user)
         assessment = await self._owned_session(profile, session_id, for_update=True)
         if assessment.status is SessionStatus.IN_PROGRESS:
-            self._bump_integrity(assessment, event)
+            await self._bump_integrity(assessment, event)
             await self._commit()
 
     async def accept_suggested_grade(self, user: User, session_id: uuid.UUID) -> SessionRead:
@@ -938,15 +938,14 @@ class AssessmentService:
         """Сессия ещё идёт (статус может смениться внутри обработки таймаутов)."""
         return assessment.status is SessionStatus.IN_PROGRESS
 
-    @staticmethod
-    def _bump_integrity(assessment: AssessmentSession, key: str) -> None:
+    async def _bump_integrity(self, assessment: AssessmentSession, key: str) -> None:
         """Увеличивает счётчик сигнала целостности.
 
         JSON переписывается целиком: изменение вложенного словаря ORM сама не заметит.
         """
         counters = dict(assessment.integrity or {})
         counters[key] = int(counters.get(key, 0)) + 1
-        assessment.integrity = counters
+        await assessment_session_crud.update(self._session, assessment, {"integrity": counters})
 
     @staticmethod
     def _category_view(category: Category | None) -> CategoryRead | None:

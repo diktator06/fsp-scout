@@ -1,6 +1,7 @@
 import uuid
 from collections.abc import Callable
 from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -81,9 +82,12 @@ class IntegrationService:
                 require_https=self._settings.is_production,
             )
         endpoint = await self._create(
-            user, recruiter.company_id, url, [item.value for item in payload.events]
+            user,
+            recruiter.company_id,
+            url,
+            [item.value for item in payload.events],
+            payload.description.strip(),
         )
-        endpoint.description = payload.description.strip()
         await self._session.commit()
         return self._secret_read(endpoint)
 
@@ -98,8 +102,8 @@ class IntegrationService:
             recruiter.company_id,
             self._settings.webhook_sandbox_url,
             [item.value for item in SUBSCRIBABLE_EVENTS],
+            "Песочница ATS «Скаута»",
         )
-        endpoint.description = "Песочница ATS «Скаута»"
         await self._session.commit()
         return self._secret_read(endpoint)
 
@@ -108,19 +112,23 @@ class IntegrationService:
     ) -> WebhookEndpointRead:
         """Меняет подписку, описание или включает и отключает получателя."""
         endpoint = await self._own(user, endpoint_id)
+        changes: dict[str, Any] = {}
         if payload.events is not None:
-            endpoint.events = [item.value for item in payload.events]
+            changes["events"] = [item.value for item in payload.events]
         if payload.description is not None:
-            endpoint.description = payload.description.strip()
+            changes["description"] = payload.description.strip()
         if payload.is_active is not None:
-            endpoint.is_active = payload.is_active
+            changes["is_active"] = payload.is_active
+        await webhook_endpoint_crud.update(self._session, endpoint, changes)
         await self._session.commit()
         return self._endpoint_read(endpoint)
 
     async def rotate_secret(self, user: User, endpoint_id: uuid.UUID) -> WebhookEndpointSecretRead:
         """Новый секрет: старый перестаёт подходить к подписи сразу."""
         endpoint = await self._own(user, endpoint_id)
-        endpoint.secret = signing.new_secret()
+        await webhook_endpoint_crud.update(
+            self._session, endpoint, {"secret": signing.new_secret()}
+        )
         await self._audit(user, "webhook_secret_rotated", endpoint)
         await self._session.commit()
         return self._secret_read(endpoint)
@@ -190,7 +198,12 @@ class IntegrationService:
         return render(candidates, fmt, self._clock())
 
     async def _create(
-        self, user: User, company_id: uuid.UUID, url: str, events: list[str]
+        self,
+        user: User,
+        company_id: uuid.UUID,
+        url: str,
+        events: list[str],
+        description: str,
     ) -> WebhookEndpoint:
         """Создаёт получателя в пределах лимита компании."""
         count = await webhook_endpoint_crud.count_for_company(self._session, company_id)
@@ -205,6 +218,7 @@ class IntegrationService:
                 "url": url,
                 "secret": signing.new_secret(),
                 "events": events,
+                "description": description,
                 "created_by": user.id,
             },
         )

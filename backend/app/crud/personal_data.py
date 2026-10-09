@@ -1,10 +1,11 @@
+import enum
 import uuid
-from collections.abc import Sequence
+from collections.abc import Collection, Sequence
+from datetime import date, datetime
 from typing import Any
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, inspect, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import InstrumentedAttribute
 
 from app.db.base import Base
 from app.models.candidate import CandidateProfile
@@ -12,6 +13,17 @@ from app.models.employer import Company
 from app.models.integration import WebhookDelivery
 from app.models.matching import ShortlistEntry
 from app.models.user import User
+
+
+def _plain(value: Any) -> Any:
+    """Значение колонки в виде, пригодном для JSON."""
+    if isinstance(value, datetime | date):
+        return value.isoformat()
+    if isinstance(value, uuid.UUID):
+        return str(value)
+    if isinstance(value, enum.Enum):
+        return value.value
+    return value
 
 
 class PersonalDataCRUD:
@@ -25,14 +37,29 @@ class PersonalDataCRUD:
         self,
         session: AsyncSession,
         model: type[Base],
-        owner: InstrumentedAttribute[Any],
+        owner: str,
         values: Sequence[uuid.UUID],
-    ) -> Sequence[Base]:
-        """Строки таблицы, принадлежащие владельцу (пользователю или профилю кандидата)."""
+        hidden: Collection[str] = (),
+    ) -> list[dict[str, Any]]:
+        """Строки таблицы, принадлежащие владельцу, в виде словарей для выгрузки.
+
+        `owner` — имя колонки-владельца (пользователь, профиль, сессия), `hidden` —
+        колонки, которые наружу не отдаются (хеши, ключи ответов). Берутся все
+        остальные колонки, поэтому новая колонка попадает в выгрузку без правки кода.
+        """
         if not values:
             return []
-        result = await session.scalars(select(model).where(owner.in_(list(values))))
-        return result.all()
+        column = getattr(model, owner)
+        result = await session.scalars(select(model).where(column.in_(list(values))))
+        mapper = inspect(model)
+        return [
+            {
+                attribute.key: _plain(getattr(row, attribute.key))
+                for attribute in mapper.column_attrs
+                if attribute.key not in hidden
+            }
+            for row in result.all()
+        ]
 
     async def shortlist_appearances(self, session: AsyncSession, candidate_id: uuid.UUID) -> int:
         """Сколько раз профиль попадал в подборки работодателей."""

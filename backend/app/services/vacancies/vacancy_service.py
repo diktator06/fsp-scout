@@ -1,6 +1,7 @@
 import uuid
 from collections.abc import Callable
 from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,6 +15,7 @@ from app.crud import (
     application_crud,
     application_event_crud,
     candidate_profile_crud,
+    company_crud,
     hiring_need_crud,
     skill_lookup_crud,
     specialization_crud,
@@ -139,8 +141,11 @@ class VacancyService:
         """Снимает вакансию с публикации: новые отклики не принимаются, старые остаются."""
         vacancy = await self._own(user, vacancy_id, for_update=True)
         if vacancy.status is not VacancyStatus.CLOSED:
-            vacancy.status = VacancyStatus.CLOSED
-            vacancy.closed_at = self._clock()
+            await vacancy_crud.update(
+                self._session,
+                vacancy,
+                {"status": VacancyStatus.CLOSED, "closed_at": self._clock()},
+            )
         await self._session.commit()
         return (await self._views([vacancy]))[0]
 
@@ -167,8 +172,9 @@ class VacancyService:
         if application is None:
             raise NotFoundError("Отклик не найден")
         if application.status is ApplicationStatus.SUBMITTED:
-            await self._move(application, ApplicationStatus.VIEWED, user)
-            application.viewed_at = self._clock()
+            await self._move(
+                application, ApplicationStatus.VIEWED, user, {"viewed_at": self._clock()}
+            )
             await self._session.commit()
         vacancy = await vacancy_crud.get(self._session, application.vacancy_id)
         assert vacancy is not None
@@ -186,14 +192,15 @@ class VacancyService:
             raise NotFoundError("Отклик не найден")
         target = ApplicationStatus(payload.status)
         ensure_transition(application.status, target, ApplicationActor.EMPLOYER)
-        await self._move(application, target, user)
         now = self._clock()
-        application.responded_at = now
-        if application.viewed_at is None:
-            application.viewed_at = now
+        changes: dict[str, Any] = {
+            "responded_at": now,
+            "viewed_at": application.viewed_at or now,
+            "reject_comment": payload.message,
+        }
         if target is ApplicationStatus.REJECTED:
-            application.reject_reason = payload.reject_reason
-        application.reject_comment = payload.message
+            changes["reject_reason"] = payload.reject_reason
+        await self._move(application, target, user, changes)
         vacancy = await vacancy_crud.get(self._session, application.vacancy_id)
         assert vacancy is not None
         profile = await candidate_profile_crud.get(self._session, application.candidate_id)
@@ -227,7 +234,13 @@ class VacancyService:
             link="/c/applications",
         )
 
-    async def _move(self, application: Application, target: ApplicationStatus, user: User) -> None:
+    async def _move(
+        self,
+        application: Application,
+        target: ApplicationStatus,
+        user: User,
+        changes: dict[str, Any] | None = None,
+    ) -> None:
         """Переводит отклик в новый статус и пишет переход в журнал."""
         await application_event_crud.create(
             self._session,
@@ -238,20 +251,28 @@ class VacancyService:
                 "actor_user_id": user.id,
             },
         )
-        application.status = target
+        await application_crud.update(
+            self._session, application, {"status": target, **(changes or {})}
+        )
 
     async def _publish(self, vacancy: Vacancy, trust_level: TrustLevel) -> None:
-        """Публикует вакансию, если не исчерпан лимит одновременно открытых."""
+        """Публикует вакансию, если не исчерпан лимит одновременно открытых.
+
+        Строка компании блокируется на время проверки: иначе две параллельные публикации
+        разных вакансий увидели бы одно и то же число открытых и обе прошли бы лимит.
+        """
+        await company_crud.lock(self._session, vacancy.company_id)
         limit = published_vacancy_limit(trust_level)
         published = await vacancy_crud.count_by_status(
             self._session, vacancy.company_id, VacancyStatus.PUBLISHED
         )
         if published >= limit:
             raise VacancyLimitExceededError(details={"limit": limit})
-        vacancy.status = VacancyStatus.PUBLISHED
-        vacancy.published_at = self._clock()
-        vacancy.closed_at = None
-        await self._session.flush()
+        await vacancy_crud.update(
+            self._session,
+            vacancy,
+            {"status": VacancyStatus.PUBLISHED, "published_at": self._clock(), "closed_at": None},
+        )
 
     async def _own(self, user: User, vacancy_id: uuid.UUID, *, for_update: bool = False) -> Vacancy:
         """Вакансия своей компании или 404."""

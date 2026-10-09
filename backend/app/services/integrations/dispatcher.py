@@ -139,9 +139,15 @@ class WebhookDispatcher:
             jobs = []
             for delivery in due:
                 endpoint = endpoints[delivery.endpoint_id]
-                delivery.attempts += 1
-                delivery.last_attempt_at = now
-                delivery.next_attempt_at = now + LEASE
+                await webhook_delivery_crud.update(
+                    session,
+                    delivery,
+                    {
+                        "attempts": delivery.attempts + 1,
+                        "last_attempt_at": now,
+                        "next_attempt_at": now + LEASE,
+                    },
+                )
                 jobs.append(
                     _Job(
                         delivery_id=delivery.id,
@@ -201,15 +207,19 @@ class WebhookDispatcher:
                 delivery = await webhook_delivery_crud.get(session, job.delivery_id)
                 if delivery is None:
                     continue
-                delivery.response_status = outcome.status_code
-                delivery.response_body = outcome.body
-                delivery.error = outcome.error[:300]
+                changes: dict[str, Any] = {
+                    "response_status": outcome.status_code,
+                    "response_body": outcome.body,
+                    "error": outcome.error[:300],
+                }
                 if outcome.ok:
-                    delivery.status = DeliveryStatus.DELIVERED
-                    delivery.delivered_at = now
-                    continue
-                if outcome.final or delivery.attempts >= MAX_ATTEMPTS:
-                    delivery.status = DeliveryStatus.FAILED
+                    changes |= {"status": DeliveryStatus.DELIVERED, "delivered_at": now}
+                elif outcome.final or delivery.attempts >= MAX_ATTEMPTS:
+                    changes["status"] = DeliveryStatus.FAILED
+                else:
+                    changes["next_attempt_at"] = now + RETRY_DELAYS[delivery.attempts - 1]
+                await webhook_delivery_crud.update(session, delivery, changes)
+                if delivery.status is DeliveryStatus.FAILED:
                     for user_id in await recruiter_crud.user_ids_for_company(
                         session, job.company_id
                     ):
@@ -220,6 +230,4 @@ class WebhookDispatcher:
                             text=f"{job.event_type}: {delivery.error}",
                             link="/e/integrations",
                         )
-                    continue
-                delivery.next_attempt_at = now + RETRY_DELAYS[delivery.attempts - 1]
             await session.commit()

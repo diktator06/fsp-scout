@@ -19,6 +19,14 @@ class CompanyCRUD(CRUDBase[Company]):
             select(Company).options(selectinload(Company.industry)).where(Company.id == company_id)
         )
 
+    async def lock(self, session: AsyncSession, company_id: uuid.UUID) -> None:
+        """Блокирует строку компании до конца транзакции.
+
+        Нужна, когда правило касается всей компании, а не одной записи: например,
+        лимит одновременно опубликованных вакансий при параллельных публикациях.
+        """
+        await session.execute(select(Company.id).where(Company.id == company_id).with_for_update())
+
 
 class RecruiterCRUD(CRUDBase[Recruiter]):
     """Доступ к рекрутерам — связке «пользователь ↔ компания»."""
