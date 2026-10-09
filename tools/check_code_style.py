@@ -93,11 +93,14 @@ def check_typescript_file(path: Path) -> list[str]:
     problems: list[str] = []
     for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
         match = TS_COMMENT.match(line)
-        if not match or TS_PRAGMA.search(line) or line.strip() in {"*/", "/**", "*"}:
+        if not match or TS_PRAGMA.search(line):
             continue
         indent = match.group(1)
         if not indent:
+            # Открывающая строка JSDoc без отступа — блок над функцией или компонентом.
             problems.append(f"{relative}:{number}: комментарий на верхнем уровне модуля")
+        elif line.strip() in {"*/", "/**", "*"}:
+            continue
         elif not CYRILLIC.search(line):
             problems.append(f"{relative}:{number}: комментарий не на русском: {line.strip()[:60]}")
     return problems
