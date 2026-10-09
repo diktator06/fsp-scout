@@ -2,10 +2,17 @@
 # презентации в репозиторий не кладём. Имя не DOCS: на macOS оно совпало бы с docs/.
 materials
 
+# Внутренние материалы команды: исходный план работ и подготовка к питчу
+ARCHITECTURE_AND_PLAN.md
+PITCH_AND_VIDEO_GUIDE.md
+
 # Секреты и локальные переменные окружения
 .env
 .env.*
 !.env.example
+vps.env
+*.pem
+*.key
 
 # Python
 __pycache__/
@@ -23,10 +30,17 @@ dist/
 *.tsbuildinfo
 coverage/
 
-# Данные, загрузки и собранная документация
+# Данные, загрузки, дампы, логи и собранная документация
 /data/
 /uploads/
 docs/build/
+docs/submission/*.html
+*.dump
+*.sql.gz
+*.bak
+*.log
+logs/
+npm-debug.log*
 
 # Системные файлы и IDE
 .DS_Store

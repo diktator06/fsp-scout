@@ -36,7 +36,7 @@ def can_transition(current: InvitationStatus, target: InvitationStatus, actor: A
 
 
 def ensure_transition(current: InvitationStatus, target: InvitationStatus, actor: Actor) -> None:
-    """Проверяет переход по автомату (ARCHITECTURE_AND_PLAN.md §3.3).
+    """Проверяет переход по автомату (docs/MATCHING.md, раздел 8).
 
     Принять или отклонить можно только просмотренное приглашение, отозвать —
     только активное. Сообщение объясняет, почему действие уже невозможно.

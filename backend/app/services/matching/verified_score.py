@@ -106,7 +106,7 @@ def compute_verified_score(
     """Индекс подтверждённого профиля: VPS = 100 · (0,55·T + 0,20·M + 0,15·F + 0,10·P).
 
     Он ранжирует кандидатов внутри категории. Профиль без микрозадач и без ФСП не
-    штрафуется: эти факторы просто не добавляют баллов (см. ARCHITECTURE_AND_PLAN.md §3.6.1).
+    штрафуется: эти факторы просто не добавляют баллов (см. docs/MATCHING.md, раздел 3).
     """
     test_value, percentile = assessment_component(facts.test, peers, band, now)
     values = {

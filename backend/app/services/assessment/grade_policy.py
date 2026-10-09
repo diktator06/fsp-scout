@@ -7,7 +7,7 @@ from app.models.assessment import SessionOutcome, SessionStatus
 
 @dataclass(frozen=True, slots=True)
 class PolicyConfig:
-    """Ограничения частоты тестов и смены грейда (см. ARCHITECTURE_AND_PLAN.md §2.3)."""
+    """Ограничения частоты тестов и смены грейда (см. docs/ASSESSMENT.md, раздел 4)."""
 
     grade_change_cooldown_days: int = 90
     upgrade_retry_days: int = 30

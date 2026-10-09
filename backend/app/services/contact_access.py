@@ -14,7 +14,7 @@ class ContactAccessPolicy:
 
     Право на контакты даёт только запись `contact_disclosures`. Она появляется, когда
     кандидат принимает приглашение или сам откликается. Каждое раскрытие пишется в
-    журнал аудита (152-ФЗ, ARCHITECTURE_AND_PLAN.md §3.8).
+    журнал аудита (152-ФЗ, docs/MATCHING.md, раздел 7).
     """
 
     def __init__(self, session: AsyncSession) -> None:

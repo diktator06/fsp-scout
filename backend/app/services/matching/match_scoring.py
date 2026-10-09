@@ -171,7 +171,7 @@ def score_match(
 
     Поверх — понижающие множители: неподтверждённый грейд опускается в выдаче (так
     просили менторы), соседний грейд при расширенном поиске — тоже. Формулы и веса —
-    ARCHITECTURE_AND_PLAN.md §3.6.2, версия записывается в каждую подборку.
+    docs/MATCHING.md, раздел 4; версия записывается в каждую подборку.
     """
     skills_value, skill_matches = score_skills(need, candidate, typical_weights, relations)
     conditions = [
