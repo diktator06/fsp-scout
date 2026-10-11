@@ -135,7 +135,7 @@ export function CabinetLayout({ role }: { role: UserRole }) {
   return (
     <AppShell
       header={{ height: 68 }}
-      navbar={{ width: 284, breakpoint: 'md', collapsed: { mobile: !opened } }}
+      navbar={{ width: 264, breakpoint: 'md', collapsed: { mobile: !opened } }}
       padding={{ base: 'md', md: 'xl' }}
       className={classes.shell}
     >

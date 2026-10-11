@@ -11,33 +11,9 @@ html {
   scroll-behavior: smooth;
 }
 
-@media (min-width: 75em) {
+@media (min-width: 200em) {
   html {
-    font-size: 106.25%;
-  }
-}
-
-@media (min-width: 100em) {
-  html {
-    font-size: 112.5%;
-  }
-}
-
-@media (min-width: 120em) {
-  html {
-    font-size: 118.75%;
-  }
-}
-
-@media (min-width: 160em) {
-  html {
-    font-size: 137.5%;
-  }
-}
-
-@media (min-width: 210em) {
-  html {
-    font-size: 168.75%;
+    font-size: 125%;
   }
 }
 
