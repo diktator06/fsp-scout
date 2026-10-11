@@ -7,14 +7,8 @@
 }
 
 html {
-  font-size: 100%;
+  font-size: clamp(100%, calc(0.7778vw + 0.3rem), 150%);
   scroll-behavior: smooth;
-}
-
-@media (min-width: 200em) {
-  html {
-    font-size: 125%;
-  }
 }
 
 body {

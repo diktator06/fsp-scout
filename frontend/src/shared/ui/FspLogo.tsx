@@ -8,13 +8,22 @@ interface FspLogoProps {
 
 export function FspLogo({ tone = 'dark', height = 28 }: FspLogoProps) {
   // Логотип постановщика задачи из брендбука. Тёмная версия идёт на светлый фон,
-  // светлая на тёмный.
+  // светлая на тёмный. Вертикальный flex-контейнер растягивает детей на всю
+  // ширину, поэтому картинка сама держит пропорции и прижата к левому краю.
   return (
     <img
       src={tone === 'light' ? fspLogoWhite : fspLogoBlack}
       alt="Федерация спортивного программирования России"
       height={height}
-      style={{ height, width: 'auto', display: 'block' }}
+      style={{
+        height,
+        width: 'auto',
+        maxWidth: '100%',
+        alignSelf: 'flex-start',
+        objectFit: 'contain',
+        objectPosition: 'left center',
+        display: 'block',
+      }}
     />
   );
 }
