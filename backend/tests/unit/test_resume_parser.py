@@ -35,6 +35,14 @@ def test_contacts_name_and_city() -> None:
     assert parsed.evidence["full_name"] == "Мария Иванова"
 
 
+def test_name_split_across_header_lines() -> None:
+    """Имя, перенесённое по словам в шапке двухколоночного резюме, собирается обратно."""
+    text = "СКАУТ · ПРОФИЛЬ СПЕЦИАЛИСТА\nТимур\nПриёмкин\nКазань · опыт 3 года\n#ZXF3\n"
+    assert parse_resume_text(text, CATALOG, TODAY).full_name == "Тимур Приёмкин"
+    single = "Резюме\nКазань\nPython\n"
+    assert parse_resume_text(single, CATALOG, TODAY).full_name is None
+
+
 def test_experience_periods_years_and_grade() -> None:
     """Места работы с датами, стаж по объединению периодов, грейд из шапки."""
     parsed = parse_resume_text(RESUME, CATALOG, TODAY)

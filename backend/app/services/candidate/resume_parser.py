@@ -23,6 +23,9 @@ _TELEGRAM = re.compile(
 )
 _NAME_LABEL = re.compile(r"^(?:фио|имя)\s*[:—-]\s*(.+)$", re.IGNORECASE)
 _NAME = re.compile(r"^([А-ЯЁ][а-яё]+(?:-[А-ЯЁ][а-яё]+)?)\s+([А-ЯЁ][а-яё]+)(?:\s+([А-ЯЁ][а-яё]+))?$")
+_HEADER_WORDS = re.compile(
+    r"^(?:резюме|профиль|контакты|опыт|навыки|образование|о себе)$", re.IGNORECASE
+)
 _EXPLICIT_YEARS = re.compile(
     r"(?:опыт\w*|стаж\w*)[^.\n\d]{0,30}?(\d+(?:[.,]\d)?)\s*\+?\s*(?:год|лет|г\.)", re.IGNORECASE
 )
@@ -241,12 +244,30 @@ def _experiences(
 
 
 def _full_name(lines: Sequence[str]) -> tuple[str | None, str | None]:
-    """ФИО: строка «ФИО: …» или первая строка шапки из двух-трёх слов с заглавной."""
-    for line in lines[:HEADER_LINES]:
+    """ФИО: строка «ФИО: …» или первая строка шапки из двух-трёх слов с заглавной.
+
+    В двухколоночных резюме крупное имя часто переносится по словам, и текст PDF
+    приходит строками «Мария» и «Иванова». Поэтому строку шапки из одного слова
+    пробуем склеить со следующей (и ещё одной — для отчества).
+    """
+    header = [line.strip() for line in lines[:HEADER_LINES]]
+    for index, line in enumerate(header):
         labelled = _NAME_LABEL.match(line)
-        candidate = labelled.group(1).strip() if labelled else line.strip()
+        candidate = labelled.group(1).strip() if labelled else line
         if _NAME.match(candidate) and not _ROLE_WORDS.search(candidate):
-            return candidate, line.strip()
+            return candidate, line
+        if " " in line:
+            continue
+        for size in (2, 3):
+            words = header[index : index + size]
+            joined = " ".join(words)
+            if (
+                len(words) == size
+                and _NAME.match(joined)
+                and not _ROLE_WORDS.search(joined)
+                and not any(_HEADER_WORDS.match(word) or detect_city(word)[0] for word in words)
+            ):
+                return joined, joined
     return None, None
 
 

@@ -16,6 +16,8 @@
 * { box-sizing: border-box; }
 body { font-family: "Montserrat Latin", "Montserrat Cyrillic", "DejaVu Sans", sans-serif; color: #1c1d22; font-size: 9.5pt; line-height: 1.5; margin: 0; }
 .header { display: flex; justify-content: space-between; align-items: flex-start; padding: 14pt 16pt; border-radius: 12pt; background: #310f53; color: #fff; }
+.header .main { width: 64%; }
+.header .contacts { width: 36%; }
 .brand { font-size: 8pt; letter-spacing: 1.2pt; text-transform: uppercase; color: #d9cfee; }
 .name { font-size: 20pt; font-weight: 800; margin: 4pt 0 2pt; letter-spacing: -0.3pt; }
 .subline { color: #e6dcf5; font-size: 9pt; }
@@ -44,7 +46,7 @@ h2 { font-size: 10.5pt; font-weight: 800; color: #520978; text-transform: upperc
 </head>
 <body>
 <div class="header">
-  <div>
+  <div class="main">
     <div class="brand">Скаут · профиль специалиста</div>
     <div class="name">{{ full_name or "Имя не указано" }}</div>
     <div class="subline">{% if city %}{{ city }} · {% endif %}{% if experience_years is not none %}опыт {{ experience_years }}{% endif %}{% if work_formats %} · {{ work_formats }}{% endif %}</div>
