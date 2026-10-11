@@ -54,6 +54,58 @@ async def test_parse_generated_resume(client: AsyncClient, make_user: UserFactor
     assert profile["full_name"] is None
 
 
+HH_HTML = """
+<html><body>
+<p>Петрова Анна Сергеевна</p>
+<p>+7 (912) 3456789 • telegram: https://t.me/anna_petrova_dev</p>
+<p>Проживает: Казань</p>
+<p>Готова к переезду: Москва</p>
+<p>Формат работы: на месте работодателя, удалённо</p>
+<p>Опыт работы — 4 года</p>
+<p>Апрель 2022 —<br>настоящее время</p>
+<p>4 года 7 месяцев</p>
+<p>ООО «Облако Плюс»</p>
+<p>Казань</p>
+<p>• Разработка программного обеспечения</p>
+<p>Python-разработчик</p>
+<p>Сервис биллинга на FastAPI и PostgreSQL.</p>
+<p>Образование</p>
+<p>2017</p>
+<p>Магистр</p>
+<p>Казанский федеральный университет</p>
+<p>Прикладная информатика</p>
+<p>Навыки</p>
+<p>Python FastAPI PostgreSQL</p>
+<p>Дополнительная информация</p>
+<p>Обо мне Пишу бэкенд для платёжных сервисов и наставляю стажёров.</p>
+</body></html>
+"""
+
+
+async def test_parse_hh_export_from_pdf(client: AsyncClient, make_user: UserFactory) -> None:
+    """Выгрузка в стиле hh.ru из настоящего PDF: Telegram, место работы, образование, условия."""
+    headers = auth_headers(await make_user(UserRole.CANDIDATE))
+    response = await client.post(
+        PARSE, files={"file": ("cv.pdf", pdf(HH_HTML), "application/pdf")}, headers=headers
+    )
+    assert response.status_code == 200, response.text
+    draft = response.json()
+    assert draft["telegram"] == "@anna_petrova_dev"
+    job = draft["experiences"][0]
+    assert (job["position"], job["company_name"]) == ("Python-разработчик", "ООО «Облако Плюс»")
+    assert job["started_on"] == "2022-04-01" and job["ended_on"] is None
+    assert draft["educations"] == [
+        {
+            "institution": "Казанский федеральный университет",
+            "degree": "Магистр, Прикладная информатика",
+            "graduated_year": 2017,
+        }
+    ]
+    assert draft["about"].startswith("Пишу бэкенд для платёжных сервисов")
+    assert draft["work_formats"] == ["office", "remote"]
+    assert draft["relocation_ready"] is True
+
+
 async def test_own_profile_pdf_round_trip(client: AsyncClient, db_session: AsyncSession) -> None:
     """PDF-профиль «Скаута» распознаётся обратно: имя, навыки и место работы."""
     candidate = await make_bank_candidate(db_session)

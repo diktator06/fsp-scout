@@ -6592,6 +6592,18 @@
       "ResumeDraftRead": {
         "description": "Результат автораспознавания резюме. Ничего не сохраняется, пока кандидат не подтвердит.",
         "properties": {
+          "about": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Раздел «О себе»",
+            "title": "About"
+          },
           "city": {
             "anyOf": [
               {
@@ -6602,6 +6614,13 @@
               }
             ],
             "title": "City"
+          },
+          "educations": {
+            "items": {
+              "$ref": "#/components/schemas/ResumeEducationDraft"
+            },
+            "title": "Educations",
+            "type": "array"
           },
           "email": {
             "anyOf": [
@@ -6671,6 +6690,18 @@
             ],
             "title": "Phone"
           },
+          "relocation_ready": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Готовность к переезду; null — в резюме не указано",
+            "title": "Relocation Ready"
+          },
           "skills": {
             "items": {
               "$ref": "#/components/schemas/ResumeSkillDraft"
@@ -6727,6 +6758,13 @@
             },
             "title": "Warnings",
             "type": "array"
+          },
+          "work_formats": {
+            "items": {
+              "$ref": "#/components/schemas/WorkFormat"
+            },
+            "title": "Work Formats",
+            "type": "array"
           }
         },
         "required": [
@@ -6742,10 +6780,45 @@
           "soft_skills",
           "team_roles",
           "experiences",
+          "about",
+          "educations",
+          "work_formats",
+          "relocation_ready",
           "evidence",
           "warnings"
         ],
         "title": "ResumeDraftRead",
+        "type": "object"
+      },
+      "ResumeEducationDraft": {
+        "description": "Учебное заведение из резюме: черновик для анкеты.",
+        "properties": {
+          "degree": {
+            "title": "Degree",
+            "type": "string"
+          },
+          "graduated_year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graduated Year"
+          },
+          "institution": {
+            "title": "Institution",
+            "type": "string"
+          }
+        },
+        "required": [
+          "institution",
+          "degree",
+          "graduated_year"
+        ],
+        "title": "ResumeEducationDraft",
         "type": "object"
       },
       "ResumeExperienceDraft": {

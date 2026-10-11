@@ -5016,8 +5016,15 @@ export interface components {
          * @description Результат автораспознавания резюме. Ничего не сохраняется, пока кандидат не подтвердит.
          */
         ResumeDraftRead: {
+            /**
+             * About
+             * @description Раздел «О себе»
+             */
+            about: string | null;
             /** City */
             city: string | null;
+            /** Educations */
+            educations: components["schemas"]["ResumeEducationDraft"][];
             /** Email */
             email: string | null;
             /** Evidence */
@@ -5033,6 +5040,11 @@ export interface components {
             grade: components["schemas"]["GradeBrief"] | null;
             /** Phone */
             phone: string | null;
+            /**
+             * Relocation Ready
+             * @description Готовность к переезду; null — в резюме не указано
+             */
+            relocation_ready: boolean | null;
             /** Skills */
             skills: components["schemas"]["ResumeSkillDraft"][];
             /** Soft Skills */
@@ -5044,6 +5056,20 @@ export interface components {
             telegram: string | null;
             /** Warnings */
             warnings: string[];
+            /** Work Formats */
+            work_formats: components["schemas"]["WorkFormat"][];
+        };
+        /**
+         * ResumeEducationDraft
+         * @description Учебное заведение из резюме: черновик для анкеты.
+         */
+        ResumeEducationDraft: {
+            /** Degree */
+            degree: string;
+            /** Graduated Year */
+            graduated_year: number | null;
+            /** Institution */
+            institution: string;
         };
         /**
          * ResumeExperienceDraft

@@ -56,6 +56,12 @@ const DRAFT: ResumeDraft = {
       description: 'Биллинг',
     },
   ],
+  about: 'Пишу бэкенд для платёжных сервисов.',
+  educations: [
+    { institution: 'Казанский федеральный университет', degree: 'Магистр', graduated_year: 2017 },
+  ],
+  work_formats: ['remote', 'hybrid'],
+  relocation_ready: true,
   evidence: {},
   warnings: [],
 };
@@ -77,10 +83,27 @@ describe('applyResumeDraft', () => {
     expect(next.experiences[0]).toMatchObject({ started_on: '2021-03', ended_on: '' });
   });
 
+  it('переносит «О себе», образование без повторов, форматы и переезд', () => {
+    const values: ProfileFormValues = {
+      ...VALUES,
+      work_formats: ['office'],
+      educations: [
+        { institution: 'Казанский федеральный университет', degree: '', graduated_year: 2017 },
+      ],
+    };
+    const next = applyResumeDraft(values, DRAFT, new Set(['about', 'educations', 'conditions']));
+    expect(next.about).toBe('Пишу бэкенд для платёжных сервисов.');
+    expect(next.educations).toHaveLength(1);
+    expect(next.work_formats).toEqual(['office', 'remote', 'hybrid']);
+    expect(next.relocation_ready).toBe(true);
+  });
+
   it('не трогает неотмеченные группы', () => {
     const next = applyResumeDraft(VALUES, DRAFT, new Set(['skills']));
     expect(next.full_name).toBe('');
     expect(next.city).toBe('');
     expect(next.experiences).toEqual([]);
+    expect(next.about).toBe('');
+    expect(next.relocation_ready).toBe(false);
   });
 });

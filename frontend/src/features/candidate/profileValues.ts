@@ -134,16 +134,26 @@ export function validateExperience(job: ExperienceEntry): string | null {
 }
 
 export type ResumeSection =
-  'name' | 'contacts' | 'city' | 'experience_years' | 'skills' | 'roles' | 'experiences';
+  | 'name'
+  | 'contacts'
+  | 'city'
+  | 'experience_years'
+  | 'skills'
+  | 'roles'
+  | 'experiences'
+  | 'about'
+  | 'educations'
+  | 'conditions';
 
 export function applyResumeDraft(
   values: ProfileFormValues,
   draft: ResumeDraft,
   sections: ReadonlySet<ResumeSection>,
 ): ProfileFormValues {
-  // Переносит в анкету только отмеченные группы полей. Навыки, софт-скиллы и роли
-  // дополняют уже заполненное, а не заменяют его: кандидат мог указать больше, чем
-  // нашлось в резюме. Места работы добавляются в конец списка.
+  // Переносит в анкету только отмеченные группы полей. Навыки, софт-скиллы, роли и
+  // форматы работы дополняют уже заполненное, а не заменяют его: кандидат мог указать
+  // больше, чем нашлось в резюме. Места работы и учёба добавляются в конец списка,
+  // уже внесённые учебные заведения не дублируются.
   const next = { ...values };
   if (sections.has('name') && draft.full_name) next.full_name = draft.full_name;
   if (sections.has('contacts')) {
@@ -178,6 +188,28 @@ export function applyResumeDraft(
         description: item.description,
       })),
     ];
+  }
+  if (sections.has('about') && draft.about) next.about = draft.about;
+  if (sections.has('educations')) {
+    const known = new Set(
+      values.educations.map((item) => `${item.institution.toLowerCase()}|${item.graduated_year}`),
+    );
+    next.educations = [
+      ...values.educations,
+      ...draft.educations
+        .filter(
+          (item) => !known.has(`${item.institution.toLowerCase()}|${item.graduated_year ?? ''}`),
+        )
+        .map((item) => ({
+          institution: item.institution,
+          degree: item.degree,
+          graduated_year: item.graduated_year ?? ('' as const),
+        })),
+    ];
+  }
+  if (sections.has('conditions')) {
+    next.work_formats = Array.from(new Set([...values.work_formats, ...draft.work_formats]));
+    if (draft.relocation_ready !== null) next.relocation_ready = draft.relocation_ready;
   }
   return next;
 }

@@ -15,7 +15,7 @@ import { useState, type ReactNode } from 'react';
 import { parseResume } from '@/api/candidate';
 import { errorMessage } from '@/api/errors';
 import type { ResumeDraft } from '@/api/types';
-import { TEAM_ROLE_LABELS } from '@/shared/lib/candidate';
+import { TEAM_ROLE_LABELS, WORK_FORMAT_LABELS } from '@/shared/lib/candidate';
 import { pluralizeRu } from '@/shared/lib/format';
 import type { ResumeSection } from './profileValues';
 
@@ -68,6 +68,11 @@ export function ResumeImport({ onApply }: ResumeImportProps) {
         if (result.experience_years !== null) found.add('experience_years');
         if (result.skills.length || result.soft_skills.length) found.add('skills');
         if (result.team_roles.length) found.add('roles');
+        if (result.about) found.add('about');
+        if (result.educations.length) found.add('educations');
+        if (result.work_formats.length || result.relocation_ready !== null) {
+          found.add('conditions');
+        }
         if (result.experiences.length) found.add('experiences');
         setSections(found);
         setDraft(result);
@@ -98,8 +103,9 @@ export function ResumeImport({ onApply }: ResumeImportProps) {
           )}
         </FileButton>
         <Text size="xs" c="dimmed">
-          Распознаём ФИО, контакты, город, стек и софт-скиллы, роли, опыт и подсказку грейда. Файл
-          не сохраняется.
+          Распознаём ФИО, контакты, город, стек и софт-скиллы, роли, места работы, образование, «О
+          себе», формат работы и подсказку грейда. Подходят выгрузки hh.ru, LinkedIn и обычные
+          резюме. Файл не сохраняется.
         </Text>
       </Group>
       {parse.isError && (
@@ -206,6 +212,50 @@ export function ResumeImport({ onApply }: ResumeImportProps) {
                     {item.company_name ? ` — ${item.company_name}` : ''}
                   </Text>
                 ))}
+              </Row>
+            )}
+            {draft.about && (
+              <Row section="about" label="О себе" checked={sections.has('about')} onToggle={toggle}>
+                <Text size="sm" lineClamp={3}>
+                  {draft.about}
+                </Text>
+              </Row>
+            )}
+            {draft.educations.length > 0 && (
+              <Row
+                section="educations"
+                label="Образование"
+                checked={sections.has('educations')}
+                onToggle={toggle}
+              >
+                {draft.educations.map((item) => (
+                  <Text key={`${item.institution}-${item.graduated_year}`} size="sm">
+                    {item.institution}
+                    {item.graduated_year ? `, ${item.graduated_year}` : ''}
+                    {item.degree ? ` — ${item.degree}` : ''}
+                  </Text>
+                ))}
+              </Row>
+            )}
+            {(draft.work_formats.length > 0 || draft.relocation_ready !== null) && (
+              <Row
+                section="conditions"
+                label="Формат работы и переезд"
+                checked={sections.has('conditions')}
+                onToggle={toggle}
+              >
+                <Text size="sm">
+                  {[
+                    draft.work_formats.map((item) => WORK_FORMAT_LABELS[item]).join(', '),
+                    draft.relocation_ready === null
+                      ? ''
+                      : draft.relocation_ready
+                        ? 'готов к переезду'
+                        : 'не готов к переезду',
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </Text>
               </Row>
             )}
             {(draft.specialization || draft.grade) && (

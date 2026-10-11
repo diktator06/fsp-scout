@@ -4,8 +4,14 @@ from datetime import UTC, datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud import specialization_crud
+from app.models.candidate import WorkFormat
 from app.models.user import User
-from app.schemas.candidate import ResumeDraftRead, ResumeExperienceDraft, ResumeSkillDraft
+from app.schemas.candidate import (
+    ResumeDraftRead,
+    ResumeEducationDraft,
+    ResumeExperienceDraft,
+    ResumeSkillDraft,
+)
 from app.schemas.dictionary import GradeBrief, SkillRead, SpecializationBrief
 from app.services.candidate.profile_service import CandidateProfileService
 from app.services.candidate.resume_parser import parse_resume_text
@@ -92,6 +98,17 @@ class ResumeImportService:
                 )
                 for item in parsed.experiences
             ],
+            about=parsed.about,
+            educations=[
+                ResumeEducationDraft(
+                    institution=item.institution,
+                    degree=item.degree,
+                    graduated_year=item.graduated_year,
+                )
+                for item in parsed.educations
+            ],
+            work_formats=[WorkFormat(code) for code in parsed.work_formats],
+            relocation_ready=parsed.relocation_ready,
             evidence=parsed.evidence,
             warnings=warnings,
         )

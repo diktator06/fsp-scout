@@ -257,6 +257,14 @@ class ResumeExperienceDraft(BaseModel):
     description: str
 
 
+class ResumeEducationDraft(BaseModel):
+    """Учебное заведение из резюме: черновик для анкеты."""
+
+    institution: str
+    degree: str
+    graduated_year: int | None
+
+
 class ResumeDraftRead(BaseModel):
     """Результат автораспознавания резюме. Ничего не сохраняется, пока кандидат не подтвердит."""
 
@@ -272,5 +280,11 @@ class ResumeDraftRead(BaseModel):
     soft_skills: list[str]
     team_roles: list[TeamRole]
     experiences: list[ResumeExperienceDraft]
+    about: str | None = Field(description="Раздел «О себе»")
+    educations: list[ResumeEducationDraft]
+    work_formats: list[WorkFormat]
+    relocation_ready: bool | None = Field(
+        description="Готовность к переезду; null — в резюме не указано"
+    )
     evidence: dict[str, str]
     warnings: list[str]

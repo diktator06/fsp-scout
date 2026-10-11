@@ -78,3 +78,129 @@ def test_overlaps_explicit_years_and_soft_skills() -> None:
     assert explicit.experience_years == 3
     assert explicit.grade_code == "middle"
     assert explicit.soft_skills == ["Коммуникация"]
+
+
+HH_RESUME = """Петрова Анна Сергеевна
+Женщина, 31 год, родилась 2 марта 1995
++7 (912) 3456789 — предпочитаемый способ связи • telegram: https://t.me/anna_petrova_dev
+anna.petrova@example.com
+Проживает: Казань
+Не готова к переезду, готова к командировкам
+Желаемая должность и зарплата
+Middle Python-разработчик
+Тип занятости: полная занятость
+Формат работы: удалённо, гибрид
+Опыт работы — 6 лет 3 месяца
+Апрель 2022 —
+настоящее время
+4 года 7 месяцев
+ООО «Облако Плюс»
+Казань, cloud-plus.example.ru
+Информационные технологии, системная интеграция, интернет
+• Разработка программного обеспечения
+Python-разработчик
+Сервис биллинга на FastAPI и PostgreSQL.
+Анна Петрова • Резюме обновлено 1 октября 2026 в 10:00
+Июль 2020 —
+Март 2022
+1 год 9 месяцев
+АО «Цифровые решения»
+Москва
+• Банк
+Младший разработчик
+Интеграции с банками на Django.
+Образование
+Высшее
+2017
+Магистр
+Казанский федеральный университет
+Институт ВМиИТ, Прикладная информатика
+2015
+Бакалавр
+Казанский федеральный университет
+Институт ВМиИТ, Прикладная информатика
+Анна Петрова • Резюме обновлено 1 октября 2026 в 10:00
+2015
+Бакалавр
+Казанский федеральный университет
+Институт ВМиИТ, Прикладная информатика
+Повышение квалификации, курсы
+2024 Яндекс Практикум
+Навыки
+Навыки Python FastAPI PostgreSQL Docker
+Дополнительная информация
+Обо мне Пишу бэкенд для платёжных сервисов, наставник для двух стажёров.
+Люблю понятные API и тесты.
+"""
+
+LINKEDIN_RESUME = """Ivan Smirnov
+Senior Backend Engineer
+Telegram: @ivan_smirnov_dev
+Summary
+Backend engineer focused on Python services and distributed systems.
+Experience
+Yandex
+Senior Backend Engineer
+January 2021 - Present (5 years 10 months)
+Moscow, Russia
+Built payment APIs in Python.
+Sber
+Backend Developer
+March 2018 - December 2020 (2 years 10 months)
+Worked on internal tools.
+Education
+Moscow State University
+Master of Science, Computer Science · (2012 - 2018)
+"""
+
+
+def test_hh_export_experience_education_about_and_conditions() -> None:
+    """Выгрузка hh.ru: перенос периода, шапка места работы, колонтитулы, образование, «О себе»."""
+    parsed = parse_resume_text(HH_RESUME, CATALOG, TODAY)
+    assert parsed.full_name == "Петрова Анна Сергеевна"
+    assert parsed.telegram == "@anna_petrova_dev"
+    assert [(job.position, job.company_name) for job in parsed.experiences] == [
+        ("Python-разработчик", "ООО «Облако Плюс»"),
+        ("Младший разработчик", "АО «Цифровые решения»"),
+    ]
+    first, second = parsed.experiences
+    assert (first.started_on, first.ended_on) == (date(2022, 4, 1), None)
+    assert (second.started_on, second.ended_on) == (date(2020, 7, 1), date(2022, 3, 1))
+    assert first.description == "Сервис биллинга на FastAPI и PostgreSQL."
+    assert "Резюме обновлено" not in first.description
+    assert parsed.experience_years == 6.5
+    assert [(item.institution, item.graduated_year) for item in parsed.educations] == [
+        ("Казанский федеральный университет", 2017),
+        ("Казанский федеральный университет", 2015),
+    ]
+    assert parsed.educations[0].degree.startswith("Магистр, Институт ВМиИТ")
+    assert parsed.about is not None
+    assert parsed.about.startswith("Пишу бэкенд для платёжных сервисов")
+    assert parsed.about.endswith("Люблю понятные API и тесты.")
+    assert parsed.work_formats == ["hybrid", "remote"]
+    assert parsed.relocation_ready is False
+
+
+def test_linkedin_export_header_above_period_and_years_in_parens() -> None:
+    """LinkedIn: компания и должность над периодом, длительность в скобках, степень с годами."""
+    parsed = parse_resume_text(LINKEDIN_RESUME, CATALOG, TODAY)
+    assert [(job.position, job.company_name) for job in parsed.experiences] == [
+        ("Senior Backend Engineer", "Yandex"),
+        ("Backend Developer", "Sber"),
+    ]
+    assert parsed.experiences[0].description == "Built payment APIs in Python."
+    assert parsed.experiences[1].description == "Worked on internal tools."
+    assert parsed.educations[0].institution == "Moscow State University"
+    assert parsed.educations[0].graduated_year == 2018
+    assert parsed.about == "Backend engineer focused on Python services and distributed systems."
+
+
+def test_telegram_link_and_relocation_phrases() -> None:
+    """Ник Telegram — из ссылки t.me, а не слово https; переезд — да, нет или неизвестно."""
+    link = parse_resume_text("Иван Иванов\ntelegram: https://t.me/ivan_dev_2026\n", CATALOG, TODAY)
+    assert link.telegram == "@ivan_dev_2026"
+    ready = parse_resume_text("Иван Иванов\nГотов к переезду: Казань\n", CATALOG, TODAY)
+    assert ready.relocation_ready is True
+    impossible = parse_resume_text("Иван Иванов\nПереезд невозможен\n", CATALOG, TODAY)
+    assert impossible.relocation_ready is False
+    assert parse_resume_text(RESUME, CATALOG, TODAY).relocation_ready is None
