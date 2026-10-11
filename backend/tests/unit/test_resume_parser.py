@@ -204,3 +204,24 @@ def test_telegram_link_and_relocation_phrases() -> None:
     impossible = parse_resume_text("Иван Иванов\nПереезд невозможен\n", CATALOG, TODAY)
     assert impossible.relocation_ready is False
     assert parse_resume_text(RESUME, CATALOG, TODAY).relocation_ready is None
+
+
+def test_education_year_and_degree_on_one_line_and_wrapped_institution() -> None:
+    """Год со степенью в одной строке и название вуза, перенесённое на вторую строку."""
+    text = """Иван Иванов
+Образование
+Магистр
+2019 Магистр
+Московский государственный технический университет им. Н.Э.
+Баумана
+Информатика и системы управления, Информационная безопасность
+Навыки
+"""
+    (education,) = parse_resume_text(text, CATALOG, TODAY).educations
+    assert education.institution == (
+        "Московский государственный технический университет им. Н.Э. Баумана"
+    )
+    assert (
+        education.degree == "Магистр, Информатика и системы управления, Информационная безопасность"
+    )
+    assert education.graduated_year == 2019

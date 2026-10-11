@@ -157,8 +157,9 @@ _DEGREE = re.compile(
     r"|bachelor.*|master.*|ph\.?\s?d\.?|mba)$",
     re.IGNORECASE,
 )
-_YEAR_LINE = re.compile(r"^((?:19|20)\d{2})$")
+_YEAR_LINE = re.compile(r"^((?:19|20)\d{2})(?:\s+(.+))?$")
 _INLINE_EDUCATION = re.compile(r"^(.{2,200}?),?\s+((?:19|20)\d{2})$")
+_UNFINISHED = re.compile(r"(?:\b[А-ЯЁA-Z]\.|\bим\.|\bимени|\b(?:и|of|and|the))$")
 _YEARS_IN_PARENS = re.compile(r"\((?:(?:19|20)\d{2})\s*[-–—]\s*((?:19|20)\d{2})\)")
 _FORMAT_LINE = re.compile(
     r"^(?:формат работы|график работы|work (?:format|mode)|workplace)\s*:?\s*(.+)$", re.IGNORECASE
@@ -503,8 +504,9 @@ def _educations(lines: Sequence[str]) -> list[ResumeEducation]:
     current: dict[str, Any] | None = None
     for position, line in enumerate(body):
         year = _YEAR_LINE.match(line)
-        if year:
-            current = {"year": int(year.group(1)), "degree": "", "lines": []}
+        if year and (year.group(2) is None or _DEGREE.match(year.group(2))):
+            # Год и степень из соседних колонок PDF иногда приходят одной строкой.
+            current = {"year": int(year.group(1)), "degree": year.group(2) or "", "lines": []}
             entries.append(current)
             continue
         parens = _YEARS_IN_PARENS.search(line)
@@ -531,8 +533,14 @@ def _educations(lines: Sequence[str]) -> list[ResumeEducation]:
     for entry in entries:
         if not entry["lines"]:
             continue
-        institution = entry["lines"][0].strip(" ,")[:300]
-        details = ", ".join([entry["degree"], *entry["lines"][1:]]).strip(" ,")
+        rows = list(entry["lines"])
+        # Длинное название вуза переносится: «…им. Н.Э.» / «Баумана». Склеиваем, только
+        # если первая строка явно оборвана (инициалы, «им.», союз) или вторая начинается
+        # со строчной буквы — иначе вторая строка это специальность.
+        while len(rows) > 1 and (_UNFINISHED.search(rows[0]) or rows[1][:1].islower()):
+            rows[0:2] = [f"{rows[0]} {rows[1]}"]
+        institution = rows[0].strip(" ,")[:300]
+        details = ", ".join([entry["degree"], *rows[1:]]).strip(" ,")
         key = (institution.lower(), entry["year"])
         if len(institution) < 2 or key in seen:
             continue
