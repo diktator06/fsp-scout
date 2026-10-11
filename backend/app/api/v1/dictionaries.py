@@ -29,21 +29,36 @@ router = APIRouter(prefix="/dictionaries", tags=["dictionaries"])
 _methodist_errors = error_responses(401, 403, 404, 409, 422)
 
 
-@router.get("/specializations", response_model=list[SpecializationRead], summary="Специализации")
+@router.get(
+    "/specializations",
+    response_model=list[SpecializationRead],
+    responses=error_responses(),
+    summary="Специализации",
+)
 async def list_specializations(session: SessionDep) -> list[SpecializationRead]:
     """Все специализации в порядке показа в интерфейсе."""
     items = await specialization_crud.list_all(session)
     return [SpecializationRead.model_validate(item) for item in items]
 
 
-@router.get("/grades", response_model=list[GradeRead], summary="Грейды")
+@router.get(
+    "/grades",
+    response_model=list[GradeRead],
+    responses=error_responses(),
+    summary="Грейды",
+)
 async def list_grades(session: SessionDep) -> list[GradeRead]:
     """Грейды по возрастанию уровня вместе с порогами по шкале способностей."""
     items = await grade_crud.list_all(session)
     return [GradeRead.model_validate(item) for item in items]
 
 
-@router.get("/categories", response_model=list[CategoryRead], summary="Категории кандидатов")
+@router.get(
+    "/categories",
+    response_model=list[CategoryRead],
+    responses=error_responses(422),
+    summary="Категории кандидатов",
+)
 async def list_categories(
     session: SessionDep,
     specialization_id: Annotated[int | None, Query(description="Фильтр по специализации")] = None,
@@ -56,14 +71,24 @@ async def list_categories(
     return [CategoryRead.model_validate(item) for item in items]
 
 
-@router.get("/industries", response_model=list[IndustryRead], summary="Отрасли")
+@router.get(
+    "/industries",
+    response_model=list[IndustryRead],
+    responses=error_responses(),
+    summary="Отрасли",
+)
 async def list_industries(session: SessionDep) -> list[IndustryRead]:
     """Отрасли для опроса кандидата и профиля компании."""
     items = await industry_crud.list_all(session)
     return [IndustryRead.model_validate(item) for item in items]
 
 
-@router.get("/skills", response_model=Page[SkillRead], summary="Поиск навыков")
+@router.get(
+    "/skills",
+    response_model=Page[SkillRead],
+    responses=error_responses(422),
+    summary="Поиск навыков",
+)
 async def search_skills(
     session: SessionDep,
     pagination: PaginationDep,

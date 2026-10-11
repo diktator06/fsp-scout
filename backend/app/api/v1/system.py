@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.api.deps import SessionDep, SettingsDep
+from app.api.errors import error_responses
 from app.crud.system import ping_database
 
 router = APIRouter(tags=["system"])
@@ -22,7 +23,10 @@ class HealthResponse(BaseModel):
 @router.get(
     "/health",
     response_model=HealthResponse,
-    responses={503: {"model": HealthResponse, "description": "База данных недоступна"}},
+    responses={
+        **error_responses(),
+        503: {"model": HealthResponse, "description": "База данных недоступна"},
+    },
     summary="Проверка работоспособности",
 )
 async def health(session: SessionDep, settings: SettingsDep) -> HealthResponse | JSONResponse:

@@ -19,6 +19,7 @@ _ERROR_DESCRIPTIONS: dict[int, str] = {
     409: "Конфликт с текущим состоянием данных",
     422: "Ошибка валидации входных данных",
     429: "Превышен лимит запросов",
+    500: "Внутренняя ошибка сервиса",
     503: "Внешний сервис недоступен",
 }
 
@@ -31,10 +32,15 @@ _HTTP_ERROR_CODES: dict[int, str] = {
 
 
 def error_responses(*status_codes: int) -> dict[int | str, dict[str, Any]]:
-    """Описание ошибок эндпоинта для OpenAPI: все они приходят в формате `ErrorResponse`."""
+    """Описание ошибок эндпоинта для OpenAPI: все они приходят в формате `ErrorResponse`.
+
+    500 добавляется всегда: непредвиденную ошибку любого метода перехватывает
+    `handle_unexpected_error` и отдаёт в том же формате.
+    """
+    codes = sorted({*status_codes, status.HTTP_500_INTERNAL_SERVER_ERROR})
     return {
         code: {"model": ErrorResponse, "description": _ERROR_DESCRIPTIONS.get(code, "Ошибка")}
-        for code in status_codes
+        for code in codes
     }
 
 

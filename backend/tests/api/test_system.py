@@ -40,6 +40,22 @@ async def test_openapi_and_docs_are_available(client: AsyncClient) -> None:
     assert "swagger-ui" in docs.text
 
 
+async def test_every_endpoint_documents_responses_and_errors(client: AsyncClient) -> None:
+    """У каждого метода есть описание, успешный ответ и коды ошибок в едином формате."""
+    spec = (await client.get("/api/openapi.json")).json()
+    gaps = []
+    for path, operations in spec["paths"].items():
+        for method, operation in operations.items():
+            codes = set(operation["responses"])
+            if not operation.get("summary") or not operation.get("description"):
+                gaps.append(f"{method} {path}: нет описания")
+            if not any(code.startswith("2") for code in codes):
+                gaps.append(f"{method} {path}: нет успешного ответа")
+            if "500" not in codes:
+                gaps.append(f"{method} {path}: не описаны ошибки")
+    assert gaps == []
+
+
 async def test_seeding_is_idempotent(db_session: AsyncSession) -> None:
     """Повторное сидирование поверх уже наполненной базы ничего не создаёт и не меняет."""
     report = await seed_reference_data(db_session)

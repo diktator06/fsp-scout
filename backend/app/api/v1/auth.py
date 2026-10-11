@@ -220,6 +220,7 @@ async def refresh(
 @router.post(
     "/logout",
     status_code=status.HTTP_204_NO_CONTENT,
+    responses=error_responses(),
     summary="Выход из аккаунта",
 )
 async def logout(request: Request, service: AuthServiceDep, settings: SettingsDep) -> Response:
