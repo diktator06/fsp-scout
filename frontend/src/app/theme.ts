@@ -5,11 +5,16 @@ import {
   Checkbox,
   createTheme,
   type CSSVariablesResolver,
+  getSpacing,
   type MantineColorsTuple,
+  MultiSelect,
   Paper,
   PasswordInput,
   rem,
   SegmentedControl,
+  Select,
+  TagsInput,
+  Textarea,
   TextInput,
   NumberInput,
   Tooltip,
@@ -126,11 +131,25 @@ export const theme = createTheme({
         return { root: height ? { '--button-height': height } : {} };
       },
     }),
-    Card: Card.extend({ defaultProps: { radius: 'lg', withBorder: true, padding: 'xl' } }),
+    Card: Card.extend({
+      defaultProps: { radius: 'lg', withBorder: true },
+      vars: (_theme, props) => {
+        // Отступ по умолчанию зависит от ширины экрана: 20 px на телефоне, где каждый
+        // пиксель идёт под текст, и 32 px от 768 px (--scout-card-padding в global.css).
+        // Отступ, явно заданный страницей, не меняется.
+        const padding =
+          props.padding === undefined ? 'var(--scout-card-padding)' : getSpacing(props.padding);
+        return { root: { '--card-padding': padding } };
+      },
+    }),
     Paper: Paper.extend({ defaultProps: { radius: 'lg' } }),
     TextInput: TextInput.extend({ defaultProps: { size: 'md' } }),
     PasswordInput: PasswordInput.extend({ defaultProps: { size: 'md' } }),
     NumberInput: NumberInput.extend({ defaultProps: { size: 'md' } }),
+    Select: Select.extend({ defaultProps: { size: 'md' } }),
+    MultiSelect: MultiSelect.extend({ defaultProps: { size: 'md' } }),
+    TagsInput: TagsInput.extend({ defaultProps: { size: 'md' } }),
+    Textarea: Textarea.extend({ defaultProps: { size: 'md' } }),
     SegmentedControl: SegmentedControl.extend({ defaultProps: { radius: 'md' } }),
     Checkbox: Checkbox.extend({ defaultProps: { radius: 'xs' } }),
     Badge: Badge.extend({

@@ -4,6 +4,13 @@
   --scout-line: #e2deec;
   --scout-line-strong: #cfc8df;
   --scout-ink-soft: #3d3b4a;
+  --scout-card-padding: var(--mantine-spacing-lg);
+}
+
+@media (min-width: $mantine-breakpoint-sm) {
+  :root {
+    --scout-card-padding: var(--mantine-spacing-xl);
+  }
 }
 
 html {
