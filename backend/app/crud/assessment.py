@@ -173,6 +173,17 @@ class SurveyCRUD(CRUDBase[SurveyResponse]):
             .limit(1)
         )
 
+    async def list_for_candidate(
+        self, session: AsyncSession, candidate_id: uuid.UUID
+    ) -> Sequence[SurveyResponse]:
+        """Все опросы кандидата, новые сверху."""
+        result = await session.scalars(
+            select(SurveyResponse)
+            .where(SurveyResponse.candidate_id == candidate_id)
+            .order_by(SurveyResponse.created_at.desc())
+        )
+        return result.all()
+
 
 class AssessmentSessionCRUD(CRUDBase[AssessmentSession]):
     """Доступ к сессиям тестирования."""

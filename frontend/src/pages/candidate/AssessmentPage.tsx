@@ -8,7 +8,7 @@ import type { AssessmentHistory, CandidateStatus } from '@/api/types';
 import { GradeLauncher } from '@/features/assessment/GradeLauncher';
 import { MODE_LABELS, OUTCOME_COPY } from '@/shared/lib/assessment';
 import { GRADE_STATUS_COPY } from '@/shared/lib/candidate';
-import { formatDateTime } from '@/shared/lib/format';
+import { formatDateTime, pluralizeRu } from '@/shared/lib/format';
 import { CategoryBadge, ErrorState, LoadingState, PageHeader } from '@/shared/ui';
 
 const SESSION_STATUS_LABELS = {
@@ -66,8 +66,35 @@ function CurrentCategory({ status }: { status: CandidateStatus }) {
   );
 }
 
+function SurveyHistory({ surveys }: { surveys: AssessmentHistory['surveys'] }) {
+  // Каждое изменение опроса хранится отдельно: видно, с какой специализацией и
+  // заявленным грейдом кандидат приходил на тесты.
+  return (
+    <Stack gap={6}>
+      <Text fw={700} size="sm">
+        Опросы
+      </Text>
+      {surveys.map((survey) => (
+        <Group key={survey.id} gap="sm" wrap="wrap">
+          <Text size="sm" c="dimmed" className="tabular" miw={110}>
+            {formatDateTime(survey.created_at)}
+          </Text>
+          <Text size="sm" fw={600}>
+            {survey.specialization.name} · заявлен {survey.claimed_grade.name}
+          </Text>
+          <Text size="sm" c="dimmed">
+            стаж {String(survey.experience_years).replace('.', ',')} г.,{' '}
+            {survey.primary_skill_ids.length}{' '}
+            {pluralizeRu(survey.primary_skill_ids.length, ['навык', 'навыка', 'навыков'])} в стеке
+          </Text>
+        </Group>
+      ))}
+    </Stack>
+  );
+}
+
 function History({ history }: { history: AssessmentHistory }) {
-  if (history.sessions.length === 0) {
+  if (history.sessions.length === 0 && history.surveys.length === 0) {
     return (
       <Text size="sm" c="dimmed">
         Попыток пока не было.
@@ -76,55 +103,61 @@ function History({ history }: { history: AssessmentHistory }) {
   }
   return (
     <Stack gap="lg">
-      <Table.ScrollContainer minWidth={460}>
-        <Table verticalSpacing="sm" highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Дата</Table.Th>
-              <Table.Th>Тест</Table.Th>
-              <Table.Th>Итог</Table.Th>
-              <Table.Th ta="right">Заданий</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {history.sessions.map((session) => (
-              <Table.Tr key={session.id}>
-                <Table.Td style={{ whiteSpace: 'nowrap' }}>
-                  <Anchor component={Link} to={`/c/assessment/sessions/${session.id}`} size="sm">
-                    {formatDateTime(session.started_at)}
-                  </Anchor>
-                </Table.Td>
-                <Table.Td>
-                  <Text size="sm" fw={600}>
-                    {session.specialization.name} · {session.target_grade.name}
-                  </Text>
-                  <Text size="xs" c="dimmed">
-                    {MODE_LABELS[session.mode]}
-                  </Text>
-                </Table.Td>
-                <Table.Td>
-                  {session.outcome ? (
-                    <Badge
-                      color={OUTCOME_COPY[session.outcome].color}
-                      variant="light"
-                      style={{ flexShrink: 0, maxWidth: 'none' }}
-                    >
-                      {OUTCOME_COPY[session.outcome].short}
-                    </Badge>
-                  ) : (
-                    <Text size="sm" c="dimmed">
-                      {SESSION_STATUS_LABELS[session.status]}
-                    </Text>
-                  )}
-                </Table.Td>
-                <Table.Td ta="right" className="tabular">
-                  {session.items_scored}
-                </Table.Td>
+      {history.sessions.length === 0 ? (
+        <Text size="sm" c="dimmed">
+          Тестов пока не было.
+        </Text>
+      ) : (
+        <Table.ScrollContainer minWidth={460}>
+          <Table verticalSpacing="sm" highlightOnHover>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Дата</Table.Th>
+                <Table.Th>Тест</Table.Th>
+                <Table.Th>Итог</Table.Th>
+                <Table.Th ta="right">Заданий</Table.Th>
               </Table.Tr>
-            ))}
-          </Table.Tbody>
-        </Table>
-      </Table.ScrollContainer>
+            </Table.Thead>
+            <Table.Tbody>
+              {history.sessions.map((session) => (
+                <Table.Tr key={session.id}>
+                  <Table.Td style={{ whiteSpace: 'nowrap' }}>
+                    <Anchor component={Link} to={`/c/assessment/sessions/${session.id}`} size="sm">
+                      {formatDateTime(session.started_at)}
+                    </Anchor>
+                  </Table.Td>
+                  <Table.Td>
+                    <Text size="sm" fw={600}>
+                      {session.specialization.name} · {session.target_grade.name}
+                    </Text>
+                    <Text size="xs" c="dimmed">
+                      {MODE_LABELS[session.mode]}
+                    </Text>
+                  </Table.Td>
+                  <Table.Td>
+                    {session.outcome ? (
+                      <Badge
+                        color={OUTCOME_COPY[session.outcome].color}
+                        variant="light"
+                        style={{ flexShrink: 0, maxWidth: 'none' }}
+                      >
+                        {OUTCOME_COPY[session.outcome].short}
+                      </Badge>
+                    ) : (
+                      <Text size="sm" c="dimmed">
+                        {SESSION_STATUS_LABELS[session.status]}
+                      </Text>
+                    )}
+                  </Table.Td>
+                  <Table.Td ta="right" className="tabular">
+                    {session.items_scored}
+                  </Table.Td>
+                </Table.Tr>
+              ))}
+            </Table.Tbody>
+          </Table>
+        </Table.ScrollContainer>
+      )}
       {history.grade_changes.length > 0 && (
         <Stack gap={6}>
           <Text fw={700} size="sm">
@@ -145,6 +178,7 @@ function History({ history }: { history: AssessmentHistory }) {
           ))}
         </Stack>
       )}
+      {history.surveys.length > 0 && <SurveyHistory surveys={history.surveys} />}
     </Stack>
   );
 }

@@ -137,7 +137,7 @@
         "type": "string"
       },
       "AssessmentHistoryRead": {
-        "description": "История тестов и смен категории.",
+        "description": "История опросов, тестов и смен категории.",
         "properties": {
           "grade_changes": {
             "items": {
@@ -152,9 +152,17 @@
             },
             "title": "Sessions",
             "type": "array"
+          },
+          "surveys": {
+            "items": {
+              "$ref": "#/components/schemas/SurveyRead"
+            },
+            "title": "Surveys",
+            "type": "array"
           }
         },
         "required": [
+          "surveys",
           "sessions",
           "grade_changes"
         ],
@@ -9634,6 +9642,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -9681,6 +9699,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -9792,6 +9820,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -9869,6 +9907,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -9946,6 +9994,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -10033,6 +10091,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -10122,6 +10190,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -10211,6 +10289,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -10300,6 +10388,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -10399,6 +10497,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -10491,6 +10599,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -10578,6 +10696,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -10663,6 +10791,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -10751,6 +10889,16 @@
             },
             "description": "Превышен лимит запросов"
           },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
+          },
           "503": {
             "content": {
               "application/json": {
@@ -10802,6 +10950,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           },
           "503": {
             "content": {
@@ -10884,6 +11042,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Вход по email и паролю",
@@ -10899,6 +11067,16 @@
         "responses": {
           "204": {
             "description": "Successful Response"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Выход из аккаунта",
@@ -10941,6 +11119,16 @@
               }
             },
             "description": "Недостаточно прав"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -10978,6 +11166,16 @@
               }
             },
             "description": "Требуется вход или токен недействителен"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Обновление сессии по refresh-cookie",
@@ -11040,6 +11238,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Регистрация кандидата или работодателя",
@@ -11092,6 +11300,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Повторная отправка письма подтверждения",
@@ -11164,6 +11382,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Подтверждение email по ссылке из письма",
@@ -11240,6 +11468,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -11329,6 +11567,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -11386,6 +11634,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -11453,6 +11711,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -11523,6 +11791,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           },
           "503": {
             "content": {
@@ -11608,6 +11886,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           },
           "503": {
             "content": {
@@ -11706,6 +11994,16 @@
             },
             "description": "Ошибка валидации входных данных"
           },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
+          },
           "503": {
             "content": {
               "application/json": {
@@ -11803,6 +12101,16 @@
             },
             "description": "Ошибка валидации входных данных"
           },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
+          },
           "503": {
             "content": {
               "application/json": {
@@ -11889,6 +12197,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           },
           "503": {
             "content": {
@@ -11980,6 +12298,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12069,6 +12397,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12158,6 +12496,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12257,6 +12605,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12314,6 +12672,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12379,6 +12747,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12436,6 +12814,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12501,6 +12889,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12554,6 +12952,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12631,6 +13039,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12688,6 +13106,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12765,6 +13193,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12842,6 +13280,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -12931,6 +13379,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -13030,6 +13488,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -13127,6 +13595,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -13206,6 +13684,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Категории кандидатов",
@@ -13232,6 +13720,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Грейды",
@@ -13258,6 +13756,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Отрасли",
@@ -13374,6 +13882,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Поиск навыков",
@@ -13454,6 +13972,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -13535,6 +14063,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -13631,6 +14169,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -13662,6 +14210,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Специализации",
@@ -13742,6 +14300,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -13823,6 +14391,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -13919,6 +14497,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -14018,6 +14606,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -14127,6 +14725,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -14380,6 +14988,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -14488,6 +15106,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -14555,6 +15183,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -14630,6 +15268,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -14697,6 +15345,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -14778,6 +15436,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -14867,6 +15535,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -14918,6 +15596,16 @@
               }
             },
             "description": "Недостаточно прав"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15010,6 +15698,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15087,6 +15785,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15168,6 +15876,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15253,6 +15971,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15335,6 +16063,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15432,6 +16170,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15521,6 +16269,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15610,6 +16368,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15739,6 +16507,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15834,6 +16612,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -15933,6 +16721,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16032,6 +16830,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16113,6 +16921,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16198,6 +17016,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16285,6 +17113,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16374,6 +17212,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16471,6 +17319,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16564,6 +17422,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16653,6 +17521,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16745,6 +17623,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16845,6 +17733,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -16934,6 +17832,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17042,6 +17950,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17141,6 +18059,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17240,6 +18168,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17321,6 +18259,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17406,6 +18354,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17495,6 +18453,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17588,6 +18556,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17679,6 +18657,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17788,6 +18776,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17887,6 +18885,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -17994,6 +19002,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -18097,6 +19115,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -18196,6 +19224,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -18295,6 +19333,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -18394,6 +19442,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -18421,6 +19479,16 @@
               }
             },
             "description": "Successful Response"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           },
           "503": {
             "content": {
@@ -18483,6 +19551,16 @@
               }
             },
             "description": "Превышен лимит запросов"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "summary": "Песочница ATS: приём вебхука",
@@ -18555,6 +19633,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -18653,6 +19741,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -18748,6 +19846,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -18869,6 +19977,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -18967,6 +20085,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19048,6 +20176,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19137,6 +20275,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19218,6 +20366,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19307,6 +20465,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19406,6 +20574,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19505,6 +20683,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19604,6 +20792,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19703,6 +20901,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19750,6 +20958,16 @@
               }
             },
             "description": "Объект не найден"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19797,6 +21015,16 @@
               }
             },
             "description": "Объект не найден"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -19866,6 +21094,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -20058,6 +21296,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -20147,6 +21395,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [
@@ -20246,6 +21504,16 @@
               }
             },
             "description": "Ошибка валидации входных данных"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Внутренняя ошибка сервиса"
           }
         },
         "security": [

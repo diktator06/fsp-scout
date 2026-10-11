@@ -137,6 +137,7 @@ async def test_passing_test_assigns_category_and_verifies_skills(
     assert any(skill["is_verified"] for skill in profile["skills"])
 
     history = (await client.get(f"{BASE}/history", headers=headers)).json()
+    assert [survey["specialization"]["code"] for survey in history["surveys"]] == ["backend"]
     assert history["grade_changes"][0]["reason"] == "initial"
     assert history["sessions"][0]["outcome"] == result["outcome"]
 

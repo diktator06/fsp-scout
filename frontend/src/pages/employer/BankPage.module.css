@@ -1,0 +1,5 @@
+@media (min-width: 75em) {
+  .categoryField {
+    grid-column: span 2;
+  }
+}

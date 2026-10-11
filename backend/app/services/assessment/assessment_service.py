@@ -441,14 +441,30 @@ class AssessmentService:
         return await self._session_view(assessment, profile)
 
     async def history(self, user: User) -> AssessmentHistoryRead:
-        """История тестов и смен категории."""
+        """История опросов, тестов и смен категории."""
         profile = await self._profiles.ensure_profile(user)
         await self._commit()
+        surveys = await survey_crud.list_for_candidate(self._session, profile.id)
         sessions = await assessment_session_crud.list_for_candidate(self._session, profile.id)
         specializations = {s.id: s for s in await specialization_crud.list_all(self._session)}
         grades = {g.id: g for g in await grade_crud.list_all(self._session)}
         changes = await grade_history_crud.list_for_candidate(self._session, profile.id)
         return AssessmentHistoryRead(
+            surveys=[
+                SurveyRead(
+                    id=survey.id,
+                    specialization=SpecializationBrief.model_validate(
+                        specializations[survey.specialization_id]
+                    ),
+                    claimed_grade=_grade_brief(grades[survey.claimed_grade_id]),
+                    industry_ids=survey.industry_ids,
+                    primary_skill_ids=survey.primary_skill_ids,
+                    experience_years=survey.experience_years,
+                    team_roles=survey.team_roles,
+                    created_at=survey.created_at,
+                )
+                for survey in surveys
+            ],
             sessions=[
                 SessionSummaryRead(
                     id=item.id,

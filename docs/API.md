@@ -62,7 +62,7 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/health` | Проверка работоспособности | нет | 503 |
+| GET | `/api/v1/health` | Проверка работоспособности | нет | 500, 503 |
 
 ## auth
 
@@ -70,15 +70,15 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| POST | `/api/v1/auth/fsp/callback` | Вход через ФСП ID: завершение | нет | 400, 403, 409, 422, 429, 503 |
-| POST | `/api/v1/auth/fsp/start` | Вход через ФСП ID: начало | нет | 404, 429, 503 |
-| POST | `/api/v1/auth/login` | Вход по email и паролю | нет | 401, 403, 422, 429 |
-| POST | `/api/v1/auth/logout` | Выход из аккаунта | нет | — |
-| GET | `/api/v1/auth/me` | Текущий пользователь | да | 401, 403 |
-| POST | `/api/v1/auth/refresh` | Обновление сессии по refresh-cookie | нет | 401 |
-| POST | `/api/v1/auth/register` | Регистрация кандидата или работодателя | нет | 409, 422, 429 |
-| POST | `/api/v1/auth/resend-verification` | Повторная отправка письма подтверждения | нет | 422, 429 |
-| POST | `/api/v1/auth/verify-email` | Подтверждение email по ссылке из письма | нет | 400, 403, 422, 429 |
+| POST | `/api/v1/auth/fsp/callback` | Вход через ФСП ID: завершение | нет | 400, 403, 409, 422, 429, 500, 503 |
+| POST | `/api/v1/auth/fsp/start` | Вход через ФСП ID: начало | нет | 404, 429, 500, 503 |
+| POST | `/api/v1/auth/login` | Вход по email и паролю | нет | 401, 403, 422, 429, 500 |
+| POST | `/api/v1/auth/logout` | Выход из аккаунта | нет | 500 |
+| GET | `/api/v1/auth/me` | Текущий пользователь | да | 401, 403, 500 |
+| POST | `/api/v1/auth/refresh` | Обновление сессии по refresh-cookie | нет | 401, 500 |
+| POST | `/api/v1/auth/register` | Регистрация кандидата или работодателя | нет | 409, 422, 429, 500 |
+| POST | `/api/v1/auth/resend-verification` | Повторная отправка письма подтверждения | нет | 422, 429, 500 |
+| POST | `/api/v1/auth/verify-email` | Подтверждение email по ссылке из письма | нет | 400, 403, 422, 429, 500 |
 
 ## dictionaries
 
@@ -86,17 +86,17 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/dictionaries/categories` | Категории кандидатов | нет | 422 |
-| GET | `/api/v1/dictionaries/grades` | Грейды | нет | — |
-| GET | `/api/v1/dictionaries/industries` | Отрасли | нет | — |
-| GET | `/api/v1/dictionaries/skills` | Поиск навыков | нет | 422 |
-| POST | `/api/v1/dictionaries/skills` | Добавить навык (методист) | да | 401, 403, 404, 409, 422 |
-| PATCH | `/api/v1/dictionaries/skills/{skill_id}` | Изменить навык (методист) | да | 401, 403, 404, 409, 422 |
-| DELETE | `/api/v1/dictionaries/skills/{skill_id}` | Удалить навык (методист) | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/dictionaries/specializations` | Специализации | нет | — |
-| POST | `/api/v1/dictionaries/specializations` | Создать специализацию (методист) | да | 401, 403, 404, 409, 422 |
-| PATCH | `/api/v1/dictionaries/specializations/{specialization_id}` | Изменить специализацию (методист) | да | 401, 403, 404, 409, 422 |
-| DELETE | `/api/v1/dictionaries/specializations/{specialization_id}` | Удалить специализацию (методист) | да | 401, 403, 404, 409, 422 |
+| GET | `/api/v1/dictionaries/categories` | Категории кандидатов | нет | 422, 500 |
+| GET | `/api/v1/dictionaries/grades` | Грейды | нет | 500 |
+| GET | `/api/v1/dictionaries/industries` | Отрасли | нет | 500 |
+| GET | `/api/v1/dictionaries/skills` | Поиск навыков | нет | 422, 500 |
+| POST | `/api/v1/dictionaries/skills` | Добавить навык (методист) | да | 401, 403, 404, 409, 422, 500 |
+| PATCH | `/api/v1/dictionaries/skills/{skill_id}` | Изменить навык (методист) | да | 401, 403, 404, 409, 422, 500 |
+| DELETE | `/api/v1/dictionaries/skills/{skill_id}` | Удалить навык (методист) | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/dictionaries/specializations` | Специализации | нет | 500 |
+| POST | `/api/v1/dictionaries/specializations` | Создать специализацию (методист) | да | 401, 403, 404, 409, 422, 500 |
+| PATCH | `/api/v1/dictionaries/specializations/{specialization_id}` | Изменить специализацию (методист) | да | 401, 403, 404, 409, 422, 500 |
+| DELETE | `/api/v1/dictionaries/specializations/{specialization_id}` | Удалить специализацию (методист) | да | 401, 403, 404, 409, 422, 500 |
 
 ## account
 
@@ -104,8 +104,8 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| DELETE | `/api/v1/account` | Удалить аккаунт и все данные | да | 401, 422, 429 |
-| GET | `/api/v1/account/personal-data` | Выгрузка моих персональных данных | да | 401, 429 |
+| DELETE | `/api/v1/account` | Удалить аккаунт и все данные | да | 401, 422, 429, 500 |
+| GET | `/api/v1/account/personal-data` | Выгрузка моих персональных данных | да | 401, 429, 500 |
 
 ## notifications
 
@@ -113,9 +113,9 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/notifications` | Мои уведомления | да | 401, 404 |
-| POST | `/api/v1/notifications/read-all` | Отметить все прочитанными | да | 401, 404 |
-| POST | `/api/v1/notifications/{notification_id}/read` | Отметить уведомление прочитанным | да | 401, 404, 422 |
+| GET | `/api/v1/notifications` | Мои уведомления | да | 401, 404, 500 |
+| POST | `/api/v1/notifications/read-all` | Отметить все прочитанными | да | 401, 404, 500 |
+| POST | `/api/v1/notifications/{notification_id}/read` | Отметить уведомление прочитанным | да | 401, 404, 422, 500 |
 
 ## candidate
 
@@ -123,15 +123,15 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/candidates/me/consents` | Мои согласия | да | 401, 403, 422 |
-| PUT | `/api/v1/candidates/me/consents/bank-publication` | Согласие на публикацию в банке кандидатов | да | 401, 403, 422 |
-| GET | `/api/v1/candidates/me/privacy` | Настройки приватности | да | 401, 403, 422 |
-| PUT | `/api/v1/candidates/me/privacy` | Изменить приватность | да | 401, 403, 422 |
-| GET | `/api/v1/candidates/me/profile` | Мой профиль | да | 401, 403, 422 |
-| PUT | `/api/v1/candidates/me/profile` | Сохранить профиль | да | 401, 403, 422 |
-| GET | `/api/v1/candidates/me/profile.pdf` | Скачать стандартизированный PDF-профиль | да | 401, 403, 422 |
-| POST | `/api/v1/candidates/me/resume/parse` | Распознать резюме из PDF | да | 401, 403, 422, 429 |
-| GET | `/api/v1/candidates/me/status` | Статус онбординга | да | 401, 403, 422 |
+| GET | `/api/v1/candidates/me/consents` | Мои согласия | да | 401, 403, 422, 500 |
+| PUT | `/api/v1/candidates/me/consents/bank-publication` | Согласие на публикацию в банке кандидатов | да | 401, 403, 422, 500 |
+| GET | `/api/v1/candidates/me/privacy` | Настройки приватности | да | 401, 403, 422, 500 |
+| PUT | `/api/v1/candidates/me/privacy` | Изменить приватность | да | 401, 403, 422, 500 |
+| GET | `/api/v1/candidates/me/profile` | Мой профиль | да | 401, 403, 422, 500 |
+| PUT | `/api/v1/candidates/me/profile` | Сохранить профиль | да | 401, 403, 422, 500 |
+| GET | `/api/v1/candidates/me/profile.pdf` | Скачать стандартизированный PDF-профиль | да | 401, 403, 422, 500 |
+| POST | `/api/v1/candidates/me/resume/parse` | Распознать резюме из PDF | да | 401, 403, 422, 429, 500 |
+| GET | `/api/v1/candidates/me/status` | Статус онбординга | да | 401, 403, 422, 500 |
 
 ## candidate: fsp
 
@@ -139,11 +139,11 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/candidates/me/fsp` | Мой профиль ФСП | да | 401, 403, 404, 409, 422, 503 |
-| DELETE | `/api/v1/candidates/me/fsp` | Отвязать ФСП ID | да | 401, 403, 404, 409, 422, 503 |
-| POST | `/api/v1/candidates/me/fsp/link` | Начать привязку ФСП ID | да | 401, 403, 404, 409, 422, 503 |
-| POST | `/api/v1/candidates/me/fsp/link/callback` | Завершить привязку ФСП ID | да | 400, 401, 403, 409, 422, 503 |
-| POST | `/api/v1/candidates/me/fsp/sync` | Обновить участия из реестра ФСП | да | 401, 403, 404, 409, 422, 503 |
+| GET | `/api/v1/candidates/me/fsp` | Мой профиль ФСП | да | 401, 403, 404, 409, 422, 500, 503 |
+| DELETE | `/api/v1/candidates/me/fsp` | Отвязать ФСП ID | да | 401, 403, 404, 409, 422, 500, 503 |
+| POST | `/api/v1/candidates/me/fsp/link` | Начать привязку ФСП ID | да | 401, 403, 404, 409, 422, 500, 503 |
+| POST | `/api/v1/candidates/me/fsp/link/callback` | Завершить привязку ФСП ID | да | 400, 401, 403, 409, 422, 500, 503 |
+| POST | `/api/v1/candidates/me/fsp/sync` | Обновить участия из реестра ФСП | да | 401, 403, 404, 409, 422, 500, 503 |
 
 ## candidate: vacancies
 
@@ -151,11 +151,11 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/candidates/me/applications` | Мои отклики | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/candidates/me/applications/{application_id}/withdraw` | Отозвать отклик | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/vacancies` | Открытые вакансии | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/vacancies/{vacancy_id}` | Вакансия | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/vacancies/{vacancy_id}/applications` | Откликнуться | да | 401, 403, 404, 409, 422 |
+| GET | `/api/v1/candidates/me/applications` | Мои отклики | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/candidates/me/applications/{application_id}/withdraw` | Отозвать отклик | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/vacancies` | Открытые вакансии | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/vacancies/{vacancy_id}` | Вакансия | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/vacancies/{vacancy_id}/applications` | Откликнуться | да | 401, 403, 404, 409, 422, 500 |
 
 ## candidate: invitations
 
@@ -163,10 +163,10 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/candidates/me/invitations` | Мои приглашения | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/candidates/me/invitations/{invitation_id}` | Приглашение (отмечается просмотренным) | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/candidates/me/invitations/{invitation_id}/accept` | Принять приглашение | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/candidates/me/invitations/{invitation_id}/decline` | Отклонить приглашение | да | 401, 403, 404, 409, 422 |
+| GET | `/api/v1/candidates/me/invitations` | Мои приглашения | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/candidates/me/invitations/{invitation_id}` | Приглашение (отмечается просмотренным) | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/candidates/me/invitations/{invitation_id}/accept` | Принять приглашение | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/candidates/me/invitations/{invitation_id}/decline` | Отклонить приглашение | да | 401, 403, 404, 409, 422, 500 |
 
 ## candidate: tasks
 
@@ -174,10 +174,10 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/candidates/me/tasks` | Мои микрозадачи | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/candidates/me/tasks/request` | Попросить задачу | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/candidates/me/tasks/{assignment_id}/skip` | Пропустить задачу | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/candidates/me/tasks/{assignment_id}/submit` | Ответить на задачу | да | 401, 403, 404, 409, 422 |
+| GET | `/api/v1/candidates/me/tasks` | Мои микрозадачи | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/candidates/me/tasks/request` | Попросить задачу | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/candidates/me/tasks/{assignment_id}/skip` | Пропустить задачу | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/candidates/me/tasks/{assignment_id}/submit` | Ответить на задачу | да | 401, 403, 404, 409, 422, 500 |
 
 ## employer
 
@@ -185,9 +185,9 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/employer/company` | Моя компания | да | 401, 403, 409, 422 |
-| PUT | `/api/v1/employer/company` | Сохранить профиль компании | да | 401, 403, 409, 422 |
-| GET | `/api/v1/employer/dashboard` | Сводка кабинета работодателя | да | 401, 403, 409, 422 |
+| GET | `/api/v1/employer/company` | Моя компания | да | 401, 403, 409, 422, 500 |
+| PUT | `/api/v1/employer/company` | Сохранить профиль компании | да | 401, 403, 409, 422, 500 |
+| GET | `/api/v1/employer/dashboard` | Сводка кабинета работодателя | да | 401, 403, 409, 422, 500 |
 
 ## employer: needs
 
@@ -195,18 +195,18 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/employer/needs` | Потребности компании | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/needs` | Создать потребность | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/needs/parse` | Разобрать текст потребности | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/employer/needs/{need_id}` | Потребность | да | 401, 403, 404, 409, 422 |
-| PUT | `/api/v1/employer/needs/{need_id}` | Изменить потребность | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/employer/needs/{need_id}/categories` | Рекомендованные категории с рыночным срезом | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/needs/{need_id}/close` | Закрыть потребность | да | 401, 403, 404, 409, 422 |
-| PUT | `/api/v1/employer/needs/{need_id}/marks/{candidate_id}` | Закрепить или скрыть кандидата | да | 401, 403, 404, 409, 422 |
-| DELETE | `/api/v1/employer/needs/{need_id}/marks/{candidate_id}` | Снять отметку | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/needs/{need_id}/reopen` | Вернуть потребность в работу | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/employer/needs/{need_id}/shortlist` | Подборка (последняя или указанная версия) | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/needs/{need_id}/shortlists` | Уточнить подборку (новая версия) | да | 401, 403, 404, 409, 422 |
+| GET | `/api/v1/employer/needs` | Потребности компании | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/needs` | Создать потребность | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/needs/parse` | Разобрать текст потребности | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/employer/needs/{need_id}` | Потребность | да | 401, 403, 404, 409, 422, 500 |
+| PUT | `/api/v1/employer/needs/{need_id}` | Изменить потребность | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/employer/needs/{need_id}/categories` | Рекомендованные категории с рыночным срезом | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/needs/{need_id}/close` | Закрыть потребность | да | 401, 403, 404, 409, 422, 500 |
+| PUT | `/api/v1/employer/needs/{need_id}/marks/{candidate_id}` | Закрепить или скрыть кандидата | да | 401, 403, 404, 409, 422, 500 |
+| DELETE | `/api/v1/employer/needs/{need_id}/marks/{candidate_id}` | Снять отметку | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/needs/{need_id}/reopen` | Вернуть потребность в работу | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/employer/needs/{need_id}/shortlist` | Подборка (последняя или указанная версия) | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/needs/{need_id}/shortlists` | Уточнить подборку (новая версия) | да | 401, 403, 404, 409, 422, 500 |
 
 ## employer: bank
 
@@ -214,8 +214,8 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/employer/candidates` | Банк кандидатов | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/employer/candidates/{candidate_id}` | Карточка кандидата | да | 401, 403, 404, 409, 422 |
+| GET | `/api/v1/employer/candidates` | Банк кандидатов | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/employer/candidates/{candidate_id}` | Карточка кандидата | да | 401, 403, 404, 409, 422, 500 |
 
 ## employer: invitations
 
@@ -223,10 +223,10 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/employer/invitations` | Приглашения компании | да | 401, 403, 404, 409, 422, 429 |
-| POST | `/api/v1/employer/invitations` | Пригласить кандидата | да | 401, 403, 404, 409, 422, 429 |
-| GET | `/api/v1/employer/invitations/{invitation_id}` | Приглашение | да | 401, 403, 404, 409, 422, 429 |
-| POST | `/api/v1/employer/invitations/{invitation_id}/withdraw` | Отозвать приглашение | да | 401, 403, 404, 409, 422, 429 |
+| GET | `/api/v1/employer/invitations` | Приглашения компании | да | 401, 403, 404, 409, 422, 429, 500 |
+| POST | `/api/v1/employer/invitations` | Пригласить кандидата | да | 401, 403, 404, 409, 422, 429, 500 |
+| GET | `/api/v1/employer/invitations/{invitation_id}` | Приглашение | да | 401, 403, 404, 409, 422, 429, 500 |
+| POST | `/api/v1/employer/invitations/{invitation_id}/withdraw` | Отозвать приглашение | да | 401, 403, 404, 409, 422, 429, 500 |
 
 ## employer: vacancies
 
@@ -234,16 +234,16 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/employer/applications/{application_id}` | Отклик (отмечается просмотренным) | да | 401, 403, 404, 409, 422, 429 |
-| POST | `/api/v1/employer/applications/{application_id}/decision` | Ответ на отклик | да | 401, 403, 404, 409, 422, 429 |
-| GET | `/api/v1/employer/vacancies` | Вакансии компании | да | 401, 403, 404, 409, 422, 429 |
-| POST | `/api/v1/employer/vacancies` | Создать вакансию | да | 401, 403, 404, 409, 422, 429 |
-| GET | `/api/v1/employer/vacancies/{vacancy_id}` | Вакансия | да | 401, 403, 404, 409, 422, 429 |
-| PUT | `/api/v1/employer/vacancies/{vacancy_id}` | Изменить вакансию | да | 401, 403, 404, 409, 422, 429 |
-| GET | `/api/v1/employer/vacancies/{vacancy_id}/applications` | Отклики на вакансию | да | 401, 403, 404, 409, 422, 429 |
-| POST | `/api/v1/employer/vacancies/{vacancy_id}/close` | Снять с публикации | да | 401, 403, 404, 409, 422, 429 |
-| POST | `/api/v1/employer/vacancies/{vacancy_id}/publish` | Опубликовать вакансию | да | 401, 403, 404, 409, 422, 429 |
-| GET | `/api/v1/employer/vacancies/{vacancy_id}/test` | Как кандидаты подтверждают требования вакансии | да | 401, 403, 404, 409, 422, 429 |
+| GET | `/api/v1/employer/applications/{application_id}` | Отклик (отмечается просмотренным) | да | 401, 403, 404, 409, 422, 429, 500 |
+| POST | `/api/v1/employer/applications/{application_id}/decision` | Ответ на отклик | да | 401, 403, 404, 409, 422, 429, 500 |
+| GET | `/api/v1/employer/vacancies` | Вакансии компании | да | 401, 403, 404, 409, 422, 429, 500 |
+| POST | `/api/v1/employer/vacancies` | Создать вакансию | да | 401, 403, 404, 409, 422, 429, 500 |
+| GET | `/api/v1/employer/vacancies/{vacancy_id}` | Вакансия | да | 401, 403, 404, 409, 422, 429, 500 |
+| PUT | `/api/v1/employer/vacancies/{vacancy_id}` | Изменить вакансию | да | 401, 403, 404, 409, 422, 429, 500 |
+| GET | `/api/v1/employer/vacancies/{vacancy_id}/applications` | Отклики на вакансию | да | 401, 403, 404, 409, 422, 429, 500 |
+| POST | `/api/v1/employer/vacancies/{vacancy_id}/close` | Снять с публикации | да | 401, 403, 404, 409, 422, 429, 500 |
+| POST | `/api/v1/employer/vacancies/{vacancy_id}/publish` | Опубликовать вакансию | да | 401, 403, 404, 409, 422, 429, 500 |
+| GET | `/api/v1/employer/vacancies/{vacancy_id}/test` | Как кандидаты подтверждают требования вакансии | да | 401, 403, 404, 409, 422, 429, 500 |
 
 ## employer: tasks
 
@@ -251,11 +251,11 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| POST | `/api/v1/employer/task-submissions/{assignment_id}/grade` | Оценить подход | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/employer/tasks` | Микрозадачи компании | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/tasks` | Создать микрозадачу | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/tasks/{task_id}/archive` | Убрать задачу из выдачи | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/employer/tasks/{task_id}/submissions` | Ответы кандидатов | да | 401, 403, 404, 409, 422 |
+| POST | `/api/v1/employer/task-submissions/{assignment_id}/grade` | Оценить подход | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/employer/tasks` | Микрозадачи компании | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/tasks` | Создать микрозадачу | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/tasks/{task_id}/archive` | Убрать задачу из выдачи | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/employer/tasks/{task_id}/submissions` | Ответы кандидатов | да | 401, 403, 404, 409, 422, 500 |
 
 ## methodist
 
@@ -263,13 +263,13 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/methodist/assessment-settings` | Настройки оценки | да | 401, 403, 404, 409, 422 |
-| PUT | `/api/v1/methodist/categories/{category_id}/theta-cut` | Порог категории | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/methodist/item-bank` | Банк заданий | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/methodist/item-bank/{family_id}/samples` | Экземпляры семейства | да | 401, 403, 404, 409, 422 |
-| PUT | `/api/v1/methodist/item-bank/{family_id}/status` | Статус семейства | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/methodist/vacancies` | Опубликованные вакансии | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/methodist/vacancies/{vacancy_id}/test` | Вакансия → тест | да | 401, 403, 404, 409, 422 |
+| GET | `/api/v1/methodist/assessment-settings` | Настройки оценки | да | 401, 403, 404, 409, 422, 500 |
+| PUT | `/api/v1/methodist/categories/{category_id}/theta-cut` | Порог категории | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/methodist/item-bank` | Банк заданий | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/methodist/item-bank/{family_id}/samples` | Экземпляры семейства | да | 401, 403, 404, 409, 422, 500 |
+| PUT | `/api/v1/methodist/item-bank/{family_id}/status` | Статус семейства | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/methodist/vacancies` | Опубликованные вакансии | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/methodist/vacancies/{vacancy_id}/test` | Вакансия → тест | да | 401, 403, 404, 409, 422, 500 |
 
 ## assessment
 
@@ -277,17 +277,17 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/assessment/blueprint` | Состав теста для специализации и стека | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/assessment/eligibility` | Доступные тесты | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/assessment/history` | История тестов и грейдов | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/assessment/sessions` | Начать тест на грейд | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/assessment/sessions/{session_id}` | Состояние теста | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/assessment/sessions/{session_id}/abandon` | Прервать тест | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/assessment/sessions/{session_id}/accept-suggested-grade` | Принять предложенный грейд | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/assessment/sessions/{session_id}/answers` | Ответить на текущее задание | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/assessment/sessions/{session_id}/integrity-events` | Сигнал целостности | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/assessment/surveys` | Пройти опрос | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/assessment/surveys/latest` | Последний опрос | да | 401, 403, 404, 409, 422 |
+| GET | `/api/v1/assessment/blueprint` | Состав теста для специализации и стека | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/assessment/eligibility` | Доступные тесты | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/assessment/history` | История тестов и грейдов | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/assessment/sessions` | Начать тест на грейд | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/assessment/sessions/{session_id}` | Состояние теста | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/assessment/sessions/{session_id}/abandon` | Прервать тест | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/assessment/sessions/{session_id}/accept-suggested-grade` | Принять предложенный грейд | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/assessment/sessions/{session_id}/answers` | Ответить на текущее задание | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/assessment/sessions/{session_id}/integrity-events` | Сигнал целостности | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/assessment/surveys` | Пройти опрос | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/assessment/surveys/latest` | Последний опрос | да | 401, 403, 404, 409, 422, 500 |
 
 ## trust
 
@@ -295,7 +295,7 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| POST | `/api/v1/complaints` | Пожаловаться на работодателя | да | 401, 403, 404, 409, 422, 429 |
+| POST | `/api/v1/complaints` | Пожаловаться на работодателя | да | 401, 403, 404, 409, 422, 429, 500 |
 
 ## moderation
 
@@ -303,12 +303,12 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/moderation/companies` | Компании с сигналами | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/moderation/companies/{company_id}/lift` | Снять ограничение | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/moderation/companies/{company_id}/restrict` | Ограничить компанию | да | 401, 403, 404, 409, 422 |
-| PUT | `/api/v1/moderation/companies/{company_id}/trust` | Уровень доверия компании | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/moderation/complaints` | Жалобы кандидатов | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/moderation/complaints/{complaint_id}/resolve` | Решение по жалобе | да | 401, 403, 404, 409, 422 |
+| GET | `/api/v1/moderation/companies` | Компании с сигналами | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/moderation/companies/{company_id}/lift` | Снять ограничение | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/moderation/companies/{company_id}/restrict` | Ограничить компанию | да | 401, 403, 404, 409, 422, 500 |
+| PUT | `/api/v1/moderation/companies/{company_id}/trust` | Уровень доверия компании | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/moderation/complaints` | Жалобы кандидатов | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/moderation/complaints/{complaint_id}/resolve` | Решение по жалобе | да | 401, 403, 404, 409, 422, 500 |
 
 ## integrations
 
@@ -316,15 +316,15 @@
 
 | Метод | Путь | Что делает | Вход | Ошибки |
 |---|---|---|---|---|
-| GET | `/api/v1/employer/integrations/deliveries` | Журнал доставок | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/integrations/deliveries/{delivery_id}/retry` | Повторить доставку | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/employer/integrations/events` | Каталог событий | да | 401, 403 |
-| GET | `/api/v1/employer/integrations/export` | Выгрузка кандидатов для ATS | да | 401, 403, 409, 422, 429 |
-| POST | `/api/v1/employer/integrations/sandbox` | Подключить песочницу ATS | да | 401, 403, 404, 409, 422 |
-| GET | `/api/v1/employer/integrations/webhooks` | Получатели вебхуков | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/integrations/webhooks` | Подключить ATS | да | 401, 403, 404, 409, 422 |
-| PATCH | `/api/v1/employer/integrations/webhooks/{endpoint_id}` | Изменить подписку | да | 401, 403, 404, 409, 422 |
-| DELETE | `/api/v1/employer/integrations/webhooks/{endpoint_id}` | Отключить ATS | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/integrations/webhooks/{endpoint_id}/secret` | Сменить секрет подписи | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/employer/integrations/webhooks/{endpoint_id}/test` | Проверить связь | да | 401, 403, 404, 409, 422 |
-| POST | `/api/v1/integrations/sandbox/receive` | Песочница ATS: приём вебхука | нет | 401, 404, 429 |
+| GET | `/api/v1/employer/integrations/deliveries` | Журнал доставок | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/integrations/deliveries/{delivery_id}/retry` | Повторить доставку | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/employer/integrations/events` | Каталог событий | да | 401, 403, 500 |
+| GET | `/api/v1/employer/integrations/export` | Выгрузка кандидатов для ATS | да | 401, 403, 409, 422, 429, 500 |
+| POST | `/api/v1/employer/integrations/sandbox` | Подключить песочницу ATS | да | 401, 403, 404, 409, 422, 500 |
+| GET | `/api/v1/employer/integrations/webhooks` | Получатели вебхуков | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/integrations/webhooks` | Подключить ATS | да | 401, 403, 404, 409, 422, 500 |
+| PATCH | `/api/v1/employer/integrations/webhooks/{endpoint_id}` | Изменить подписку | да | 401, 403, 404, 409, 422, 500 |
+| DELETE | `/api/v1/employer/integrations/webhooks/{endpoint_id}` | Отключить ATS | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/integrations/webhooks/{endpoint_id}/secret` | Сменить секрет подписи | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/employer/integrations/webhooks/{endpoint_id}/test` | Проверить связь | да | 401, 403, 404, 409, 422, 500 |
+| POST | `/api/v1/integrations/sandbox/receive` | Песочница ATS: приём вебхука | нет | 401, 404, 429, 500 |

@@ -2392,13 +2392,15 @@ export interface components {
         ApplicationStatus: "submitted" | "viewed" | "interview" | "rejected" | "withdrawn";
         /**
          * AssessmentHistoryRead
-         * @description История тестов и смен категории.
+         * @description История опросов, тестов и смен категории.
          */
         AssessmentHistoryRead: {
             /** Grade Changes */
             grade_changes: components["schemas"]["GradeHistoryRead"][];
             /** Sessions */
             sessions: components["schemas"]["SessionSummaryRead"][];
+            /** Surveys */
+            surveys: components["schemas"]["SurveyRead"][];
         };
         /**
          * AssessmentMode
@@ -6318,6 +6320,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     export_personal_data_api_v1_account_personal_data_get: {
@@ -6349,6 +6360,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6426,6 +6446,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     eligibility_api_v1_assessment_eligibility_get: {
@@ -6491,6 +6520,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     history_api_v1_assessment_history_get: {
@@ -6549,6 +6587,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6625,6 +6672,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_session_api_v1_assessment_sessions__session_id__get: {
@@ -6685,6 +6741,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6759,6 +6824,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     accept_suggested_grade_api_v1_assessment_sessions__session_id__accept_suggested_grade_post: {
@@ -6819,6 +6893,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6897,6 +6980,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     integrity_event_api_v1_assessment_sessions__session_id__integrity_events_post: {
@@ -6959,6 +7051,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7035,6 +7136,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     latest_survey_api_v1_assessment_surveys_latest_get: {
@@ -7093,6 +7203,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7169,6 +7288,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Внешний сервис недоступен */
             503: {
                 headers: {
@@ -7209,6 +7337,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7285,6 +7422,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     logout_api_v1_auth_logout_post: {
@@ -7302,6 +7448,15 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };
@@ -7341,6 +7496,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     refresh_api_v1_auth_refresh_post: {
@@ -7363,6 +7527,15 @@ export interface operations {
             };
             /** @description Требуется вход или токен недействителен */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7421,6 +7594,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     resend_verification_api_v1_auth_resend_verification_post: {
@@ -7456,6 +7638,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7523,6 +7714,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     my_applications_api_v1_candidates_me_applications_get: {
@@ -7581,6 +7781,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7655,6 +7864,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_consents_api_v1_candidates_me_consents_get: {
@@ -7695,6 +7913,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7746,6 +7973,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7818,6 +8054,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Внешний сервис недоступен */
             503: {
                 headers: {
@@ -7883,6 +8128,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7968,6 +8222,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Внешний сервис недоступен */
             503: {
                 headers: {
@@ -8039,6 +8302,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8120,6 +8392,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
             /** @description Внешний сервис недоступен */
             503: {
                 headers: {
@@ -8194,6 +8475,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_invitation_api_v1_candidates_me_invitations__invitation_id__get: {
@@ -8261,6 +8551,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     accept_invitation_api_v1_candidates_me_invitations__invitation_id__accept_post: {
@@ -8321,6 +8620,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8399,6 +8707,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_privacy_api_v1_candidates_me_privacy_get: {
@@ -8439,6 +8756,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8497,6 +8823,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_profile_api_v1_candidates_me_profile_get: {
@@ -8537,6 +8872,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8595,6 +8939,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     download_profile_pdf_api_v1_candidates_me_profile_pdf_get: {
@@ -8635,6 +8988,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8702,6 +9064,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_status_api_v1_candidates_me_status_get: {
@@ -8742,6 +9113,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8814,6 +9194,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     request_task_api_v1_candidates_me_tasks_request_post: {
@@ -8872,6 +9261,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8946,6 +9344,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     submit_api_v1_candidates_me_tasks__assignment_id__submit_post: {
@@ -9010,6 +9417,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9095,6 +9511,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     list_categories_api_v1_dictionaries_categories_get: {
@@ -9129,6 +9554,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     list_grades_api_v1_dictionaries_grades_get: {
@@ -9149,6 +9583,15 @@ export interface operations {
                     "application/json": components["schemas"]["GradeRead"][];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     list_industries_api_v1_dictionaries_industries_get: {
@@ -9167,6 +9610,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IndustryRead"][];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -9202,6 +9654,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9278,6 +9739,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     delete_skill_api_v1_dictionaries_skills__skill_id__delete: {
@@ -9336,6 +9806,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9414,6 +9893,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     list_specializations_api_v1_dictionaries_specializations_get: {
@@ -9432,6 +9920,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SpecializationRead"][];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -9496,6 +9993,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9568,6 +10074,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     update_specialization_api_v1_dictionaries_specializations__specialization_id__patch: {
@@ -9632,6 +10147,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9715,6 +10239,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     decide_application_api_v1_employer_applications__application_id__decision_post: {
@@ -9788,6 +10321,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9879,6 +10421,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     candidate_card_api_v1_employer_candidates__candidate_id__get: {
@@ -9949,6 +10500,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_company_api_v1_employer_company_get: {
@@ -9998,6 +10558,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10065,6 +10634,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     dashboard_api_v1_employer_dashboard_get: {
@@ -10114,6 +10692,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10179,6 +10766,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10253,6 +10849,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     events_api_v1_employer_integrations_events_get: {
@@ -10284,6 +10889,15 @@ export interface operations {
             };
             /** @description Недостаточно прав */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10359,6 +10973,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     connect_sandbox_api_v1_employer_integrations_sandbox_post: {
@@ -10424,6 +11047,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     endpoints_api_v1_employer_integrations_webhooks_get: {
@@ -10482,6 +11114,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10558,6 +11199,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     delete_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__delete: {
@@ -10616,6 +11266,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10694,6 +11353,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     rotate_secret_api_v1_employer_integrations_webhooks__endpoint_id__secret_post: {
@@ -10761,6 +11429,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     test_endpoint_api_v1_employer_integrations_webhooks__endpoint_id__test_post: {
@@ -10821,6 +11498,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10898,6 +11584,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -10983,6 +11678,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_invitation_api_v1_employer_invitations__invitation_id__get: {
@@ -11052,6 +11756,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11135,6 +11848,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     list_needs_api_v1_employer_needs_get: {
@@ -11193,6 +11915,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11269,6 +12000,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     parse_need_api_v1_employer_needs_parse_post: {
@@ -11338,6 +12078,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_need_api_v1_employer_needs__need_id__get: {
@@ -11398,6 +12147,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11476,6 +12234,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     need_categories_api_v1_employer_needs__need_id__categories_get: {
@@ -11543,6 +12310,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     close_need_api_v1_employer_needs__need_id__close_post: {
@@ -11603,6 +12379,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11680,6 +12465,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     remove_mark_api_v1_employer_needs__need_id__marks__candidate_id__delete: {
@@ -11739,6 +12533,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11813,6 +12616,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_shortlist_api_v1_employer_needs__need_id__shortlist_get: {
@@ -11876,6 +12688,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -11954,6 +12775,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     grade_submission_api_v1_employer_task_submissions__assignment_id__grade_post: {
@@ -12025,6 +12855,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     list_tasks_api_v1_employer_tasks_get: {
@@ -12083,6 +12922,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12159,6 +13007,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     archive_task_api_v1_employer_tasks__task_id__archive_post: {
@@ -12219,6 +13076,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12293,6 +13159,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     list_vacancies_api_v1_employer_vacancies_get: {
@@ -12360,6 +13235,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12448,6 +13332,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_vacancy_api_v1_employer_vacancies__vacancy_id__get: {
@@ -12517,6 +13410,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12604,6 +13506,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     vacancy_applications_api_v1_employer_vacancies__vacancy_id__applications_get: {
@@ -12673,6 +13584,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12756,6 +13676,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     publish_vacancy_api_v1_employer_vacancies__vacancy_id__publish_post: {
@@ -12825,6 +13754,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -12908,6 +13846,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     health_api_v1_health_get: {
@@ -12926,6 +13873,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
             /** @description База данных недоступна */
@@ -12977,6 +13933,15 @@ export interface operations {
             };
             /** @description Превышен лимит запросов */
             429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13042,6 +14007,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13120,6 +14094,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     item_bank_api_v1_methodist_item_bank_get: {
@@ -13180,6 +14163,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13258,6 +14250,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     family_status_api_v1_methodist_item_bank__family_id__status_put: {
@@ -13329,6 +14330,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     vacancies_api_v1_methodist_vacancies_get: {
@@ -13387,6 +14397,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13461,6 +14480,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     companies_api_v1_moderation_companies_get: {
@@ -13519,6 +14547,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13586,6 +14623,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13664,6 +14710,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     set_trust_api_v1_moderation_companies__company_id__trust_put: {
@@ -13735,6 +14790,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     complaints_api_v1_moderation_complaints_get: {
@@ -13795,6 +14859,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13873,6 +14946,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     list_notifications_api_v1_notifications_get: {
@@ -13911,6 +14993,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_all_api_v1_notifications_read_all_post: {
@@ -13942,6 +15033,15 @@ export interface operations {
             };
             /** @description Объект не найден */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -13991,6 +15091,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14075,6 +15184,15 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     read_vacancy_api_v1_vacancies__vacancy_id__get: {
@@ -14135,6 +15253,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -14206,6 +15333,15 @@ export interface operations {
             };
             /** @description Ошибка валидации входных данных */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Внутренняя ошибка сервиса */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };

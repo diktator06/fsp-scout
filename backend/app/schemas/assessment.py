@@ -222,7 +222,8 @@ class GradeHistoryRead(BaseModel):
 
 
 class AssessmentHistoryRead(BaseModel):
-    """История тестов и смен категории."""
+    """История опросов, тестов и смен категории."""
 
+    surveys: list[SurveyRead]
     sessions: list[SessionSummaryRead]
     grade_changes: list[GradeHistoryRead]

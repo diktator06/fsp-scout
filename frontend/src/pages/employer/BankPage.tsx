@@ -13,7 +13,7 @@ import {
 import { useDebouncedValue } from '@mantine/hooks';
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { useGrades, useSpecializations } from '@/api/dictionaries';
+import { useCategories, useGrades, useSpecializations } from '@/api/dictionaries';
 import { useBank } from '@/api/employer';
 import { errorMessage } from '@/api/errors';
 import type { BankSort, CandidateCard, Skill, WorkFormat } from '@/api/types';
@@ -25,6 +25,7 @@ import { groupByDirection } from '@/shared/lib/assessment';
 import { WORK_FORMAT_LABELS, toOptions } from '@/shared/lib/candidate';
 import { pluralizeRu } from '@/shared/lib/format';
 import { ErrorState, LoadingState, PageHeader } from '@/shared/ui';
+import classes from './BankPage.module.css';
 
 const PAGE_SIZE = 10;
 const SORT_OPTIONS: Array<{ value: BankSort; label: string }> = [
@@ -38,6 +39,7 @@ export function BankPage() {
   // с подтверждённым грейдом идут раньше заявленных, внутри — по индексу профиля.
   const specializations = useSpecializations();
   const grades = useGrades();
+  const categories = useCategories();
   const [specializationId, setSpecializationId] = useState<string | null>(null);
   const [gradeId, setGradeId] = useState<string | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
@@ -50,8 +52,22 @@ export function BankPage() {
   const [sort, setSort] = useState<BankSort>('score');
   const [page, setPage] = useState(1);
   const [inviting, setInviting] = useState<CandidateCard | null>(null);
+  // Категория — пара «специализация × грейд»: её выбор проставляет оба фильтра, а
+  // выбранные специализация и грейд показывают свою категорию. Противоречить друг
+  // другу эти фильтры не могут.
+  const category = (categories.data ?? []).find(
+    (item) =>
+      String(item.specialization.id) === specializationId && String(item.grade.id) === gradeId,
+  );
+  const chooseCategory = (value: string | null) => {
+    const chosen = (categories.data ?? []).find((item) => String(item.id) === value);
+    setSpecializationId(chosen ? String(chosen.specialization.id) : null);
+    setGradeId(chosen ? String(chosen.grade.id) : null);
+    setPage(1);
+  };
 
   const bank = useBank({
+    categoryId: category?.id ?? null,
     specializationId: specializationId ? Number(specializationId) : null,
     gradeId: gradeId ? Number(gradeId) : null,
     skillIds: skills.map((skill) => skill.id),
@@ -92,7 +108,23 @@ export function BankPage() {
       />
       <CompanyGate>
         <Card mb="lg">
-          <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} spacing="md">
+          <SimpleGrid cols={{ base: 1, sm: 2, lg: 6 }} spacing="md">
+            <Select
+              className={classes.categoryField}
+              label="Категория"
+              placeholder="Любая"
+              searchable
+              data={(categories.data ?? [])
+                .filter(
+                  (item) =>
+                    !specializationId || String(item.specialization.id) === specializationId,
+                )
+                .map((item) => ({ value: String(item.id), label: item.title }))}
+              value={category ? String(category.id) : null}
+              onChange={chooseCategory}
+              nothingFoundMessage="Не нашли"
+              clearable
+            />
             <Select
               label="Специализация"
               placeholder="Любая"

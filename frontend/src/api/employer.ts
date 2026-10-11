@@ -17,6 +17,7 @@ export const employerKeys = {
 };
 
 export interface BankQuery {
+  categoryId?: number | null;
   specializationId?: number | null;
   gradeId?: number | null;
   skillIds?: number[];
@@ -202,6 +203,7 @@ export function useBank(params: BankQuery) {
         api.GET('/api/v1/employer/candidates', {
           params: {
             query: {
+              category_id: params.categoryId ?? undefined,
               specialization_id: params.specializationId ?? undefined,
               grade_id: params.gradeId ?? undefined,
               skill_ids: params.skillIds?.length ? params.skillIds : undefined,
