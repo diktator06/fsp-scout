@@ -5,72 +5,115 @@
 специалисты разложены по категориям, и приглашает его с обязательной вилкой зарплаты. Категорию
 кандидату присваивает не резюме, а опрос и адаптивный тест.
 
-Спецтрек ФСП, «Лидеры цифровой трансформации 2026».
+Спецтрек ФСП, «Лидеры цифровой трансформации 2026». Сопроводительная документация —
+[PDF](docs/submission/scout-documentation.pdf) и [DOCX](docs/submission/scout-documentation.docx).
 
-| Документ | О чём |
+## Запуск
+
+Стенд одинаково запускается на Windows, macOS и Linux: всё работает в Docker, ставить Python,
+Node.js и базу данных не нужно. Интернет нужен только при первой сборке, дальше стенд работает
+офлайн, без GPU и внешних сервисов.
+
+### 1. Установите Docker
+
+| ОС | Что поставить |
 |---|---|
-| [docs/submission/scout-documentation.pdf](docs/submission/scout-documentation.pdf) | **Сопроводительная документация для финальной сдачи** (PDF и [DOCX](docs/submission/scout-documentation.docx), источник — [docs/SUBMISSION.md](docs/SUBMISSION.md)) |
-| [docs/VALIDATION.md](docs/VALIDATION.md) | **Валидация в цифрах:** подбор против BM25, test-retest, разделяющая сила, утечки |
-| [docs/APPROACH.md](docs/APPROACH.md) | Механика подбора и адаптивного тестирования с обоснованием |
-| [docs/MATCHING.md](docs/MATCHING.md) | Подбор: разбор потребности, ранжирование, объяснения, приглашения, раскрытие контактов |
-| [docs/ASSESSMENT.md](docs/ASSESSMENT.md) | Тестирование: банк семейств, IRT и CAT, правила пересдачи, валидация, калибровка |
-| [docs/FSP_INTEGRATION.md](docs/FSP_INTEGRATION.md) | ФСП ID и реестр достижений: протокол, данные, балл ФСП, три состояния, полноценный Keycloak |
-| [docs/KEYCLOAK_GUIDE.md](docs/KEYCLOAK_GUIDE.md) | ФСП ID на Keycloak простым языком: устройство, запуск, проверка в браузере |
-| [docs/TRUST_AND_ATS.md](docs/TRUST_AND_ATS.md) | Защита от фиктивных работодателей и интеграция с ATS: вебхуки, повторы, подпись, выгрузка |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Архитектура как построено: компоненты, слои, данные, безопасность |
-| [docs/LIBRARIES.md](docs/LIBRARIES.md) | Библиотеки и образы с версиями и лицензиями (из lock-файлов) |
-| [docs/LOAD_TEST.md](docs/LOAD_TEST.md) | Нагрузочный тест: 50 пользователей, p95 166 мс, без ошибок |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Развёртывание на VPS за Caddy с автоматическим HTTPS |
-| [docs/API.md](docs/API.md) | Справочник API: вход, формат ошибок, 126 методов по группам (собирается из OpenAPI) |
-| http://localhost:8080/api/docs | Swagger UI всех методов API (после запуска) |
+| Windows 10/11 | [Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/) с бэкендом WSL 2. Если установщик попросит, включите WSL 2 (`wsl --install` в PowerShell от администратора) и перезагрузите компьютер |
+| macOS (Apple Silicon и Intel) | [Docker Desktop](https://docs.docker.com/desktop/setup/install/mac-install/) для своего процессора |
+| Linux | [Docker Engine](https://docs.docker.com/engine/install/) и плагин Compose (пакет `docker-compose-plugin`) |
 
-## Запуск в одну команду
-
-Нужен только Docker с Compose v2. Интернет нужен только для сборки образов, сам стенд работает
-полностью офлайн.
+Запустите Docker Desktop и дождитесь статуса «Engine running». Проверка — в терминале
+(на Windows — PowerShell) должна напечататься версия 2.x:
 
 ```bash
-docker compose up --build
+docker compose version
 ```
 
-Через минуту стенд готов: бэкенд сам применяет миграции, наполняет справочники, создаёт
-демо-аккаунты и около 120 синтетических кандидатов, а часть из них привязывает к участникам
-эмулятора ФСП. Файл `.env` не нужен: все значения по умолчанию заданы в `docker-compose.yml`.
-Переопределить их можно копией шаблона [.env.example](.env.example). Стенд занимает около 1,35 ГБ
-памяти по лимитам контейнеров и не использует GPU.
+Стенду нужно около 2 ГБ памяти Docker (с Keycloak — 3 ГБ; в Docker Desktop это
+Settings → Resources) и около 3 ГБ на диске.
+
+### 2. Скачайте проект
+
+```bash
+git clone https://github.com/diktator06/fsp-scout.git
+cd fsp-scout
+```
+
+Без Git: на GitHub нажмите Code → Download ZIP, распакуйте архив и откройте терминал в этой папке.
+
+### 3. Запустите
+
+```bash
+docker compose up --build -d
+```
+
+Первая сборка занимает 5–10 минут, следующие запуски — меньше минуты. Бэкенд сам применяет
+миграции, наполняет справочники, создаёт демо-аккаунты и около 120 синтетических кандидатов.
+Стенд готов, когда все пять сервисов в состоянии `healthy`:
+
+```bash
+docker compose ps
+```
+
+### 4. Откройте
 
 | Что | Адрес |
 |---|---|
 | Приложение | http://localhost:8080 |
-| Mailpit — письма подтверждения и уведомления | http://localhost:8025 |
+| Письма подтверждения и уведомления (Mailpit) | http://localhost:8025 |
 | ФСП ID и реестр достижений (эмулятор) | http://localhost:8090 |
-| Swagger UI (работает без интернета) | http://localhost:8080/api/docs |
-| OpenAPI-спецификация | http://localhost:8080/api/openapi.json |
+| Swagger UI всех методов API | http://localhost:8080/api/docs |
+
+Остановить стенд, сохранив данные:
+
+```bash
+docker compose down
+```
 
 Начать заново с чистыми данными:
 
 ```bash
-docker compose down -v
+docker compose down -v --remove-orphans
 ```
+
+Файл `.env` не нужен: значения по умолчанию заданы в `docker-compose.yml`. Если что-то нужно
+поменять, например порты, скопируйте [.env.example](.env.example) в `.env`.
 
 ### ФСП ID на полноценном Keycloak
 
-По умолчанию вход участника ФСП обслуживает лёгкий эмулятор с тем же протоколом. ТЗ строит ФСП
-ID на Keycloak, поэтому в репозитории есть готовый realm и compose-оверлей с настоящим
+По умолчанию вход участника ФСП обслуживает лёгкий эмулятор с тем же протоколом (OIDC). ТЗ
+строит ФСП ID на Keycloak, поэтому в репозитории есть готовый realm и стенд с настоящим
 Keycloak 26:
 
 ```bash
-make up-keycloak
+docker compose -f docker-compose.yml -f docker-compose.keycloak.yml up --build -d
 ```
 
-Это то же самое, что `docker compose -f docker-compose.yml -f docker-compose.keycloak.yml up --build -d`.
-Keycloak поднимается на http://localhost:8081 (админка `admin` / `admin`, только для стенда).
-Участники и пароль те же, что в эмуляторе. Бэкенд и реестр достижений переключаются на него
-переменными окружения, код не меняется. Проверка живого стенда одной командой —
-`make keycloak-smoke`. Пошаговое руководство с проверкой в браузере —
-[docs/KEYCLOAK_GUIDE.md](docs/KEYCLOAK_GUIDE.md). Протокол —
-[docs/FSP_INTEGRATION.md](docs/FSP_INTEGRATION.md#10-полноценный-keycloak). Вернуться к
-эмулятору: `make down-keycloak && make up`.
+Keycloak поднимается на http://localhost:8081 (админка `admin` / `admin`, только для локального
+стенда), участники и пароль — те же, что в эмуляторе. Код бэкенда не меняется, переключаются
+только переменные окружения. Вернуться к эмулятору:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.keycloak.yml down
+```
+
+```bash
+docker compose up -d
+```
+
+Пошаговая проверка в браузере — [docs/KEYCLOAK_GUIDE.md](docs/KEYCLOAK_GUIDE.md).
+
+## Если что-то пошло не так
+
+| Симптом | Что сделать |
+|---|---|
+| `Cannot connect to the Docker daemon` или `error during connect` | Docker не запущен: откройте Docker Desktop и дождитесь «Engine running». На Linux — `sudo systemctl start docker`, а команды запускайте через `sudo` или добавьте себя в группу `docker` |
+| Windows: Docker Desktop не стартует, просит WSL | В PowerShell от администратора выполните `wsl --install`, перезагрузитесь; в BIOS должна быть включена виртуализация |
+| `port is already allocated` или `address already in use` | Порт занят другой программой. Скопируйте `.env.example` в `.env` и поменяйте порт: 8080 — `FRONTEND_HOST_PORT` (и `FRONTEND_URL`), 8025 — `MAILPIT_UI_HOST_PORT`, 8090 — `FSP_HOST_PORT` (и `FSP_PUBLIC_URL`), 5432 — `POSTGRES_HOST_PORT` (часто занят установленным PostgreSQL), 8000 — `BACKEND_HOST_PORT`, 8081 — `KEYCLOAK_HOST_PORT` |
+| Сервис не становится `healthy` | `docker compose logs backend` (или имя другого сервиса). Первый старт с наполнением данных занимает 1–2 минуты; если контейнер перезапускается, проверьте, что Docker выделено не меньше 2 ГБ памяти |
+| Нужно начать с чистыми данными | `docker compose down -v --remove-orphans`, затем `docker compose up --build -d` |
+| Письмо не пришло | Все письма стенда ловит Mailpit: http://localhost:8025 |
+| Keycloak долго стартует | Первый запуск импортирует realm, это 30–60 секунд; бэкенд ждёт его готовности |
 
 ## Демо-доступы
 
@@ -81,7 +124,7 @@ Keycloak поднимается на http://localhost:8081 (админка `admi
 |---|---|---|
 | Специалист | `candidate@example.com` | Чистый аккаунт: онбординг, тест и привязка ФСП проходятся с нуля |
 | Специалисты для жюри | `jury1@example.com` … `jury5@example.com` | Пять таких же чистых аккаунтов: каждый проверяющий проходит путь с нуля и пересдаёт тест, не мешая другим |
-| Работодатель | `employer@example.com` | Компания «Кедр Технологии»: две потребности с подборками, три вакансии с откликами, микрозадачи с ответами |
+| Работодатель | `employer@example.com` | Компания «Кедр Технологии»: две потребности (подборка строится при первом открытии), три вакансии с откликами, микрозадачи с ответами |
 | Методист | `methodist@example.com` | Справочники, банк заданий, экран «Вакансия → тест», настройки оценки, модерация |
 | Синтетические кандидаты | `demo.<специализация>.<номер>@example.com`, например `demo.backend.01@example.com` | Прошли тест настоящим сервисом оценки; около 40 % привязаны к ФСП |
 
@@ -145,9 +188,9 @@ Keycloak поднимается на http://localhost:8081 (админка `admi
   карточка и объяснения корректны, вместо достижений — нейтральное «Профиль ФСП не привязан».
 - [ ] **Вход через ФСП ID.** Выйдите и нажмите «Войти через ФСП ID» с тем же участником
   эмулятора — откроется кабинет того, к кому он привязан.
-- [ ] **Готовая подборка.** У `employer@example.com` в «Подборках» уже есть «Python-разработчик
-  в команду платежей» на синтетических кандидатах; войти любым из них можно паролем
-  `ScoutDemo2026`.
+- [ ] **Готовая потребность.** У `employer@example.com` в «Подборках» есть «Python-разработчик
+  в команду платежей»: при открытии подборка строится на синтетических кандидатах; войти любым
+  из них можно паролем `ScoutDemo2026`.
 
 **Дополнительный функционал (критерий №6)**
 
@@ -171,8 +214,8 @@ Keycloak поднимается на http://localhost:8081 (админка `admi
 - [ ] **ATS.** Работодатель → «Интеграции» → «Подключить песочницу» → «Проверить связь». Через пару
   секунд в журнале «Доставлено», подпись проверена песочницей. Примите приглашение или
   откликнитесь кандидатом — в журнале появится событие с карточкой. Там же выгрузка CSV и JSON.
-- [ ] **Keycloak.** `make up-keycloak` → кандидат → «Достижения ФСП» → «Привязать ФСП ID» →
-  страница входа Keycloak, `fsp000021` / `FspDemo2026`.
+- [ ] **Keycloak.** Запустите стенд с Keycloak (раздел «Запуск») → кандидат → «Достижения ФСП» →
+  «Привязать ФСП ID» → страница входа Keycloak, `fsp000021` / `FspDemo2026`.
 - [ ] **Мобильная версия.** Все кабинеты работают на ширине телефона от 375 px: меню в «бургере»,
   карточки в одну колонку, без горизонтальной прокрутки.
 - [ ] **Вакансия → тест.** Методист → «Вакансия → тест» → любая вакансия: категория, состав теста
@@ -185,6 +228,24 @@ Keycloak поднимается на http://localhost:8081 (админка `admi
   `jury1…jury5`.
 - [ ] **Мои данные.** Меню аккаунта → «Мои данные» → «Скачать мои данные» (JSON) и «Удалить
   аккаунт» с подтверждением email.
+
+## Документация
+
+| Документ | О чём |
+|---|---|
+| [docs/submission/scout-documentation.pdf](docs/submission/scout-documentation.pdf) | **Сопроводительная документация для финальной сдачи** (PDF и [DOCX](docs/submission/scout-documentation.docx), источник — [docs/SUBMISSION.md](docs/SUBMISSION.md)) |
+| [docs/VALIDATION.md](docs/VALIDATION.md) | **Валидация в цифрах:** подбор против BM25, test-retest, разделяющая сила, утечки |
+| [docs/APPROACH.md](docs/APPROACH.md) | Механика подбора и адаптивного тестирования с обоснованием |
+| [docs/MATCHING.md](docs/MATCHING.md) | Подбор: разбор потребности, ранжирование, объяснения, приглашения, раскрытие контактов |
+| [docs/ASSESSMENT.md](docs/ASSESSMENT.md) | Тестирование: банк семейств, IRT и CAT, правила пересдачи, валидация, калибровка |
+| [docs/FSP_INTEGRATION.md](docs/FSP_INTEGRATION.md) | ФСП ID и реестр достижений: протокол, данные, балл ФСП, три состояния, полноценный Keycloak |
+| [docs/KEYCLOAK_GUIDE.md](docs/KEYCLOAK_GUIDE.md) | ФСП ID на Keycloak простым языком: устройство, запуск, проверка в браузере |
+| [docs/TRUST_AND_ATS.md](docs/TRUST_AND_ATS.md) | Защита от фиктивных работодателей и интеграция с ATS: вебхуки, повторы, подпись, выгрузка |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Архитектура как построено: компоненты, слои, данные, безопасность |
+| [docs/API.md](docs/API.md) | Справочник API: вход, формат ошибок, 126 методов по группам (собирается из OpenAPI) |
+| [docs/LIBRARIES.md](docs/LIBRARIES.md) | Библиотеки и образы с версиями и лицензиями (из lock-файлов) |
+| [docs/LOAD_TEST.md](docs/LOAD_TEST.md) | Нагрузочный тест: 50 пользователей, p95 166 мс, без ошибок |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Развёртывание на сервере за Caddy с автоматическим HTTPS |
 
 ## Что работает
 
@@ -203,7 +264,7 @@ Keycloak поднимается на http://localhost:8081 (админка `admi
 - **ФСП.** Привязка ФСП ID по OIDC (PKCE, RS256, JWKS) с отдельным согласием, синхронизация
   участий, отвязка с удалением данных. Балл ФСП входит в индекс профиля без ранжирования по уровню
   и дисциплине; отсутствие привязки или истории не штрафуется. Работает и с эмулятором, и с
-  полноценным Keycloak (`make up-keycloak`).
+  полноценным Keycloak.
 - **Вакансии и отклики.** Прямые вакансии с обязательной вилкой и лимитом публикаций, лента
   кандидата по баллу соответствия, отклик с раскрытием контактов по согласию, статусы и отказ с
   причиной.
@@ -232,19 +293,11 @@ Keycloak поднимается на http://localhost:8081 (админка `admi
 фронтенда, ruff и mypy в строгом режиме, eslint, tsc и проверка правил комментариев — всё это же
 запускает CI.
 
-## Если что-то пошло не так
-
-| Симптом | Что сделать |
-|---|---|
-| Порт 8080, 8025, 8090 или 8081 занят | Задайте в `.env` другие `FRONTEND_HOST_PORT`, `MAILPIT_UI_HOST_PORT`, `FSP_HOST_PORT`, `KEYCLOAK_HOST_PORT`. При смене порта фронтенда поменяйте и `FRONTEND_URL`, при смене порта эмулятора — `FSP_PUBLIC_URL` |
-| Keycloak долго стартует | Первый запуск импортирует realm, это 30–60 секунд; бэкенд ждёт его готовности. Состояние: `docker compose -f docker-compose.yml -f docker-compose.keycloak.yml ps` |
-| Нужно начать с чистыми данными | `docker compose down -v`, затем снова `docker compose up --build` |
-| Контейнер не стартует | `docker compose ps` и `docker compose logs <сервис>`. Бэкенд ждёт готовности базы и эмулятора ФСП, первый старт с наполнением данных занимает около минуты |
-| Письмо не пришло | Все письма стенда ловит Mailpit: http://localhost:8025 |
-
 ## Локальная разработка
 
-Нужны Python 3.13 с [uv](https://docs.astral.sh/uv/), Node.js 22.22+ и Docker для PostgreSQL.
+Для запуска стенда этот раздел не нужен. Он для разработки и проверок кода: нужны Python 3.13 с
+[uv](https://docs.astral.sh/uv/), Node.js 22.22+, Docker и `make` (есть в Linux и macOS; на
+Windows — в WSL 2).
 
 ```bash
 make install        # зависимости бэкенда и эмулятора ФСП (uv) и фронтенда (npm)

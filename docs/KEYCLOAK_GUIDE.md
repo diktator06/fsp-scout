@@ -14,8 +14,8 @@ Keycloak).
 
 | Режим | Кто выдаёт вход | Команда |
 |---|---|---|
-| Обычный, по умолчанию | лёгкий эмулятор `fsp-registry-mock` (порт 8090) | `make up` |
-| Keycloak | настоящий Keycloak 26.4 (порт 8081) | `make up-keycloak` |
+| Обычный, по умолчанию | лёгкий эмулятор `fsp-registry-mock` (порт 8090) | `docker compose up --build -d` |
+| Keycloak | настоящий Keycloak 26.4 (порт 8081) | команда из §3 |
 
 В обоих режимах реестр достижений — это `fsp-registry-mock`. Боевого реестра ФСП у команд нет,
 поэтому эмулятор играет роль API реестра. В режиме Keycloak он принимает токены, которые
@@ -117,19 +117,16 @@ sequenceDiagram
 
 ## 3. Как запустить
 
-Нужен только Docker. Все команды выполняются из корня репозитория.
+Нужен только Docker. Все команды выполняются из корня репозитория и одинаковы для macOS, Linux
+и PowerShell в Windows.
 
 **Запуск в режиме Keycloak**:
 
 ```bash
-make up-keycloak
-```
-
-Без `make`:
-
-```bash
 docker compose -f docker-compose.yml -f docker-compose.keycloak.yml up --build -d
 ```
+
+На Linux и macOS то же самое делает `make up-keycloak`.
 
 Первый старт занимает около минуты: Keycloak импортирует realm из
 [keycloak/realm-fsp.json](../keycloak/realm-fsp.json), и бэкенд ждёт его готовности.
@@ -142,7 +139,9 @@ docker compose -f docker-compose.yml -f docker-compose.keycloak.yml ps
 
 У всех сервисов должно быть `healthy`.
 
-**Автоматическая проверка за 10 секунд** — 25 проверок протокола и связки с бэкендом:
+**Автоматическая проверка за 10 секунд** — 25 проверок протокола и связки с бэкендом. Это
+инструмент разработчика: нужны Python 3.13 с uv и `make`. Для проверки руками достаточно
+браузера (§4).
 
 ```bash
 make keycloak-smoke
@@ -166,13 +165,13 @@ make keycloak-smoke
 **Вернуться на лёгкий эмулятор**:
 
 ```bash
-make down-keycloak
+docker compose -f docker-compose.yml -f docker-compose.keycloak.yml down
 ```
 
 Затем:
 
 ```bash
-make up
+docker compose up -d
 ```
 
 **Начать с чистыми данными** (удаляет базу и состояние Keycloak):
@@ -276,7 +275,7 @@ docker compose -f docker-compose.yml -f docker-compose.keycloak.yml down -v --re
 Затем поднимите обычный стенд:
 
 ```bash
-make up
+docker compose up --build -d
 ```
 
 ## 5. Что проверено
@@ -295,7 +294,7 @@ make up
 
 | Симптом | Что сделать |
 |---|---|
-| `make keycloak-smoke` пишет «Keycloak не отвечает» | Стенд поднят без Keycloak — выполните `make up-keycloak` |
+| `make keycloak-smoke` пишет «Keycloak не отвечает» | Стенд поднят без Keycloak — запустите его командой из §3 |
 | «Войти через ФСП ID» сразу пускает не того участника | Сессия Keycloak осталась от прошлого входа — выйдите из Keycloak (§4.5) |
 | После входа на форме Keycloak «Скаут» пишет «Этот ФСП ID уже привязан к другому аккаунту» | Участник уже привязан к другому аккаунту: отвяжите его там или сбросьте стенд (§4.7) |
 | Сервисы не `healthy` | `docker compose -f docker-compose.yml -f docker-compose.keycloak.yml logs keycloak backend` |

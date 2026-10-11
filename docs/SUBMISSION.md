@@ -305,18 +305,27 @@ ID не создаётся, потому что в реестре нет под�
 
 # 11. Сборка, запуск и проверка
 
-**Что нужно:** Docker с Compose v2 и около 1,5 ГБ свободной памяти; GPU не нужен. Интернет
-нужен только для сборки образов, стенд работает офлайн. Свободные порты: 8080 (приложение),
-8025 (Mailpit), 8090 (эмулятор ФСП ID).
+Стенд одинаково запускается на Windows, macOS и Linux: всё работает в Docker, Python, Node.js и
+базу данных ставить не нужно. Команды ниже одинаковы для терминала macOS и Linux и для
+PowerShell в Windows.
+
+**Что нужно.** Docker с Compose v2: на Windows 10/11 — Docker Desktop с WSL 2, на macOS — Docker
+Desktop (Apple Silicon или Intel), на Linux — Docker Engine с плагином `docker-compose-plugin`.
+Docker нужно около 2 ГБ памяти (с Keycloak — 3 ГБ) и около 3 ГБ на диске; GPU не нужен.
+Интернет нужен только для первой сборки, дальше стенд работает офлайн. Свободные порты: 8080
+(приложение), 8025 (Mailpit), 8090 (эмулятор ФСП ID), 5432 и 8000 (база и API на localhost);
+любой из них переназначается в `.env`.
 
 **Шаг 1. Собрать и запустить.**
 
 ```
-git clone <адрес репозитория> scout && cd scout
+git clone https://github.com/diktator06/fsp-scout.git
+cd fsp-scout
 docker compose up --build -d
 ```
 
-Через одну-две минуты все сервисы в состоянии `healthy` (`docker compose ps`). Бэкенд сам
+Первая сборка занимает 5–10 минут; затем за одну-две минуты все сервисы переходят в состояние
+`healthy` (`docker compose ps`). Бэкенд сам
 применяет миграции, наполняет справочники и банк из 79 семейств заданий, создаёт демо-аккаунты
 и около 120 синтетических кандидатов, часть из них привязывает к участникам эмулятора ФСП. Файл
 `.env` не нужен: значения по умолчанию заданы в `docker-compose.yml`.
@@ -348,14 +357,19 @@ docker compose up --build -d
 **Шаг 4. ФСП ID на Keycloak (по желанию).**
 
 ```
-make up-keycloak
-make keycloak-smoke
+docker compose -f docker-compose.yml -f docker-compose.keycloak.yml up --build -d
 ```
 
 Keycloak 26 поднимается на http://localhost:8081, участники и пароль те же. Вернуться к
-эмулятору — `make down-keycloak && make up`.
+эмулятору:
 
-**Шаг 5. Проверки кода** (нужны Python 3.13 с uv и Node.js 22+):
+```
+docker compose -f docker-compose.yml -f docker-compose.keycloak.yml down
+docker compose up -d
+```
+
+**Шаг 5. Проверки кода** (для разработки: нужны Python 3.13 с uv, Node.js 22+ и `make` — есть в
+Linux и macOS, на Windows — в WSL 2):
 
 ```
 make check
@@ -372,7 +386,8 @@ make check
 **Начать заново** с чистыми данными:
 
 ```
-docker compose down -v --remove-orphans && docker compose up --build -d
+docker compose down -v --remove-orphans
+docker compose up --build -d
 ```
 
 # 12. Ограничения и дальше
